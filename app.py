@@ -383,9 +383,9 @@ def render_app_image(image_path, caption=None, width=None):
             st.image(image_path, caption=caption, width=width)
         else:
             try:
-                st.image(image_path, caption=caption, use_container_width=True)
-            except TypeError:
                 st.image(image_path, caption=caption, use_column_width=True)
+            except TypeError:
+                st.image(image_path, caption=caption)
     elif caption:
         st.caption(f"🖼️ {caption}")
 
@@ -1018,38 +1018,38 @@ baseline_mode_choice = st.sidebar.radio(
 is_dynamic_baseline = "Dynamic" in baseline_mode_choice
 
 # --- Top Navigation / Main Header ---
+hero_b64 = ""
+import os, base64
+if os.path.exists("assets/surakshanet_hero.jpg"):
+    try:
+        with open("assets/surakshanet_hero.jpg", "rb") as f:
+            hero_b64 = base64.b64encode(f.read()).decode()
+    except Exception:
+        hero_b64 = ""
+
 col_head1, col_head2 = st.columns([1.5, 1.5])
 with col_head1:
-    logo_svg = """
-    <div style="width:64px; height:64px; min-width:64px; border-radius:16px; background:linear-gradient(135deg, rgba(0,242,254,0.18) 0%, rgba(56,189,248,0.08) 100%); border:1.5px solid rgba(0,242,254,0.5); display:flex; align-items:center; justify-content:center; box-shadow:0 0 22px rgba(0,242,254,0.35), inset 0 1px 0 rgba(255,255,255,0.25); flex-shrink:0;">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L3 7V12C3 17.52 6.84 22.74 12 24C17.16 22.74 21 17.52 21 12V7L12 2Z" fill="url(#shield_g)" stroke="#00F2FE" stroke-width="1.5" stroke-linejoin="round"/>
-            <path d="M12 7V17M7 12H17" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
-            <circle cx="12" cy="12" r="7.5" stroke="#38BDF8" stroke-width="1" stroke-dasharray="2 2"/>
-            <defs>
-                <linearGradient id="shield_g" x1="12" y1="2" x2="12" y2="24" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#00F2FE" stop-opacity="0.35"/>
-                    <stop stop-color="#0369A1" stop-opacity="0.85"/>
-                </linearGradient>
-            </defs>
-        </svg>
-    </div>
-    """
-    st.markdown(
-        f"""
-        <div class="custom-hero-banner" style="display: flex; align-items: center; gap: 18px;">
-            {logo_svg}
-            <div>
-                <div style="display:flex; gap:8px; align-items:center; margin-bottom: 4px; flex-wrap:wrap;">
-                    <span class="grassroots-badge" style="border-color:#A855F7; color:#A855F7; font-weight:700;">⚡ Team CodeKraft</span>
-                    <span class="grassroots-badge" style="border-color:#38BDF8; color:#38BDF8;">🇮🇳 Odisha Health Grid</span>
-                </div>
-                <h1 style="margin: 0; font-size: 2.1rem; line-height: 1.1;">{t["app_title"]}</h1>
-                <p style="margin: 3px 0 0 0; opacity: 0.85; font-size: 0.95rem;">{t["app_sub"]}</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True
+    if hero_b64:
+        img_badge = f'<img src="data:image/jpeg;base64,{hero_b64}" style="width:68px; height:68px; min-width:68px; border-radius:16px; border:2px solid #00F2FE; box-shadow:0 0 20px rgba(0,242,254,0.4); object-fit:cover;" />'
+    else:
+        img_badge = '<div style="width:64px; height:64px; min-width:64px; border-radius:16px; background:linear-gradient(135deg, rgba(0,242,254,0.2) 0%, rgba(3,105,161,0.4) 100%); border:1.5px solid #00F2FE; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(0,242,254,0.35); font-size:2rem;">🛡️</div>'
+
+    header_html = (
+        f'<div class="custom-hero-banner" style="display: flex; align-items: center; gap: 20px;">'
+        f'{img_badge}'
+        f'<div>'
+        f'<div style="font-size: 0.78rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #38BDF8; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;">'
+        f'<span>⚡ TEAM CODEKRAFT</span>'
+        f'<span style="opacity: 0.35; color: #FFFFFF;">•</span>'
+        f'<span style="color: #94A3B8;">ODISHA HEALTH SURVEILLANCE GRID</span>'
+        f'</div>'
+        f'<h1 style="margin: 0; font-size: 2.15rem; line-height: 1.1; letter-spacing: -0.5px;">{t["app_title"]}</h1>'
+        f'<p style="margin: 4px 0 0 0; opacity: 0.85; font-size: 0.95rem; color: #E2E8F0;">{t["app_sub"]}</p>'
+        f'</div>'
+        f'</div>'
     )
+    st.markdown(header_html, unsafe_allow_html=True)
+
 with col_head2:
     st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
     col_sel1, col_sel2 = st.columns(2)
@@ -1084,6 +1084,11 @@ with col_head2:
         if "outbreak_epicenter_choice" not in st.session_state or st.session_state.outbreak_epicenter_choice not in epicenter_list:
             st.session_state.outbreak_epicenter_choice = epicenter_list[0]
             
+        epicenter = st.selectbox(
+            t.get("inject_location", "📍 Outbreak Location / Epicenter"),
+            epicenter_list,
+            key="outbreak_epicenter_choice"
+        )
         st.session_state.current_epicenter = epicenter
 
 # --- Top Telemetry Ticker Strip ---
@@ -1905,15 +1910,28 @@ with tab_public:
             """, unsafe_allow_html=True
         )
 
-    # Safety Advice Container
+    # Safety Advice Container (Enhanced High-Contrast Design)
+    adv_border_accent = alert_border
+    adv_card_bg = "rgba(15, 23, 42, 0.75)"
+    
     st.markdown(
         f"""
-        <div class='glass-card' style='border-top: 4px solid {alert_border};'>
-            <h4 style='margin: 0 0 10px 0;'>💡 Public Safety Advisory</h4>
-            <div style='font-size: 1.05rem;'>{safety_advice}</div>
-        </div>
+        <div class='glass-card' style='border-left: 5px solid {adv_border_accent}; background: {adv_card_bg}; border-top: 1px solid rgba(255,255,255,0.12); padding: 22px 26px; margin-bottom: 22px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.5);'>
+            <div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;'>
+                <div style='display: flex; align-items: center; gap: 10px;'>
+                    <span style='font-size: 1.35rem;'>💡</span>
+                    <h4 style='margin: 0; color: #FFFFFF !important; font-size: 1.18rem; font-weight: 800; letter-spacing: -0.3px;'>Public Health & Safety Action Plan</h4>
+                </div>
+                <span class='status-badge' style='background: {alert_bg}; color: {alert_border}; border: 1px solid {alert_border}; font-size: 0.8rem;'>
+                    {alert_icon} ADVISORY LEVEL: {display_risk.upper()}
+                </span>
+            </div>
+            <div style='color: #F8FAFC !important; font-size: 1.05rem; line-height: 1.65; font-weight: 500; background: rgba(0,0,0,0.25); padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);'>
         """, unsafe_allow_html=True
     )
+    st.markdown(safety_advice)
+    st.markdown("</div></div>", unsafe_allow_html=True)
+
     
     # Visual Trends Chart & Gauge
     col_pub1, col_pub2 = st.columns([1.5, 2])
