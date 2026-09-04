@@ -24,8 +24,7 @@ st.set_page_config(
 # Set your Google Apps Script Web App URL here for universal cross-device persistence
 DEFAULT_GSHEET_URL = "https://script.google.com/macros/s/AKfycbzt_VXGXKrFKQltXEeXvqPjV0zHjSih0AMjQOcBwc-YwvhvmTJYe8om0NiFMbPPccZU/exec"
 
-
-# --- Custom CSS Styling (Premium Glassmorphism & Micro-animations) ---
+# --- Custom CSS Styling (Adaptive Dual-Theme: Dark & Light Mode Glassmorphism) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
@@ -40,6 +39,117 @@ st.markdown("""
         --neon-amber: #F59E0B;
         --neon-crimson: #EF4444;
         --neon-purple: #A855F7;
+
+        /* Default Dark Mode Tokens */
+        --card-bg: #0F172A;
+        --inner-card-bg: #1E293B;
+        --card-border: rgba(56, 189, 248, 0.25);
+        --card-border-hover: rgba(0, 242, 254, 0.6);
+        --text-primary: #F8FAFC;
+        --text-secondary: #CBD5E1;
+        --text-muted: #94A3B8;
+        --heading-color: #FFFFFF;
+        --nav-bar-bg: #0F172A;
+        --nav-border: #334155;
+        --nav-text: #94A3B8;
+        --nav-active-bg: linear-gradient(135deg, rgba(0, 242, 254, 0.25) 0%, rgba(56, 189, 248, 0.18) 100%);
+        --nav-active-text: #00F2FE;
+        --nav-active-border: rgba(0, 242, 254, 0.55);
+        --nav-active-shadow: 0 4px 18px rgba(0, 242, 254, 0.25);
+        --hero-bg: linear-gradient(135deg, #0B132B 0%, #172A46 100%);
+        --hero-border: rgba(0, 242, 254, 0.35);
+        --hero-title-grad: linear-gradient(135deg, #00F2FE 0%, #38BDF8 60%, #FFFFFF 100%);
+        --hero-sub: #CBD5E1;
+        --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+        --input-bg: #0F172A;
+        --input-border: #334155;
+        --input-text: #F8FAFC;
+        --btn-bg: linear-gradient(135deg, #00F2FE 0%, #0284C7 100%);
+        --btn-hover-bg: linear-gradient(135deg, #38BDF8 0%, #00F2FE 100%);
+        --btn-text: #070B14;
+        --auth-clinic-bg: radial-gradient(circle at 50% 0%, #162B4D 0%, #0B132B 75%);
+        --auth-officer-bg: radial-gradient(circle at 50% 0%, #3B141C 0%, #0B132B 75%);
+        --auth-border-clinic: #00F2FE;
+        --auth-border-officer: #EF4444;
+        --grassroots-badge-bg: #0B132B;
+        --grassroots-badge-border: #00F2FE;
+        --grassroots-badge-text: #00F2FE;
+    }
+
+    /* Automatic Light Mode System (OS Preference + Streamlit Light Theme) */
+    @media (prefers-color-scheme: light) {
+        :root {
+            --card-bg: #FFFFFF;
+            --inner-card-bg: #F8FAFC;
+            --card-border: #E2E8F0;
+            --card-border-hover: #0284C7;
+            --text-primary: #0F172A;
+            --text-secondary: #334155;
+            --text-muted: #64748B;
+            --heading-color: #0F172A;
+            --nav-bar-bg: #F1F5F9;
+            --nav-border: #CBD5E1;
+            --nav-text: #475569;
+            --nav-active-bg: #FFFFFF;
+            --nav-active-text: #0284C7;
+            --nav-active-border: #0284C7;
+            --nav-active-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+            --hero-bg: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+            --hero-border: #0284C7;
+            --hero-title-grad: linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 100%);
+            --hero-sub: #E0F2FE;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --input-bg: #FFFFFF;
+            --input-border: #CBD5E1;
+            --input-text: #0F172A;
+            --btn-bg: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+            --btn-hover-bg: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
+            --btn-text: #FFFFFF;
+            --auth-clinic-bg: radial-gradient(circle at 50% 0%, #F0F9FF 0%, #E0F2FE 75%);
+            --auth-officer-bg: radial-gradient(circle at 50% 0%, #FEF2F2 0%, #FEE2E2 75%);
+            --auth-border-clinic: #0284C7;
+            --auth-border-officer: #DC2626;
+            --grassroots-badge-bg: #E0F2FE;
+            --grassroots-badge-border: #0284C7;
+            --grassroots-badge-text: #0369A1;
+        }
+    }
+
+    /* Streamlit explicit light-theme selector support */
+    [data-theme="light"], .stApp[data-theme="light"], body[data-theme="light"] {
+        --card-bg: #FFFFFF;
+        --inner-card-bg: #F8FAFC;
+        --card-border: #E2E8F0;
+        --card-border-hover: #0284C7;
+        --text-primary: #0F172A;
+        --text-secondary: #334155;
+        --text-muted: #64748B;
+        --heading-color: #0F172A;
+        --nav-bar-bg: #F1F5F9;
+        --nav-border: #CBD5E1;
+        --nav-text: #475569;
+        --nav-active-bg: #FFFFFF;
+        --nav-active-text: #0284C7;
+        --nav-active-border: #0284C7;
+        --nav-active-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+        --hero-bg: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+        --hero-border: #0284C7;
+        --hero-title-grad: linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 100%);
+        --hero-sub: #E0F2FE;
+        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        --input-bg: #FFFFFF;
+        --input-border: #CBD5E1;
+        --input-text: #0F172A;
+        --btn-bg: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+        --btn-hover-bg: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
+        --btn-text: #FFFFFF;
+        --auth-clinic-bg: radial-gradient(circle at 50% 0%, #F0F9FF 0%, #E0F2FE 75%);
+        --auth-officer-bg: radial-gradient(circle at 50% 0%, #FEF2F2 0%, #FEE2E2 75%);
+        --auth-border-clinic: #0284C7;
+        --auth-border-officer: #DC2626;
+        --grassroots-badge-bg: #E0F2FE;
+        --grassroots-badge-border: #0284C7;
+        --grassroots-badge-text: #0369A1;
     }
 
     html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select {
@@ -52,24 +162,53 @@ st.markdown("""
 
     footer {visibility: hidden;}
 
-    /* Premium Obsidian Glassmorphism Cards with High Contrast */
+    /* Form Controls & Inputs */
+    div[data-baseweb="select"] > div {
+        background-color: var(--input-bg) !important;
+        border: 1px solid var(--input-border) !important;
+        color: var(--input-text) !important;
+        border-radius: 10px !important;
+    }
+    div[data-baseweb="popover"] > div, div[data-baseweb="menu"] {
+        background-color: var(--card-bg) !important;
+        border: 1px solid var(--input-border) !important;
+        color: var(--text-primary) !important;
+    }
+    div[data-baseweb="input"], div[data-baseweb="base-input"] {
+        background-color: var(--input-bg) !important;
+        border: 1px solid var(--input-border) !important;
+        color: var(--input-text) !important;
+        border-radius: 10px !important;
+    }
+    input, textarea {
+        color: var(--input-text) !important;
+        background-color: var(--input-bg) !important;
+    }
+    input::placeholder, textarea::placeholder {
+        color: var(--text-muted) !important;
+    }
+
+    /* Premium Glassmorphism & Adaptive Surface Cards */
     .glass-card {
-        background: #0F172A !important;
-        border: 1px solid rgba(56, 189, 248, 0.25) !important;
+        background: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
         border-radius: 16px;
         padding: 24px;
         margin-bottom: 20px;
-        color: #F8FAFC !important;
-        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+        color: var(--text-primary) !important;
+        box-shadow: var(--card-shadow);
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
     }
     .glass-card:hover {
         transform: translateY(-3px);
-        border-color: rgba(0, 242, 254, 0.6) !important;
-        box-shadow: 0 16px 40px -10px rgba(0, 242, 254, 0.25);
+        border-color: var(--card-border-hover) !important;
+        box-shadow: 0 12px 35px rgba(2, 132, 199, 0.2);
     }
     .glass-card p, .glass-card span, .glass-card div {
-        color: #F1F5F9;
+        color: var(--text-secondary);
+    }
+    .glass-card strong {
+        color: var(--text-primary) !important;
     }
 
     /* KPI Metrics Styling */
@@ -81,9 +220,12 @@ st.markdown("""
         line-height: 1.1;
         letter-spacing: -0.5px;
     }
+    @media (prefers-color-scheme: light) {
+        .metric-value { color: #0284C7 !important; }
+    }
     .metric-label {
         font-size: 0.84rem;
-        color: #94A3B8 !important;
+        color: var(--text-muted) !important;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.8px;
@@ -116,42 +258,39 @@ st.markdown("""
         letter-spacing: 0.3px;
     }
     .status-safe {
-        background: rgba(6, 78, 59, 0.45) !important;
-        color: #34D399 !important;
+        background: rgba(16, 185, 129, 0.15) !important;
+        color: #059669 !important;
         border: 1px solid #10B981 !important;
-        box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
     }
     .status-warning {
-        background: rgba(120, 53, 15, 0.45) !important;
-        color: #FBBF24 !important;
+        background: rgba(245, 158, 11, 0.15) !important;
+        color: #D97706 !important;
         border: 1px solid #F59E0B !important;
-        box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
     }
     .status-danger {
-        background: rgba(127, 29, 29, 0.45) !important;
-        color: #F87171 !important;
+        background: rgba(239, 68, 68, 0.15) !important;
+        color: #DC2626 !important;
         border: 1px solid #EF4444 !important;
-        box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
     }
     
     /* Headers with High Contrast */
     h1, h2, h3, h4 {
-        color: #F8FAFC !important;
+        color: var(--heading-color) !important;
         font-weight: 800 !important;
         letter-spacing: -0.4px !important;
     }
 
     /* Command Center Hero Banner */
     .custom-hero-banner {
-        background: linear-gradient(135deg, #0B132B 0%, #172A46 100%) !important;
+        background: var(--hero-bg) !important;
         padding: 22px 28px;
         border-radius: 18px;
-        border: 1px solid rgba(0, 242, 254, 0.35) !important;
-        box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.7);
+        border: 1px solid var(--hero-border) !important;
+        box-shadow: var(--card-shadow);
         margin-bottom: 12px;
     }
     .custom-hero-banner h1 {
-        background: linear-gradient(135deg, #00F2FE 0%, #38BDF8 60%, #FFFFFF 100%) !important;
+        background: var(--hero-title-grad) !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         margin: 0 !important;
@@ -160,32 +299,10 @@ st.markdown("""
         letter-spacing: -0.6px !important;
     }
     .custom-hero-banner p {
-        color: #CBD5E1 !important;
+        color: var(--hero-sub) !important;
         margin: 6px 0 0 0 !important;
         font-size: 0.95rem !important;
         font-weight: 500 !important;
-    }
-
-    /* Live Telemetry Ticker Strip */
-    .telemetry-ticker {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        flex-wrap: wrap;
-        background: #0F172A !important;
-        border: 1px solid #334155 !important;
-        border-radius: 12px;
-        padding: 10px 18px;
-        margin-bottom: 16px;
-        font-size: 0.84rem;
-        color: #F1F5F9 !important;
-    }
-    .ticker-item {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-weight: 600;
-        color: #F1F5F9 !important;
     }
 
     /* Segmented Modern Navigation Tabs & Stateful Portal Selector */
@@ -193,11 +310,11 @@ st.markdown("""
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        background: #0F172A !important;
+        background: var(--nav-bar-bg) !important;
         padding: 6px;
         border-radius: 14px;
-        border: 1px solid #334155 !important;
-        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--nav-border) !important;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
         margin-bottom: 18px;
     }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label {
@@ -206,7 +323,7 @@ st.markdown("""
         background: transparent;
         padding: 10px 18px;
         border-radius: 10px;
-        color: #94A3B8 !important;
+        color: var(--nav-text) !important;
         font-weight: 600;
         font-size: 0.92rem;
         border: 1px solid transparent;
@@ -218,102 +335,99 @@ st.markdown("""
         text-align: center;
     }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
-        color: #00F2FE !important;
-        background: rgba(0, 242, 254, 0.1) !important;
-        border-color: rgba(0, 242, 254, 0.3) !important;
+        color: var(--nav-active-text) !important;
+        background: rgba(2, 132, 199, 0.08) !important;
+        border-color: rgba(2, 132, 199, 0.25) !important;
     }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label > div:first-child {
         display: none !important;
     }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
-        background: linear-gradient(135deg, rgba(0, 242, 254, 0.25) 0%, rgba(56, 189, 248, 0.18) 100%) !important;
-        color: #00F2FE !important;
+        background: var(--nav-active-bg) !important;
+        color: var(--nav-active-text) !important;
         font-weight: 700 !important;
-        border: 1px solid rgba(0, 242, 254, 0.55) !important;
-        box-shadow: 0 4px 18px rgba(0, 242, 254, 0.25) !important;
+        border: 1px solid var(--nav-active-border) !important;
+        box-shadow: var(--nav-active-shadow) !important;
     }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) p {
-        color: #00F2FE !important;
+        color: var(--nav-active-text) !important;
         font-weight: 700 !important;
     }
 
     .stTabs [data-baseweb="tab-list"] {
         gap: 6px;
-        background: #0F172A !important;
+        background: var(--nav-bar-bg) !important;
         padding: 6px;
         border-radius: 12px;
-        border: 1px solid #334155 !important;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--nav-border) !important;
     }
     .stTabs [data-baseweb="tab"] {
         padding: 10px 22px;
         background: transparent;
         border-radius: 8px;
-        color: #94A3B8 !important;
+        color: var(--nav-text) !important;
         font-weight: 600;
         font-size: 0.92rem;
         border: none;
         transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .stTabs [data-baseweb="tab"]:hover {
-        color: #00F2FE !important;
-        background: rgba(0, 242, 254, 0.12) !important;
+        color: var(--nav-active-text) !important;
     }
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, rgba(0, 242, 254, 0.25) 0%, rgba(56, 189, 248, 0.18) 100%) !important;
-        color: #00F2FE !important;
+        background: var(--nav-active-bg) !important;
+        color: var(--nav-active-text) !important;
         font-weight: 700 !important;
-        border: 1px solid rgba(0, 242, 254, 0.5) !important;
-        box-shadow: 0 4px 15px rgba(0, 242, 254, 0.25) !important;
+        border: 1px solid var(--nav-active-border) !important;
+        box-shadow: var(--nav-active-shadow) !important;
     }
 
-    /* High-Impact Cyber Action Buttons */
+    /* High-Impact Action Buttons */
     div.stButton > button {
-        background: linear-gradient(135deg, #00F2FE 0%, #0284C7 100%) !important;
-        color: #070B14 !important;
+        background: var(--btn-bg) !important;
+        color: var(--btn-text) !important;
         font-weight: 800 !important;
         font-size: 0.9rem !important;
         border-radius: 10px !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
         padding: 8px 22px !important;
-        box-shadow: 0 4px 18px rgba(0, 242, 254, 0.4) !important;
+        box-shadow: 0 4px 18px rgba(2, 132, 199, 0.35) !important;
         transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
         letter-spacing: 0.3px !important;
     }
     div.stButton > button:hover {
         transform: translateY(-2px) scale(1.02) !important;
-        box-shadow: 0 8px 25px rgba(0, 242, 254, 0.6) !important;
-        color: #070B14 !important;
-        background: linear-gradient(135deg, #38BDF8 0%, #00F2FE 100%) !important;
+        box-shadow: 0 8px 25px rgba(2, 132, 199, 0.5) !important;
+        background: var(--btn-hover-bg) !important;
     }
     div.stButton > button:active {
         transform: translateY(0) scale(0.98) !important;
     }
 
-    /* Modern High-Contrast Alert Banners */
+    /* Modern Alert Banners */
     .alert-banner-warning {
-        background: linear-gradient(135deg, rgba(120, 53, 15, 0.6) 0%, #1E1B18 100%) !important;
+        background: rgba(245, 158, 11, 0.15) !important;
         border: 1px solid #F59E0B !important;
         border-radius: 14px;
         padding: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
-        color: #FEF3C7 !important;
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2);
+        color: var(--text-primary) !important;
     }
     .alert-banner-warning p, .alert-banner-warning span {
-        color: #FDE68A !important;
+        color: var(--text-secondary) !important;
     }
     .alert-banner-danger {
-        background: linear-gradient(135deg, rgba(127, 29, 29, 0.65) 0%, #201416 100%) !important;
+        background: rgba(239, 68, 68, 0.15) !important;
         border: 1px solid #EF4444 !important;
         border-radius: 14px;
         padding: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 8px 30px rgba(239, 68, 68, 0.35);
-        color: #FEE2E2 !important;
+        box-shadow: 0 8px 30px rgba(239, 68, 68, 0.25);
+        color: var(--text-primary) !important;
     }
     .alert-banner-danger p, .alert-banner-danger span {
-        color: #FECACA !important;
+        color: var(--text-secondary) !important;
     }
 
     /* Interactive Feedback Animations */
@@ -326,9 +440,9 @@ st.markdown("""
         75% { transform: translateX(-3px); }
     }
     .denial-msg {
-        background: rgba(127, 29, 29, 0.55) !important;
+        background: rgba(239, 68, 68, 0.15) !important;
         border: 1px solid #EF4444 !important;
-        color: #FCA5A5 !important;
+        color: #DC2626 !important;
         padding: 10px 16px;
         border-radius: 10px;
         font-size: 0.9rem;
@@ -341,17 +455,17 @@ st.markdown("""
         gap: 8px;
     }
     .green-popup {
-        background: rgba(6, 78, 59, 0.55) !important;
+        background: rgba(16, 185, 129, 0.15) !important;
         border: 1px solid #10B981 !important;
-        box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
         border-radius: 12px;
         padding: 16px 20px;
         margin: 15px 0;
-        color: #ECFDF5 !important;
+        color: var(--text-primary) !important;
         animation: green-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .green-popup span, .green-popup div, .green-popup p {
-        color: #ECFDF5 !important;
+        color: var(--text-secondary) !important;
     }
     @keyframes green-pop {
         0% { transform: scale(0.94); opacity: 0; }
@@ -360,9 +474,9 @@ st.markdown("""
     
     /* Grassroots & Node Card Visuals */
     .grassroots-badge {
-        background: #0B132B !important;
-        border: 1px solid #00F2FE !important;
-        color: #00F2FE !important;
+        background: var(--grassroots-badge-bg) !important;
+        border: 1px solid var(--grassroots-badge-border) !important;
+        color: var(--grassroots-badge-text) !important;
         padding: 4px 12px;
         border-radius: 20px;
         font-size: 0.76rem;
@@ -374,29 +488,45 @@ st.markdown("""
         gap: 6px;
     }
     .node-visual-card {
-        background: #0F172A !important;
-        border: 1px solid rgba(56, 189, 248, 0.25) !important;
+        background: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
         border-radius: 16px;
         overflow: hidden;
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
         margin-bottom: 16px;
-        color: #F8FAFC !important;
+        color: var(--text-primary) !important;
+        box-shadow: var(--card-shadow);
     }
     .node-visual-card:hover {
         transform: translateY(-4px);
-        border-color: rgba(0, 242, 254, 0.55) !important;
-        box-shadow: 0 14px 35px -10px rgba(0, 242, 254, 0.3);
+        border-color: var(--card-border-hover) !important;
+        box-shadow: 0 14px 35px -10px rgba(2, 132, 199, 0.3);
     }
     .node-card-body {
         padding: 16px 18px;
     }
     .node-card-body span, .node-card-body div, .node-card-body p {
-        color: #F1F5F9 !important;
+        color: var(--text-secondary) !important;
+    }
+    .node-telemetry-box {
+        background: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
+        border-radius: 12px;
+        padding: 14px;
+        margin-top: -10px;
+        box-shadow: var(--card-shadow);
+        color: var(--text-primary) !important;
+    }
+    .node-telemetry-box strong {
+        color: var(--text-primary) !important;
+    }
+    .node-telemetry-box span, .node-telemetry-box div {
+        color: var(--text-secondary);
     }
     .pipeline-step-badge {
-        background: rgba(0, 242, 254, 0.18) !important;
-        border: 1px solid #00F2FE !important;
-        color: #00F2FE !important;
+        background: rgba(2, 132, 199, 0.12) !important;
+        border: 1px solid #0284C7 !important;
+        color: #0284C7 !important;
         border-radius: 6px;
         padding: 3px 8px;
         font-size: 0.75rem;
@@ -404,50 +534,52 @@ st.markdown("""
         font-family: var(--font-mono);
     }
     .hygiene-card {
-        background: #0F172A !important;
-        border: 1px solid #334155 !important;
+        background: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
         border-radius: 12px;
         padding: 16px;
         margin-bottom: 12px;
         display: flex;
         align-items: flex-start;
         gap: 14px;
-        color: #F8FAFC !important;
-        transition: border-color 0.2s ease;
+        color: var(--text-primary) !important;
+        box-shadow: var(--card-shadow);
+        transition: border-color 0.2s ease, transform 0.2s ease;
     }
     .hygiene-card:hover {
-        border-color: #00F2FE !important;
+        border-color: var(--card-border-hover) !important;
+        transform: translateY(-2px);
     }
     .hygiene-card span, .hygiene-card strong, .hygiene-card em {
-        color: #E2E8F0 !important;
+        color: var(--text-secondary) !important;
     }
 
-    /* Premium Cyber Authentication Terminal Box */
+    /* Premium Authentication Terminal Box */
     .auth-card-clinic {
-        background: radial-gradient(circle at 50% 0%, #162B4D 0%, #0B132B 75%) !important;
-        border: 1px solid #00F2FE !important;
+        background: var(--auth-clinic-bg) !important;
+        border: 1px solid var(--auth-border-clinic) !important;
         border-radius: 20px;
         padding: 32px 28px 24px 28px;
         text-align: center;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 242, 254, 0.2);
+        box-shadow: var(--card-shadow);
         margin-bottom: 12px;
-        color: #F8FAFC !important;
+        color: var(--text-primary) !important;
     }
     .auth-card-clinic p, .auth-card-clinic span {
-        color: #E2E8F0 !important;
+        color: var(--text-secondary) !important;
     }
     .auth-card-officer {
-        background: radial-gradient(circle at 50% 0%, #3B141C 0%, #0B132B 75%) !important;
-        border: 1px solid #EF4444 !important;
+        background: var(--auth-officer-bg) !important;
+        border: 1px solid var(--auth-border-officer) !important;
         border-radius: 20px;
         padding: 32px 28px 24px 28px;
         text-align: center;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(239, 68, 68, 0.25);
+        box-shadow: var(--card-shadow);
         margin-bottom: 12px;
-        color: #F8FAFC !important;
+        color: var(--text-primary) !important;
     }
     .auth-card-officer p, .auth-card-officer span {
-        color: #E2E8F0 !important;
+        color: var(--text-secondary) !important;
     }
     .auth-icon-halo {
         width: 78px;
@@ -458,9 +590,9 @@ st.markdown("""
         align-items: center;
         justify-content: center;
         font-size: 2.4rem;
-        background: #0F172A !important;
+        background: var(--card-bg) !important;
         border: 2px solid #00F2FE !important;
-        box-shadow: 0 0 25px rgba(0, 242, 254, 0.45);
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.35);
         animation: pulse-halo 2.5s infinite ease-in-out;
     }
     .auth-icon-halo-officer {
@@ -472,23 +604,23 @@ st.markdown("""
         align-items: center;
         justify-content: center;
         font-size: 2.4rem;
-        background: #0F172A !important;
+        background: var(--card-bg) !important;
         border: 2px solid #EF4444 !important;
-        box-shadow: 0 0 25px rgba(239, 68, 68, 0.45);
+        box-shadow: 0 0 25px rgba(239, 68, 68, 0.35);
         animation: pulse-halo-red 2.5s infinite ease-in-out;
     }
     @keyframes pulse-halo {
-        0%, 100% { box-shadow: 0 0 20px rgba(0, 242, 254, 0.35); transform: scale(1); }
-        50% { box-shadow: 0 0 35px rgba(0, 242, 254, 0.65); transform: scale(1.04); }
+        0%, 100% { box-shadow: 0 0 15px rgba(0, 242, 254, 0.35); transform: scale(1); }
+        50% { box-shadow: 0 0 30px rgba(0, 242, 254, 0.55); transform: scale(1.04); }
     }
     @keyframes pulse-halo-red {
-        0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); transform: scale(1); }
-        50% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.7); transform: scale(1.04); }
+        0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.35); transform: scale(1); }
+        50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.6); transform: scale(1.04); }
     }
     .auth-badge-clinic {
-        background: rgba(0, 242, 254, 0.18) !important;
-        border: 1px solid #00F2FE !important;
-        color: #00F2FE !important;
+        background: rgba(2, 132, 199, 0.12) !important;
+        border: 1px solid #0284C7 !important;
+        color: #0284C7 !important;
         font-size: 0.76rem;
         font-weight: 700;
         letter-spacing: 0.8px;
@@ -499,9 +631,9 @@ st.markdown("""
         margin-bottom: 12px;
     }
     .auth-badge-officer {
-        background: rgba(239, 68, 68, 0.22) !important;
+        background: rgba(239, 68, 68, 0.15) !important;
         border: 1px solid #EF4444 !important;
-        color: #FCA5A5 !important;
+        color: #DC2626 !important;
         font-size: 0.76rem;
         font-weight: 700;
         letter-spacing: 0.8px;
@@ -513,7 +645,7 @@ st.markdown("""
     }
     .auth-footer-shield {
         font-size: 0.8rem;
-        color: #94A3B8 !important;
+        color: var(--text-muted) !important;
         text-align: center;
         margin-top: 14px;
         letter-spacing: 0.2px;
@@ -521,30 +653,30 @@ st.markdown("""
 
     /* Portal Banners */
     .portal-banner {
-        background: #0F172A !important;
-        border: 1px solid rgba(0, 242, 254, 0.4) !important;
-        border-left: 5px solid #00F2FE !important;
+        background: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
+        border-left: 5px solid #0284C7 !important;
         border-radius: 14px;
         padding: 16px 20px;
         margin-bottom: 18px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        color: #F8FAFC !important;
+        box-shadow: var(--card-shadow);
+        color: var(--text-primary) !important;
     }
     .portal-banner p, .portal-banner span, .portal-banner div {
-        color: #F1F5F9 !important;
+        color: var(--text-secondary) !important;
     }
     .officer-banner {
-        background: #0F172A !important;
-        border: 1px solid rgba(239, 68, 68, 0.45) !important;
+        background: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
         border-left: 5px solid #EF4444 !important;
         border-radius: 14px;
         padding: 16px 20px;
         margin-bottom: 18px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        color: #F8FAFC !important;
+        box-shadow: var(--card-shadow);
+        color: var(--text-primary) !important;
     }
     .officer-banner p, .officer-banner span, .officer-banner div {
-        color: #F1F5F9 !important;
+        color: var(--text-secondary) !important;
     }
     .status-chip {
         display: inline-flex;
@@ -557,43 +689,42 @@ st.markdown("""
         letter-spacing: 0.3px;
     }
     .status-chip-safe {
-        background: rgba(6, 78, 59, 0.45) !important;
+        background: rgba(16, 185, 129, 0.15) !important;
         border: 1px solid #10B981 !important;
-        color: #34D399 !important;
+        color: #059669 !important;
     }
     .status-chip-warn {
-        background: rgba(120, 53, 15, 0.45) !important;
+        background: rgba(245, 158, 11, 0.15) !important;
         border: 1px solid #F59E0B !important;
-        color: #FBBF24 !important;
+        color: #D97706 !important;
     }
     .status-chip-danger {
-        background: rgba(127, 29, 29, 0.45) !important;
+        background: rgba(239, 68, 68, 0.15) !important;
         border: 1px solid #EF4444 !important;
-        color: #F87171 !important;
+        color: #DC2626 !important;
     }
     .status-chip-cyan {
-        background: rgba(0, 242, 254, 0.15) !important;
-        border: 1px solid #00F2FE !important;
-        color: #00F2FE !important;
+        background: rgba(2, 132, 199, 0.15) !important;
+        border: 1px solid #0284C7 !important;
+        color: #0284C7 !important;
     }
     .channel-box {
-        background: #0F172A !important;
-        border: 1px solid rgba(56, 189, 248, 0.25) !important;
+        background: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
         border-radius: 14px;
         padding: 18px;
         margin-top: 10px;
         margin-bottom: 15px;
-        color: #F8FAFC !important;
+        color: var(--text-primary) !important;
     }
     .preview-pill {
-        background: #0F172A !important;
-        border: 1px solid #334155 !important;
+        background: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
         border-radius: 10px;
         padding: 14px;
-        color: #F8FAFC !important;
+        color: var(--text-primary) !important;
     }
 </style>
-
 """, unsafe_allow_html=True)
 
 def render_app_image(image_path, caption=None, width=None):
@@ -2081,9 +2212,9 @@ if active_nav_idx == 0:
         
     # Banner Metric Badges
     if is_false_alarm:
-        badge_html = f"<div style='display:flex;gap:14px;text-align:right;flex-wrap:wrap;justify-content:flex-end;'><div style='background:#0F172A;padding:10px 16px;border-radius:10px;border:1px solid #F59E0B;box-shadow:0 4px 15px rgba(0,0,0,0.5);'><span style='font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#FDE68A;'>{t['threat_prob']}</span><div style='font-size:1.9rem;font-weight:800;color:#F59E0B;line-height:1.1;'>{display_outbreak_p}%</div></div><div style='background:rgba(245,158,11,0.22);padding:10px 16px;border-radius:10px;border:2px solid #F59E0B;box-shadow:0 4px 15px rgba(245,158,11,0.3);'><span style='font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#FEF3C7;'>⚠️ False Alarm Prob</span><div style='font-size:1.9rem;font-weight:800;color:#FBBF24;line-height:1.1;'>{false_p}%</div></div></div>"
+        badge_html = f"<div style='display:flex;gap:14px;text-align:right;flex-wrap:wrap;justify-content:flex-end;'><div style='background:var(--card-bg);padding:10px 16px;border-radius:10px;border:1px solid #F59E0B;box-shadow:var(--card-shadow);'><span style='font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#F59E0B;'>{t['threat_prob']}</span><div style='font-size:1.9rem;font-weight:800;color:#F59E0B;line-height:1.1;'>{display_outbreak_p}%</div></div><div style='background:rgba(245,158,11,0.18);padding:10px 16px;border-radius:10px;border:2px solid #F59E0B;box-shadow:0 4px 15px rgba(245,158,11,0.2);'><span style='font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#D97706;'>⚠️ False Alarm Prob</span><div style='font-size:1.9rem;font-weight:800;color:#D97706;line-height:1.1;'>{false_p}%</div></div></div>"
     else:
-        badge_html = f"<div style='text-align:right;min-width:150px;background:#0F172A;padding:10px 18px;border-radius:10px;border:1px solid {alert_border};box-shadow:0 4px 15px rgba(0,0,0,0.5);'><span style='font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#CBD5E1;'>{t['threat_prob']}</span><div style='font-size:2.2rem;font-weight:800;color:{alert_border};line-height:1.1;'>{display_outbreak_p}%</div></div>"
+        badge_html = f"<div style='text-align:right;min-width:150px;background:var(--card-bg);padding:10px 18px;border-radius:10px;border:1px solid {alert_border};box-shadow:var(--card-shadow);'><span style='font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);'>{t['threat_prob']}</span><div style='font-size:2.2rem;font-weight:800;color:{alert_border};line-height:1.1;'>{display_outbreak_p}%</div></div>"
 
     # Outbreak Warning Status (Filled high-visibility alert banner)
     alert_banner_html = (
@@ -2091,8 +2222,8 @@ if active_nav_idx == 0:
         f"<div style='display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;'>"
         f"<div style='flex:1;min-width:300px;'>"
         f"<h3 style='margin:0;font-size:1.45rem;color:{alert_border} !important;font-weight:800;'>{alert_icon} {display_status}</h3>"
-        f"<p style='color:#F8FAFC !important;opacity:0.95;margin:8px 0 0 0;font-size:1.02rem;line-height:1.5;'>{display_desc}</p>"
-        f"<div style='margin-top:12px;'><span style='background:#0F172A;border:1px solid #334155;color:#38BDF8;border-radius:20px;padding:5px 14px;font-size:0.85rem;font-weight:600;'>{location_scope_label}</span></div>"
+        f"<p style='color:var(--text-primary) !important;opacity:0.95;margin:8px 0 0 0;font-size:1.02rem;line-height:1.5;'>{display_desc}</p>"
+        f"<div style='margin-top:12px;'><span style='background:var(--card-bg);border:1px solid var(--card-border);color:var(--nav-active-text);border-radius:20px;padding:5px 14px;font-size:0.85rem;font-weight:600;'>{location_scope_label}</span></div>"
         f"</div>"
         f"{badge_html}"
         f"</div>"
@@ -2104,51 +2235,52 @@ if active_nav_idx == 0:
     if is_false_alarm:
         st.markdown(
             f"""
-            <div class='glass-card' style='border-left: 5px solid #F59E0B !important; background: #0F172A !important; margin-bottom: 20px;'>
+            <div class='glass-card' style='border-left: 5px solid #F59E0B !important; margin-bottom: 20px;'>
                 <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 12px;'>
                     <span style='font-size: 1.4rem;'>🔍</span>
                     <h4 style='margin: 0; color: #F59E0B !important;'>False Alarm vs. Outbreak Signal Verification</h4>
                 </div>
                 <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 10px;'>
-                    <div style='background: #1E293B; padding: 14px; border-radius: 8px; border: 1px solid #334155;'>
-                        <div style='font-size: 0.82rem; color: #94A3B8; font-weight: 600;'>Simulation Outbreak Probability</div>
-                        <div style='font-size: 1.5rem; font-weight: 800; color: #F8FAFC; margin: 4px 0;'>{display_outbreak_p}%</div>
-                        <div style='font-size: 0.78rem; color: #CBD5E1;'>Calculated from single-site anomaly</div>
+                    <div style='background: var(--inner-card-bg); padding: 14px; border-radius: 8px; border: 1px solid var(--card-border);'>
+                        <div style='font-size: 0.82rem; color: var(--text-muted); font-weight: 600;'>Simulation Outbreak Probability</div>
+                        <div style='font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 4px 0;'>{display_outbreak_p}%</div>
+                        <div style='font-size: 0.78rem; color: var(--text-secondary);'>Calculated from single-site anomaly</div>
                     </div>
                     <div style='background: rgba(245,158,11,0.18); padding: 14px; border-radius: 8px; border: 1px solid #F59E0B;'>
-                        <div style='font-size: 0.82rem; color: #FDE68A; font-weight: 600;'>Probability this Outbreak % is FALSE</div>
-                        <div style='font-size: 1.5rem; font-weight: 800; color: #FBBF24; margin: 4px 0;'>{false_p}%</div>
-                        <div style='font-size: 0.78rem; color: #FEF3C7;'>Likely single-source typo / glitch</div>
+                        <div style='font-size: 0.82rem; color: #B45309; font-weight: 600;'>Probability this Outbreak % is FALSE</div>
+                        <div style='font-size: 1.5rem; font-weight: 800; color: #D97706; margin: 4px 0;'>{false_p}%</div>
+                        <div style='font-size: 0.78rem; color: #92400E;'>Likely single-source typo / glitch</div>
                     </div>
-                    <div style='background: #1E293B; padding: 14px; border-radius: 8px; border: 1px solid #334155;'>
-                        <div style='font-size: 0.82rem; color: #94A3B8; font-weight: 600;'>Cross-Clinic Corroboration</div>
+                    <div style='background: var(--inner-card-bg); padding: 14px; border-radius: 8px; border: 1px solid var(--card-border);'>
+                        <div style='font-size: 0.82rem; color: var(--text-muted); font-weight: 600;'>Cross-Clinic Corroboration</div>
                         <div style='font-size: 1.5rem; font-weight: 800; color: #EF4444; margin: 4px 0;'>0 / 4 Centers</div>
-                        <div style='font-size: 0.78rem; color: #CBD5E1;'>0 neighboring nodes confirm surge</div>
+                        <div style='font-size: 0.78rem; color: var(--text-secondary);'>0 neighboring nodes confirm surge</div>
                     </div>
                 </div>
             </div>
             """, unsafe_allow_html=True
         )
 
-    # Safety Advice Container (Enhanced High-Contrast Design)
+    # Safety Advice Container (Enhanced Dual-Theme Adaptive Design)
     adv_border_accent = alert_border
-    adv_card_bg = "#0F172A"
     
     st.markdown(
         f"""
-        <div class='glass-card' style='border-left: 5px solid {adv_border_accent} !important; background: {adv_card_bg} !important; border: 1px solid #334155 !important; padding: 22px 26px; margin-bottom: 22px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.6);'>
+        <div class='glass-card' style='border-left: 5px solid {adv_border_accent} !important; padding: 22px 26px; margin-bottom: 22px;'>
             <div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;'>
                 <div style='display: flex; align-items: center; gap: 10px;'>
                     <span style='font-size: 1.35rem;'>💡</span>
-                    <h4 style='margin: 0; color: #FFFFFF !important; font-size: 1.18rem; font-weight: 800; letter-spacing: -0.3px;'>Public Health & Safety Action Plan</h4>
+                    <h4 style='margin: 0; font-size: 1.18rem; font-weight: 800; letter-spacing: -0.3px;'>Public Health & Safety Action Plan</h4>
                 </div>
                 <span class='status-badge' style='background: {alert_bg}; color: {alert_border}; border: 1px solid {alert_border}; font-size: 0.8rem;'>
                     {alert_icon} ADVISORY LEVEL: {display_risk.upper()}
                 </span>
             </div>
-            <div style='color: #F8FAFC !important; font-size: 1.02rem; line-height: 1.65; font-weight: 500; background: #1E293B; padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(56,189,248,0.2);'>
+            <div style='color: var(--text-primary) !important; font-size: 1.02rem; line-height: 1.65; font-weight: 500; background: var(--inner-card-bg); padding: 16px 20px; border-radius: 12px; border: 1px solid var(--card-border);'>
         """, unsafe_allow_html=True
     )
+    st.markdown(safety_advice)
+    st.markdown("</div></div>", unsafe_allow_html=True)
     st.markdown(safety_advice)
     st.markdown("</div></div>", unsafe_allow_html=True)
 
@@ -2374,11 +2506,11 @@ if active_nav_idx == 0:
         max_z_u = max([m["z_score"] for m in utkal_metrics.values()]) if utkal_metrics else 0.0
         badge_u = "🟢 Normal" if max_z_u <= 1.5 else ("🟡 Warning" if max_z_u <= 3.0 else "🚨 Outbreak")
         st.markdown(f"""
-        <div style="background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-top: -10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-            <strong style="color:#F8FAFC; font-size:0.95rem; font-weight:700;">Kanpur PHC Clinic</strong><br>
-            <span style="font-size:0.78rem; color:#94A3B8;">Odisha Health Mission</span><br>
-            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_u}</span> <span style="font-size:0.78rem; font-weight:bold; color:#F8FAFC; margin-left:4px;">Z: {max_z_u}σ</span></div>
-            <div style="font-size:0.78rem; color:#CBD5E1; margin-top:6px;">Daily Paper Register & IVR</div>
+        <div class="node-telemetry-box">
+            <strong style="font-size:0.95rem; font-weight:700;">Kanpur PHC Clinic</strong><br>
+            <span style="font-size:0.78rem; opacity: 0.85;">Odisha Health Mission</span><br>
+            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_u}</span> <span style="font-size:0.78rem; font-weight:bold; margin-left:4px;">Z: {max_z_u}σ</span></div>
+            <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">Daily Paper Register & IVR</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2392,11 +2524,11 @@ if active_nav_idx == 0:
         turb_val = water_metrics.get("turbidity", {}).get("transmitted_val", 1.0)
         colif_val = water_metrics.get("coliform", {}).get("transmitted_val", 1.2)
         st.markdown(f"""
-        <div style="background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-top: -10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-            <strong style="color:#F8FAFC; font-size:0.95rem; font-weight:700;">Municipal Water Testing</strong><br>
-            <span style="font-size:0.78rem; color:#94A3B8;">Reservoir & Supply Standpost</span><br>
-            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_w}</span> <span style="font-size:0.78rem; font-weight:bold; color:#00F2FE; margin-left:4px;">NTU: {turb_val}</span></div>
-            <div style="font-size:0.78rem; color:#CBD5E1; margin-top:6px;">Coliform: {colif_val} MPN/100ml</div>
+        <div class="node-telemetry-box">
+            <strong style="font-size:0.95rem; font-weight:700;">Municipal Water Testing</strong><br>
+            <span style="font-size:0.78rem; opacity: 0.85;">Reservoir & Supply Standpost</span><br>
+            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_w}</span> <span style="font-size:0.78rem; font-weight:bold; color:#0284C7; margin-left:4px;">NTU: {turb_val}</span></div>
+            <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">Coliform: {colif_val} MPN/100ml</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2410,11 +2542,11 @@ if active_nav_idx == 0:
         diarrhea_h = hosp_metrics.get("diarrheal", {}).get("transmitted_val", 12.0)
         ili_h = hosp_metrics.get("ili", {}).get("transmitted_val", 15.0)
         st.markdown(f"""
-        <div style="background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-top: -10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-            <strong style="color:#F8FAFC; font-size:0.95rem; font-weight:700;">Capital Civil Hospital</strong><br>
-            <span style="font-size:0.78rem; color:#94A3B8;">Urban OPD & Fever Clinic</span><br>
-            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_h}</span> <span style="font-size:0.78rem; font-weight:bold; color:#F8FAFC; margin-left:4px;">Z: {max_z_h}σ</span></div>
-            <div style="font-size:0.78rem; color:#CBD5E1; margin-top:6px;">OPD Diarrheal: {diarrhea_h} | ILI: {ili_h}</div>
+        <div class="node-telemetry-box">
+            <strong style="font-size:0.95rem; font-weight:700;">Capital Civil Hospital</strong><br>
+            <span style="font-size:0.78rem; opacity: 0.85;">Urban OPD & Fever Clinic</span><br>
+            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_h}</span> <span style="font-size:0.78rem; font-weight:bold; margin-left:4px;">Z: {max_z_h}σ</span></div>
+            <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">OPD Diarrheal: {diarrhea_h} | ILI: {ili_h}</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2427,11 +2559,11 @@ if active_nav_idx == 0:
         badge_c = "🟢 Normal" if max_z_c <= 1.5 else ("🟡 Warning" if max_z_c <= 3.0 else "🚨 Outbreak")
         fever_c = campus_metrics.get("fever", {}).get("transmitted_val", 8.0)
         st.markdown(f"""
-        <div style="background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-top: -10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-            <strong style="color:#F8FAFC; font-size:0.95rem; font-weight:700;">Campus Health Center</strong><br>
-            <span style="font-size:0.78rem; color:#94A3B8;">Student & Staff Infirmary</span><br>
-            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_c}</span> <span style="font-size:0.78rem; font-weight:bold; color:#F8FAFC; margin-left:4px;">Z: {max_z_c}σ</span></div>
-            <div style="font-size:0.78rem; color:#CBD5E1; margin-top:6px;">Febrile triage: {fever_c} cases</div>
+        <div class="node-telemetry-box">
+            <strong style="font-size:0.95rem; font-weight:700;">Campus Health Center</strong><br>
+            <span style="font-size:0.78rem; opacity: 0.85;">Student & Staff Infirmary</span><br>
+            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_c}</span> <span style="font-size:0.78rem; font-weight:bold; margin-left:4px;">Z: {max_z_c}σ</span></div>
+            <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">Febrile triage: {fever_c} cases</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2506,11 +2638,11 @@ elif active_nav_idx == 1:
             
             st.markdown(
                 f"""
-                <div class="auth-card-clinic{shake_cls}" style="background: #0F172A; border: 1px solid #334155; padding: 25px; border-radius: 16px;">
-                    <div class="auth-icon-halo" style="font-size: 2.5rem; text-align: center;">🛡️</div>
-                    <span class="auth-badge-clinic" style="display: block; text-align: center; color: #00F2FE; font-weight: 700; margin-bottom: 10px;">🔒 Restricted Health Reporter Portal</span>
-                    <h2 style="margin: 0 0 8px 0; text-align: center; color: #FFFFFF; font-size: 1.45rem; font-weight: 700;">{t["clinic_title"]}</h2>
-                    <p style="color: #E2E8F0 !important; opacity: 0.95; font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px; text-align: center;">
+                <div class="auth-card-clinic{shake_cls}">
+                    <div class="auth-icon-halo">🛡️</div>
+                    <span class="auth-badge-clinic" style="display: block; text-align: center; font-weight: 700; margin-bottom: 10px;">🔒 Restricted Health Reporter Portal</span>
+                    <h2 style="margin: 0 0 8px 0; text-align: center; font-size: 1.45rem; font-weight: 700;">{t["clinic_title"]}</h2>
+                    <p style="opacity: 0.95; font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px; text-align: center;">
                         {t["pass_warn_clinic"]}
                     </p>
                     {denial_html}
@@ -3023,11 +3155,11 @@ elif active_nav_idx == 2:
             
             st.markdown(
                 f"""
-                <div class="auth-card-officer{shake_cls}" style="background: #0F172A; border: 1px solid #334155; padding: 25px; border-radius: 16px;">
-                    <div class="auth-icon-halo-officer" style="font-size: 2.5rem; text-align: center;">🔑</div>
-                    <span class="auth-badge-officer" style="display: block; text-align: center; color: #EF4444; font-weight: 700; margin-bottom: 10px;">🚨 Restricted State Level 3 Clearance</span>
-                    <h2 style="margin: 0 0 8px 0; text-align: center; color: #FFFFFF; font-size: 1.45rem; font-weight: 700;">{t["officer_title"]}</h2>
-                    <p style="color: #E2E8F0 !important; opacity: 0.95; font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px; text-align: center;">
+                <div class="auth-card-officer{shake_cls}">
+                    <div class="auth-icon-halo-officer">🔑</div>
+                    <span class="auth-badge-officer" style="display: block; text-align: center; font-weight: 700; margin-bottom: 10px;">🚨 Restricted State Level 3 Clearance</span>
+                    <h2 style="margin: 0 0 8px 0; text-align: center; font-size: 1.45rem; font-weight: 700;">{t["officer_title"]}</h2>
+                    <p style="opacity: 0.95; font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px; text-align: center;">
                         {t["pass_warn_officer"]}
                     </p>
                     {denial_html}
@@ -3359,14 +3491,14 @@ elif active_nav_idx == 3:
     col_dp_form, col_dp_act = st.columns([1.3, 1.2])
     with col_dp_form:
         st.markdown(f"""
-        <div class="glass-card" style="border-left: 4px solid #00F2FE;">
-            <strong style="color: #00F2FE; font-size: 1.05rem;">🔒 On-Device Differential Privacy (Laplace Mechanism)</strong>
-            <p style="font-size: 0.88rem; color: #CBD5E1; margin: 6px 0 10px 0; line-height: 1.5;">
+        <div class="glass-card" style="border-left: 4px solid #0284C7;">
+            <strong style="color: #0284C7; font-size: 1.05rem;">🔒 On-Device Differential Privacy (Laplace Mechanism)</strong>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 6px 0 10px 0; line-height: 1.5;">
                 Noise is injected at the edge device before any number reaches the network. An observer cannot mathematically distinguish whether a specific patient reported or not:
             </p>
-            <div style="background: #1E293B; border: 1px solid rgba(0,242,254,0.3); border-radius: 8px; padding: 12px 16px; text-align: center;">
-                <code style="font-size: 1.15rem; color: #00F2FE; font-weight: bold;">Y = X + Lap(&Delta;f / &epsilon;)</code><br>
-                <span style="font-size: 0.8rem; color: #94A3B8; display: inline-block; margin-top: 4px;">Current Budget &epsilon; = {epsilon} | Sensitivity &Delta;f = 1.0 | Noise Mean &mu; = 0</span>
+            <div style="background: var(--inner-card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px 16px; text-align: center;">
+                <code style="font-size: 1.15rem; color: #0284C7; font-weight: bold;">Y = X + Lap(&Delta;f / &epsilon;)</code><br>
+                <span style="font-size: 0.8rem; color: var(--text-muted); display: inline-block; margin-top: 4px;">Current Budget &epsilon; = {epsilon} | Sensitivity &Delta;f = 1.0 | Noise Mean &mu; = 0</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -3374,10 +3506,10 @@ elif active_nav_idx == 3:
         st.markdown(f"""
         <div class="glass-card" style="border-left: 4px solid #10B981;">
             <strong style="color: #10B981; font-size: 1.05rem;">⚖️ 100% DPDP Act 2023 & HIPAA Compliant</strong>
-            <p style="font-size: 0.88rem; color: #CBD5E1; margin: 6px 0 10px 0; line-height: 1.5;">
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 6px 0 10px 0; line-height: 1.5;">
                 Certified compliance with India's <strong>Digital Personal Data Protection (DPDP) Act 2023</strong>:
             </p>
-            <div style="font-size: 0.85rem; color: #E2E8F0; line-height: 1.6;">
+            <div style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.6;">
                 • <strong>Zero Central PII:</strong> No patient names, Aadhaar, or phone numbers stored.<br>
                 • <strong>k-Anonymity Guard (k={k_anonymity}):</strong> Prevents re-identification of small village/hostel cohorts.<br>
                 • <strong>Tamper-Evident Ledger:</strong> Every data transmission logged with mathematical noise parameters.
