@@ -25,119 +25,15 @@ st.set_page_config(
 # Set your Google Apps Script Web App URL here for universal cross-device persistence
 DEFAULT_GSHEET_URL = "https://script.google.com/macros/s/AKfycbzt_VXGXKrFKQltXEeXvqPjV0zHjSih0AMjQOcBwc-YwvhvmTJYe8om0NiFMbPPccZU/exec"
 
-# --- Theme Selection State Initialization ---
+# --- Theme Selection State Initialization (Universal Sync with Streamlit Native Theme) ---
+query_theme = st.query_params.get("theme", "")
 if "app_theme_mode" not in st.session_state:
-    st.session_state.app_theme_mode = "Dark Mode (Cyber)"
+    st.session_state.app_theme_mode = "Light Mode (Clinical)" if "light" in query_theme.lower() else "Dark Mode (Cyber)"
 
-is_light_theme = ("Light" in str(st.session_state.get("app_theme_mode", "")))
+is_light_theme = ("Light" in str(st.session_state.get("app_theme_mode", "")) or "light" in query_theme.lower())
 
-if is_light_theme:
-    theme_tokens = """
-        --app-bg: #F8FAFC;
-        --sidebar-bg: #FFFFFF;
-        --card-bg: #FFFFFF;
-        --inner-card-bg: #F1F5F9;
-        --card-border: #CBD5E1;
-        --card-border-hover: #0284C7;
-        --text-primary: #0F172A;
-        --text-secondary: #334155;
-        --text-muted: #64748B;
-        --heading-color: #0F172A;
-        --nav-bar-bg: #FFFFFF;
-        --nav-border: #CBD5E1;
-        --nav-text: #475569;
-        --nav-active-bg: linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, rgba(56, 189, 248, 0.16) 100%);
-        --nav-active-text: #0284C7;
-        --nav-active-border: #0284C7;
-        --nav-active-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
-        --hero-bg: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
-        --hero-border: rgba(2, 132, 199, 0.35);
-        --hero-title-grad: linear-gradient(135deg, #0284C7 0%, #0369A1 60%, #0F172A 100%);
-        --hero-sub: #334155;
-        --card-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
-        --input-bg: #FFFFFF;
-        --input-border: #CBD5E1;
-        --input-text: #0F172A;
-        --btn-bg: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-        --btn-hover-bg: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
-        --btn-text: #FFFFFF;
-        --auth-clinic-bg: radial-gradient(circle at 50% 0%, #E0F2FE 0%, #F8FAFC 75%);
-        --auth-officer-bg: radial-gradient(circle at 50% 0%, #FEE2E2 0%, #F8FAFC 75%);
-        --auth-border-clinic: #0284C7;
-        --auth-border-officer: #DC2626;
-        --grassroots-badge-bg: #F1F5F9;
-        --grassroots-badge-border: #0284C7;
-        --grassroots-badge-text: #0284C7;
-    """
-    extra_theme_css = """
-        .stApp {
-            background-color: #F8FAFC !important;
-            color: #0F172A !important;
-        }
-        section[data-testid="stSidebar"] {
-            background-color: #FFFFFF !important;
-            border-right: 1px solid #CBD5E1 !important;
-        }
-        section[data-testid="stSidebar"] * {
-            color: #0F172A !important;
-        }
-        section[data-testid="stSidebar"] p, section[data-testid="stSidebar"] span {
-            color: #334155 !important;
-        }
-        section[data-testid="stSidebar"] h1, section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 {
-            color: #0F172A !important;
-        }
-        .metric-value {
-            color: #0284C7 !important;
-        }
-        .metric-label {
-            color: #64748B !important;
-        }
-        .hygiene-card {
-            background: #FFFFFF !important;
-            border: 1px solid #E2E8F0 !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
-        }
-        .hygiene-card * {
-            color: #334155 !important;
-        }
-        .node-telemetry-box {
-            background: #FFFFFF !important;
-            border: 1px solid #E2E8F0 !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
-        }
-        .node-telemetry-box * {
-            color: #334155 !important;
-        }
-        .node-telemetry-box strong {
-            color: #0F172A !important;
-        }
-        div[data-testid="stDataFrame"] {
-            background: #FFFFFF !important;
-            border: 1px solid #CBD5E1 !important;
-            border-radius: 10px;
-        }
-        .sidebar-glow-box {
-            background: linear-gradient(135deg, #FEF2F2 0%, #FFFFFF 100%) !important;
-            border: 1.5px solid #EF4444 !important;
-            border-left: 5px solid #EF4444 !important;
-            color: #1E293B !important;
-            box-shadow: 0 0 16px rgba(239, 68, 68, 0.25) !important;
-        }
-        .sidebar-glow-title {
-            color: #991B1B !important;
-        }
-        .sidebar-glow-msg {
-            background: #FFF1F2 !important;
-            border: 1px solid rgba(239, 68, 68, 0.25) !important;
-            color: #1E293B !important;
-        }
-        .sidebar-glow-meta {
-            color: #64748B !important;
-        }
-    """
-else:
-    theme_tokens = """
+# Dark Theme Tokens (Default)
+dark_tokens = """
         --app-bg: #0B0F19;
         --sidebar-bg: #0B132B;
         --card-bg: #0F172A;
@@ -173,25 +69,54 @@ else:
         --grassroots-badge-bg: #0B132B;
         --grassroots-badge-border: #00F2FE;
         --grassroots-badge-text: #00F2FE;
-    """
-    extra_theme_css = """
-        .stApp {
-            background-color: #0B0F19 !important;
-            color: #F8FAFC !important;
-        }
-        section[data-testid="stSidebar"] {
-            background-color: #0B132B !important;
-            border-right: 1px solid rgba(56, 189, 248, 0.25) !important;
-        }
-    """
+"""
+
+# Light Theme Tokens
+light_tokens = """
+        --app-bg: #F8FAFC;
+        --sidebar-bg: #FFFFFF;
+        --card-bg: #FFFFFF;
+        --inner-card-bg: #F1F5F9;
+        --card-border: #CBD5E1;
+        --card-border-hover: #0284C7;
+        --text-primary: #0F172A;
+        --text-secondary: #334155;
+        --text-muted: #64748B;
+        --heading-color: #0F172A;
+        --nav-bar-bg: #FFFFFF;
+        --nav-border: #CBD5E1;
+        --nav-text: #475569;
+        --nav-active-bg: linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, rgba(56, 189, 248, 0.16) 100%);
+        --nav-active-text: #0284C7;
+        --nav-active-border: #0284C7;
+        --nav-active-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
+        --hero-bg: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+        --hero-border: rgba(2, 132, 199, 0.35);
+        --hero-title-grad: linear-gradient(135deg, #0284C7 0%, #0369A1 60%, #0F172A 100%);
+        --hero-sub: #334155;
+        --card-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
+        --input-bg: #FFFFFF;
+        --input-border: #CBD5E1;
+        --input-text: #0F172A;
+        --btn-bg: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+        --btn-hover-bg: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
+        --btn-text: #FFFFFF;
+        --auth-clinic-bg: radial-gradient(circle at 50% 0%, #E0F2FE 0%, #F8FAFC 75%);
+        --auth-officer-bg: radial-gradient(circle at 50% 0%, #FEE2E2 0%, #F8FAFC 75%);
+        --auth-border-clinic: #0284C7;
+        --auth-border-officer: #DC2626;
+        --grassroots-badge-bg: #F1F5F9;
+        --grassroots-badge-border: #0284C7;
+        --grassroots-badge-text: #0284C7;
+"""
 
 # --- Custom CSS Styling (Adaptive Dual-Theme: Dark & Light Mode Glassmorphism) ---
 RAW_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
-    /* Global Typography & Theme Tokens */
-    :root {
+    /* Global Typography & Theme Tokens - Default Dark Mode */
+    :root, .stApp, .st-dark-mode, html[data-theme="dark"] {
         --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, Monaco, monospace;
         --neon-cyan: #00F2FE;
@@ -200,11 +125,111 @@ RAW_CSS = """
         --neon-amber: #F59E0B;
         --neon-crimson: #EF4444;
         --neon-purple: #A855F7;
-
-        __THEME_TOKENS__
+        __DARK_TOKENS__
     }
 
-    __EXTRA_THEME_CSS__
+    /* Light Mode Tokens (Active when Streamlit switches to light or OS prefers light) */
+    .st-light-mode, html[data-theme="light"], .stApp.st-light-mode {
+        __LIGHT_TOKENS__
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root:not([data-theme="dark"]), .stApp:not(.st-dark-mode) {
+            __LIGHT_TOKENS__
+        }
+    }
+
+    /* Streamlit Background & Chrome Adaptation */
+    .stApp.st-dark-mode, html[data-theme="dark"] .stApp {
+        background-color: #0B0F19 !important;
+        color: #F8FAFC !important;
+    }
+    .stApp.st-dark-mode section[data-testid="stSidebar"], html[data-theme="dark"] section[data-testid="stSidebar"] {
+        background-color: #0B132B !important;
+        border-right: 1px solid rgba(56, 189, 248, 0.25) !important;
+    }
+    .stApp.st-dark-mode section[data-testid="stSidebar"] *, html[data-theme="dark"] section[data-testid="stSidebar"] * {
+        color: #F8FAFC !important;
+    }
+
+    .stApp.st-light-mode, html[data-theme="light"] .stApp {
+        background-color: #F8FAFC !important;
+        color: #0F172A !important;
+    }
+    .stApp.st-light-mode section[data-testid="stSidebar"], html[data-theme="light"] section[data-testid="stSidebar"] {
+        background-color: #FFFFFF !important;
+        border-right: 1px solid #CBD5E1 !important;
+    }
+    .stApp.st-light-mode section[data-testid="stSidebar"] *, html[data-theme="light"] section[data-testid="stSidebar"] * {
+        color: #0F172A !important;
+    }
+    .stApp.st-light-mode section[data-testid="stSidebar"] p, .stApp.st-light-mode section[data-testid="stSidebar"] span {
+        color: #334155 !important;
+    }
+    .stApp.st-light-mode section[data-testid="stSidebar"] h1, .stApp.st-light-mode section[data-testid="stSidebar"] h2, .stApp.st-light-mode section[data-testid="stSidebar"] h3 {
+        color: #0F172A !important;
+    }
+    .stApp.st-light-mode .metric-value {
+        color: #0284C7 !important;
+    }
+    .stApp.st-light-mode .metric-label {
+        color: #64748B !important;
+    }
+    .stApp.st-light-mode .hygiene-card {
+        background: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+    }
+    .stApp.st-light-mode .hygiene-card * {
+        color: #334155 !important;
+    }
+    .stApp.st-light-mode .node-telemetry-box {
+        background: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+    }
+    .stApp.st-light-mode .node-telemetry-box * {
+        color: #334155 !important;
+    }
+    .stApp.st-light-mode .node-telemetry-box strong {
+        color: #0F172A !important;
+    }
+    .stApp.st-light-mode div[data-testid="stDataFrame"] {
+        background: #FFFFFF !important;
+        border: 1px solid #CBD5E1 !important;
+        border-radius: 10px;
+    }
+    .stApp.st-light-mode .sidebar-glow-box {
+        background: linear-gradient(135deg, #FEF2F2 0%, #FFFFFF 100%) !important;
+        border: 1.5px solid #EF4444 !important;
+        border-left: 5px solid #EF4444 !important;
+        color: #1E293B !important;
+        box-shadow: 0 0 16px rgba(239, 68, 68, 0.25) !important;
+    }
+    .stApp.st-light-mode .sidebar-glow-title {
+        color: #991B1B !important;
+    }
+    .stApp.st-light-mode .sidebar-glow-msg {
+        background: #FFF1F2 !important;
+        border: 1px solid rgba(239, 68, 68, 0.25) !important;
+        color: #1E293B !important;
+    }
+    .stApp.st-light-mode .sidebar-glow-meta {
+        color: #64748B !important;
+    }
+
+    /* Safe Advisory Banner adaptive gradient */
+    .alert-banner-safe {
+        background: linear-gradient(135deg, rgba(6, 78, 59, 0.7) 0%, #0B132B 100%) !important;
+    }
+    .st-light-mode .alert-banner-safe, html[data-theme="light"] .alert-banner-safe {
+        background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%) !important;
+    }
+    @media (prefers-color-scheme: light) {
+        .alert-banner-safe {
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%) !important;
+        }
+    }
 
     html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select {
         font-family: var(--font-sans) !important;
@@ -877,12 +902,59 @@ RAW_CSS = """
     }
 </style>
 """
-st.markdown(RAW_CSS.replace("__THEME_TOKENS__", theme_tokens).replace("__EXTRA_THEME_CSS__", extra_theme_css), unsafe_allow_html=True)
+st.markdown(RAW_CSS.replace("__DARK_TOKENS__", dark_tokens).replace("__LIGHT_TOKENS__", light_tokens), unsafe_allow_html=True)
 
-# Suppress mobile virtual keyboard and blinking cursor on all selectbox inputs
+# Client helper: auto-sync Streamlit theme & suppress mobile virtual keyboard on selectboxes
 components.html("""
 <script>
 (function() {
+    function syncTheme() {
+        try {
+            const pWin = window.parent || window;
+            const doc = pWin.document;
+            if (!doc) return;
+            const stApp = doc.querySelector('.stApp');
+            if (!stApp) return;
+
+            let isLight = false;
+            // 1. Check Streamlit's localStorage theme setting
+            try {
+                const activeTheme = pWin.localStorage.getItem('stActiveTheme');
+                if (activeTheme) {
+                    const parsed = JSON.parse(activeTheme);
+                    if (parsed && parsed.base === 'light') isLight = true;
+                    else if (parsed && parsed.base === 'dark') isLight = false;
+                } else {
+                    isLight = pWin.matchMedia && pWin.matchMedia('(prefers-color-scheme: light)').matches;
+                }
+            } catch(e) {}
+
+            // 2. Also check computed background of stApp
+            if (!isLight) {
+                const bg = pWin.getComputedStyle(stApp).backgroundColor;
+                const m = bg.match(/\\d+/g);
+                if (m && m.length >= 3) {
+                    const lum = 0.299 * parseInt(m[0]) + 0.587 * parseInt(m[1]) + 0.114 * parseInt(m[2]);
+                    if (lum > 150) isLight = true;
+                }
+            }
+
+            if (isLight) {
+                stApp.classList.add('st-light-mode');
+                stApp.classList.remove('st-dark-mode');
+                doc.documentElement.setAttribute('data-theme', 'light');
+                doc.body.setAttribute('data-theme', 'light');
+            } else {
+                stApp.classList.add('st-dark-mode');
+                stApp.classList.remove('st-light-mode');
+                doc.documentElement.setAttribute('data-theme', 'dark');
+                doc.body.setAttribute('data-theme', 'dark');
+            }
+        } catch(e) {}
+    }
+    syncTheme();
+    setInterval(syncTheme, 300);
+
     function suppressSelectboxKeyboard() {
         try {
             const doc = window.parent ? window.parent.document : document;
@@ -915,8 +987,11 @@ components.html("""
     try {
         const doc = window.parent ? window.parent.document : document;
         if (doc && doc.body) {
-            const observer = new MutationObserver(suppressSelectboxKeyboard);
-            observer.observe(doc.body, { childList: true, subtree: true });
+            const observer = new MutationObserver(function() {
+                suppressSelectboxKeyboard();
+                syncTheme();
+            });
+            observer.observe(doc.body, { childList: true, subtree: true, attributes: true });
         }
     } catch(e) {}
 })();
@@ -2513,8 +2588,8 @@ if active_nav_idx == 0:
 
     # Determine dynamic class for animations
     if display_risk == "safe":
-        alert_class = ""
-        alert_style = f"background: {'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)' if is_light_theme else 'linear-gradient(135deg, rgba(6, 78, 59, 0.7) 0%, #0B132B 100%)'} !important; border: 1px solid #10B981 !important; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);"
+        alert_class = "class='alert-banner-safe'"
+        alert_style = "border: 1px solid #10B981 !important; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);"
     elif is_false_alarm or display_risk == "warning":
         alert_class = "class='alert-banner-warning'"
         alert_style = f"background-color: {alert_bg};"
@@ -2625,7 +2700,7 @@ if active_nav_idx == 0:
             fig_pub.update_layout(
                 plot_bgcolor='rgba(0,0,0,0)',
                 paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#0F172A' if is_light_theme else '#F8FAFC'),
+                font=dict(family='Inter, sans-serif', color='#0284C7'),
                 height=250,
                 coloraxis_showscale=False,
                 margin=dict(t=10, b=10, l=10, r=10)
@@ -2639,11 +2714,11 @@ if active_nav_idx == 0:
             value = display_outbreak_p,
             domain = {'x': [0, 1], 'y': [0, 1]},
             gauge = {
-                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': '#64748B' if is_light_theme else '#94A3B8'},
+                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': 'rgba(128, 128, 128, 0.6)'},
                 'bar': {'color': alert_border},
-                'bgcolor': "#F1F5F9" if is_light_theme else "#0F172A",
+                'bgcolor': "rgba(128, 128, 128, 0.12)",
                 'borderwidth': 2,
-                'bordercolor': "#CBD5E1" if is_light_theme else "#334155",
+                'bordercolor': "rgba(128, 128, 128, 0.25)",
                 'steps': [
                     {'range': [0, 35], 'color': 'rgba(16, 185, 129, 0.2)'},
                     {'range': [35, 70], 'color': 'rgba(245, 158, 11, 0.2)'},
@@ -3840,4 +3915,3 @@ elif active_nav_idx == 3:
                 t["audit_col_payload"]: f"{m['transmitted_val']} (Anonymized)"
             })
     st.dataframe(pd.DataFrame(audit_records), use_container_width=True, hide_index=True)
-    
