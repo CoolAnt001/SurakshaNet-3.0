@@ -17,7 +17,7 @@ IST = timezone(timedelta(hours=5, minutes=30))
 # --- Page Setup ---
 st.set_page_config(
     page_title="SurakshaNet 3.0: Community Health Grid",
-    page_icon=None,
+    page_icon="🛡️",
     layout="wide"
 )
 
@@ -25,17 +25,23 @@ st.set_page_config(
 # Set your Google Apps Script Web App URL here for universal cross-device persistence
 DEFAULT_GSHEET_URL = "https://script.google.com/macros/s/AKfycbzt_VXGXKrFKQltXEeXvqPjV0zHjSih0AMjQOcBwc-YwvhvmTJYe8om0NiFMbPPccZU/exec"
 
-# --- Theme Selection State Initialization (Universal Sync with Streamlit Native Theme) ---
-query_theme = st.query_params.get("theme", "")
-if "app_theme_mode" not in st.session_state:
-    st.session_state.app_theme_mode = "Light Mode (Clinical)" if "light" in query_theme.lower() else "Dark Mode (Cyber)"
+# --- Custom CSS Styling (Adaptive Dual-Theme: Dark & Light Mode Glassmorphism) ---
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
-is_light_theme = ("Light" in str(st.session_state.get("app_theme_mode", "")) or "light" in query_theme.lower())
+    /* Global Typography & Theme Tokens */
+    :root {
+        --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-mono: 'JetBrains Mono', monospace;
+        --neon-cyan: #00F2FE;
+        --neon-blue: #38BDF8;
+        --neon-emerald: #10B981;
+        --neon-amber: #F59E0B;
+        --neon-crimson: #EF4444;
+        --neon-purple: #A855F7;
 
-# Dark Theme Tokens (Default)
-dark_tokens = """
-        --app-bg: #0B0F19;
-        --sidebar-bg: #0B132B;
+        /* Core Unified Theme Tokens */
         --card-bg: #0F172A;
         --inner-card-bg: #1E293B;
         --card-border: rgba(56, 189, 248, 0.25);
@@ -69,166 +75,6 @@ dark_tokens = """
         --grassroots-badge-bg: #0B132B;
         --grassroots-badge-border: #00F2FE;
         --grassroots-badge-text: #00F2FE;
-"""
-
-# Light Theme Tokens
-light_tokens = """
-        --app-bg: #F8FAFC;
-        --sidebar-bg: #FFFFFF;
-        --card-bg: #FFFFFF;
-        --inner-card-bg: #F1F5F9;
-        --card-border: #CBD5E1;
-        --card-border-hover: #0284C7;
-        --text-primary: #0F172A;
-        --text-secondary: #334155;
-        --text-muted: #64748B;
-        --heading-color: #0F172A;
-        --nav-bar-bg: #FFFFFF;
-        --nav-border: #CBD5E1;
-        --nav-text: #475569;
-        --nav-active-bg: linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, rgba(56, 189, 248, 0.16) 100%);
-        --nav-active-text: #0284C7;
-        --nav-active-border: #0284C7;
-        --nav-active-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
-        --hero-bg: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
-        --hero-border: rgba(2, 132, 199, 0.35);
-        --hero-title-grad: linear-gradient(135deg, #0284C7 0%, #0369A1 60%, #0F172A 100%);
-        --hero-sub: #334155;
-        --card-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
-        --input-bg: #FFFFFF;
-        --input-border: #CBD5E1;
-        --input-text: #0F172A;
-        --btn-bg: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-        --btn-hover-bg: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
-        --btn-text: #FFFFFF;
-        --auth-clinic-bg: radial-gradient(circle at 50% 0%, #E0F2FE 0%, #F8FAFC 75%);
-        --auth-officer-bg: radial-gradient(circle at 50% 0%, #FEE2E2 0%, #F8FAFC 75%);
-        --auth-border-clinic: #0284C7;
-        --auth-border-officer: #DC2626;
-        --grassroots-badge-bg: #F1F5F9;
-        --grassroots-badge-border: #0284C7;
-        --grassroots-badge-text: #0284C7;
-"""
-
-# --- Custom CSS Styling (Adaptive Dual-Theme: Dark & Light Mode Glassmorphism) ---
-RAW_CSS = """
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
-
-    /* Global Typography & Theme Tokens - Default Dark Mode */
-    :root, .stApp, .st-dark-mode, html[data-theme="dark"] {
-        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, Monaco, monospace;
-        --neon-cyan: #00F2FE;
-        --neon-blue: #38BDF8;
-        --neon-emerald: #10B981;
-        --neon-amber: #F59E0B;
-        --neon-crimson: #EF4444;
-        --neon-purple: #A855F7;
-        __DARK_TOKENS__
-    }
-
-    /* Light Mode Tokens (Active when Streamlit switches to light or OS prefers light) */
-    .st-light-mode, html[data-theme="light"], .stApp.st-light-mode {
-        __LIGHT_TOKENS__
-    }
-
-    @media (prefers-color-scheme: light) {
-        :root:not([data-theme="dark"]), .stApp:not(.st-dark-mode) {
-            __LIGHT_TOKENS__
-        }
-    }
-
-    /* Streamlit Background & Chrome Adaptation */
-    .stApp.st-dark-mode, html[data-theme="dark"] .stApp {
-        background-color: #0B0F19 !important;
-        color: #F8FAFC !important;
-    }
-    .stApp.st-dark-mode section[data-testid="stSidebar"], html[data-theme="dark"] section[data-testid="stSidebar"] {
-        background-color: #0B132B !important;
-        border-right: 1px solid rgba(56, 189, 248, 0.25) !important;
-    }
-    .stApp.st-dark-mode section[data-testid="stSidebar"] *, html[data-theme="dark"] section[data-testid="stSidebar"] * {
-        color: #F8FAFC !important;
-    }
-
-    .stApp.st-light-mode, html[data-theme="light"] .stApp {
-        background-color: #F8FAFC !important;
-        color: #0F172A !important;
-    }
-    .stApp.st-light-mode section[data-testid="stSidebar"], html[data-theme="light"] section[data-testid="stSidebar"] {
-        background-color: #FFFFFF !important;
-        border-right: 1px solid #CBD5E1 !important;
-    }
-    .stApp.st-light-mode section[data-testid="stSidebar"] *, html[data-theme="light"] section[data-testid="stSidebar"] * {
-        color: #0F172A !important;
-    }
-    .stApp.st-light-mode section[data-testid="stSidebar"] p, .stApp.st-light-mode section[data-testid="stSidebar"] span {
-        color: #334155 !important;
-    }
-    .stApp.st-light-mode section[data-testid="stSidebar"] h1, .stApp.st-light-mode section[data-testid="stSidebar"] h2, .stApp.st-light-mode section[data-testid="stSidebar"] h3 {
-        color: #0F172A !important;
-    }
-    .stApp.st-light-mode .metric-value {
-        color: #0284C7 !important;
-    }
-    .stApp.st-light-mode .metric-label {
-        color: #64748B !important;
-    }
-    .stApp.st-light-mode .hygiene-card {
-        background: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
-    }
-    .stApp.st-light-mode .hygiene-card * {
-        color: #334155 !important;
-    }
-    .stApp.st-light-mode .node-telemetry-box {
-        background: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
-    }
-    .stApp.st-light-mode .node-telemetry-box * {
-        color: #334155 !important;
-    }
-    .stApp.st-light-mode .node-telemetry-box strong {
-        color: #0F172A !important;
-    }
-    .stApp.st-light-mode div[data-testid="stDataFrame"] {
-        background: #FFFFFF !important;
-        border: 1px solid #CBD5E1 !important;
-        border-radius: 10px;
-    }
-    .stApp.st-light-mode .sidebar-glow-box {
-        background: linear-gradient(135deg, #FEF2F2 0%, #FFFFFF 100%) !important;
-        border: 1.5px solid #EF4444 !important;
-        border-left: 5px solid #EF4444 !important;
-        color: #1E293B !important;
-        box-shadow: 0 0 16px rgba(239, 68, 68, 0.25) !important;
-    }
-    .stApp.st-light-mode .sidebar-glow-title {
-        color: #991B1B !important;
-    }
-    .stApp.st-light-mode .sidebar-glow-msg {
-        background: #FFF1F2 !important;
-        border: 1px solid rgba(239, 68, 68, 0.25) !important;
-        color: #1E293B !important;
-    }
-    .stApp.st-light-mode .sidebar-glow-meta {
-        color: #64748B !important;
-    }
-
-    /* Safe Advisory Banner adaptive gradient */
-    .alert-banner-safe {
-        background: linear-gradient(135deg, rgba(6, 78, 59, 0.7) 0%, #0B132B 100%) !important;
-    }
-    .st-light-mode .alert-banner-safe, html[data-theme="light"] .alert-banner-safe {
-        background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%) !important;
-    }
-    @media (prefers-color-scheme: light) {
-        .alert-banner-safe {
-            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%) !important;
-        }
     }
 
     html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select {
@@ -901,60 +747,12 @@ RAW_CSS = """
         color: var(--text-primary) !important;
     }
 </style>
-"""
-st.markdown(RAW_CSS.replace("__DARK_TOKENS__", dark_tokens).replace("__LIGHT_TOKENS__", light_tokens), unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# Client helper: auto-sync Streamlit theme & suppress mobile virtual keyboard on selectboxes
+# Suppress mobile virtual keyboard and blinking cursor on all selectbox inputs
 components.html("""
 <script>
 (function() {
-    function syncTheme() {
-        try {
-            const pWin = window.parent || window;
-            const doc = pWin.document;
-            if (!doc) return;
-            const stApp = doc.querySelector('.stApp');
-            if (!stApp) return;
-
-            let isLight = false;
-            // 1. Check Streamlit's localStorage theme setting
-            try {
-                const activeTheme = pWin.localStorage.getItem('stActiveTheme');
-                if (activeTheme) {
-                    const parsed = JSON.parse(activeTheme);
-                    if (parsed && parsed.base === 'light') isLight = true;
-                    else if (parsed && parsed.base === 'dark') isLight = false;
-                } else {
-                    isLight = pWin.matchMedia && pWin.matchMedia('(prefers-color-scheme: light)').matches;
-                }
-            } catch(e) {}
-
-            // 2. Also check computed background of stApp
-            if (!isLight) {
-                const bg = pWin.getComputedStyle(stApp).backgroundColor;
-                const m = bg.match(/\\d+/g);
-                if (m && m.length >= 3) {
-                    const lum = 0.299 * parseInt(m[0]) + 0.587 * parseInt(m[1]) + 0.114 * parseInt(m[2]);
-                    if (lum > 150) isLight = true;
-                }
-            }
-
-            if (isLight) {
-                stApp.classList.add('st-light-mode');
-                stApp.classList.remove('st-dark-mode');
-                doc.documentElement.setAttribute('data-theme', 'light');
-                doc.body.setAttribute('data-theme', 'light');
-            } else {
-                stApp.classList.add('st-dark-mode');
-                stApp.classList.remove('st-light-mode');
-                doc.documentElement.setAttribute('data-theme', 'dark');
-                doc.body.setAttribute('data-theme', 'dark');
-            }
-        } catch(e) {}
-    }
-    syncTheme();
-    setInterval(syncTheme, 300);
-
     function suppressSelectboxKeyboard() {
         try {
             const doc = window.parent ? window.parent.document : document;
@@ -987,11 +785,8 @@ components.html("""
     try {
         const doc = window.parent ? window.parent.document : document;
         if (doc && doc.body) {
-            const observer = new MutationObserver(function() {
-                suppressSelectboxKeyboard();
-                syncTheme();
-            });
-            observer.observe(doc.body, { childList: true, subtree: true, attributes: true });
+            const observer = new MutationObserver(suppressSelectboxKeyboard);
+            observer.observe(doc.body, { childList: true, subtree: true });
         }
     } catch(e) {}
 })();
@@ -1009,45 +804,45 @@ def render_app_image(image_path, caption=None, width=None):
             except TypeError:
                 st.image(image_path, caption=caption)
     elif caption:
-        st.caption(f"{caption}")
+        st.caption(f"🖼️ {caption}")
 
 
 # --- Multilingual Localization (I18N) - Simplified & Plain Language ---
 I18N = {
     "English": {
-        "sidebar_lang_header": "Select Language / ଭାଷା / भाषा",
-        "sidebar_title": "Health Safety Grid",
+        "sidebar_lang_header": "🌐 Select Language / ଭାଷା / भाषा",
+        "sidebar_title": "🛡️ Health Safety Grid",
         "sidebar_desc": "Helping communities track health symptoms without sharing personal data.",
-        "zero_central_policy": "**Privacy Guarantee:** No names, phone numbers, or clinic files ever leave local centers. The central dashboard only analyzes masked numbers to locate outbreaks.",
+        "zero_central_policy": "🔒 **Privacy Guarantee:** No names, phone numbers, or clinic files ever leave local centers. The central dashboard only analyzes masked numbers to locate outbreaks.",
         "app_title": "SurakshaNet 3.0",
         "app_sub": "Community Early-Warning Dashboard (Privacy Protected)",
-        "inject_outbreak": "Select Simulation Scenario",
-        "inject_location": "Outbreak Location / Epicenter",
+        "inject_outbreak": "🕹️ Select Simulation Scenario",
+        "inject_location": "📍 Outbreak Location / Epicenter",
         "epicenter_badge_label": "Primary Outbreak Focus:",
-        "baseline_comparison_title": "Historical Baseline vs. Current Privatized Health Radar",
+        "baseline_comparison_title": "📊 Historical Baseline vs. Current Privatized Health Radar",
         "col_node_loc": "Health Center / Sensor Node",
         "col_hist_baseline": "Historical Normal Baseline",
         "col_today_val": "Today's Transmitted Count",
         "col_surge_ratio": "Surge Factor",
         "col_deviation_sigma": "Baseline Deviation (Z)",
-        "map_title": "Regional Health Grid Geospatial Map",
+        "map_title": "🗺️ Regional Health Grid Geospatial Map",
         
         # Scenario Labels
         "scenario_normal": "🟢 Normal Baseline (No Active Outbreaks)",
-        "scenario_gi": "🔴 Gastrointestinal Outbreak Cluster (Waterborne)",
-        "scenario_resp": "🔴 Cold-Snap Acute Respiratory Surge",
-        "scenario_dual": "🔴 Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
-        "scenario_typo": "🟡 False Alarm (Single-Source Data Typo)",
-        "scenario_small": "🟡 Small Cohort Threat (k-Anonymity Guard Demo)",
+        "scenario_gi": "🌊 Gastrointestinal Outbreak Cluster (Waterborne)",
+        "scenario_resp": "🫁 Cold-Snap Acute Respiratory Surge",
+        "scenario_dual": "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
+        "scenario_typo": "⚠️ False Alarm (Single-Source Data Typo)",
+        "scenario_small": "🔬 Small Cohort Threat (k-Anonymity Guard Demo)",
         
         # Tabs
-        "tab_public": "Public Health Radar",
-        "tab_clinic": "Clinic / Environment Reporter Portal (Passcode)",
-        "tab_officer": "Health Officer Console (Passcode)",
-        "tab_audit": "Privacy Audit Log",
+        "tab_public": "📢 1. Public Health Radar",
+        "tab_clinic": "🏥 2. Clinic / Environment Reporter Portal (Passcode)",
+        "tab_officer": "🚨 3. Health Officer Console (Passcode)",
+        "tab_audit": "🔒 4. Privacy Audit Log",
         
         # Tab 1 Public Health Radar
-        "radar_title": "Public Health Radar & Safety Advisories",
+        "radar_title": "📢 Public Health Radar & Safety Advisories",
         "radar_desc": "This section shows current health safety levels. If unusual symptom activity is detected, guidelines are shown below.",
         "threat_prob": "Outbreak Threat Probability",
         "outbreak_prob_label": "Simulation Outbreak Probability",
@@ -1055,36 +850,36 @@ I18N = {
         "false_alarm_badge": "Suspected False Alarm (Single-Source Spike)",
         "active_symptoms": "Rising Symptoms in the Area",
         "adv_safe": "🟢 **Current Status: Safe.** Maintain standard hygiene. Wash hands regularly and drink clean water.",
-        "adv_gi": "🔴 **Warning: Gastrointestinal/Waterborne threat detected.** \n\n* **Safety Measures:** Drink only boiled or filtered water. Avoid raw street foods. Wash utensils thoroughly.",
-        "adv_resp": "🟡 **Warning: Respiratory / Flu surge detected.** \n\n* **Safety Measures:** Wear masks in crowded spaces. Keep warm. Maintain respiratory hygiene (cough into elbow).",
-        "adv_dual": "🔴 **Warning: Compound Waterborne & Respiratory Outbreak Detected.** \n\n* **Water & Food Safety:** Drink only boiled or filtered water. Avoid raw street food and unwashed utensils.\n* **Respiratory Hygiene:** Wear masks in crowded spaces. Keep warm. Cough into elbow.\n* **Clinical Guidance:** Seek immediate medical care if suffering from severe dehydration or acute breathlessness.",
-        "adv_false_alarm": "🟡 **Notice: Suspected False Alarm (Data Typo / Isolated Surge).** An isolated anomaly was logged at one clinic with 0 neighboring corroboration. The simulation calculates an outbreak indicator of **{outbreak_prob}%**, with an estimated **{false_prob}% probability that this outbreak signal is a False Alarm**. Normal activities may continue while records are reviewed.",
-        "adv_general": "🟡 **Alert: Unusual symptoms detected.** Watch local updates and contact a doctor if feeling unwell.",
+        "adv_gi": "⚠️ **Warning: Gastrointestinal/Waterborne threat detected.** \n\n* **Safety Measures:** Drink only boiled or filtered water. Avoid raw street foods. Wash utensils thoroughly.",
+        "adv_resp": "⚠️ **Warning: Respiratory / Flu surge detected.** \n\n* **Safety Measures:** Wear masks in crowded spaces. Keep warm. Maintain respiratory hygiene (cough into elbow).",
+        "adv_dual": "⚠️ **Warning: Compound Waterborne & Respiratory Outbreak Detected.** \n\n* **💧 Water & Food Safety:** Drink only boiled or filtered water. Avoid raw street food and unwashed utensils.\n* **😷 Respiratory Hygiene:** Wear masks in crowded spaces. Keep warm. Cough into elbow.\n* **🏥 Clinical Guidance:** Seek immediate medical care if suffering from severe dehydration or acute breathlessness.",
+        "adv_false_alarm": "⚠️ **Notice: Suspected False Alarm (Data Typo / Isolated Surge).** An isolated anomaly was logged at one clinic with 0 neighboring corroboration. The simulation calculates an outbreak indicator of **{outbreak_prob}%**, with an estimated **{false_prob}% probability that this outbreak signal is a False Alarm**. Normal activities may continue while records are reviewed.",
+        "adv_general": "⚠️ **Alert: Unusual symptoms detected.** Watch local updates and contact a doctor if feeling unwell.",
         
         # Tab 2 Clinic Reporter
-        "clinic_title": "Clinic & Environmental Data Entry Portal",
+        "clinic_title": "🏥 Clinic & Environmental Data Entry Portal",
         "clinic_desc": "Authorized clinic and environmental staff can log daily symptom counts and sensor readings. Patient identities are automatically masked locally before upload.",
         "select_node": "Select Node to Inspect:",
         "node_type_label": "Node Type:",
-        "pass_prompt_clinic": "Enter Clinic Passcode to access entry tools:",
-        "pass_warn_clinic": "Clinic Portal Locked. Please enter the passcode (1234) to unlock reporting channels and logs.",
-        "db_title": "Local Private Registry (Node Firewall)",
-        "chart_title": "Privacy Masking Visual Comparison: Raw vs. Transmitted",
+        "pass_prompt_clinic": "🔑 Enter Clinic Passcode to access entry tools:",
+        "pass_warn_clinic": "🔒 Clinic Portal Locked. Please enter the passcode (1234) to unlock reporting channels and logs.",
+        "db_title": "💾 Local Private Registry (Node Firewall)",
+        "chart_title": "📊 Privacy Masking Visual Comparison: Raw vs. Transmitted",
         "bar_raw": "Original Private Count",
         "bar_trans": "Anonymized Count (Sent to Server)",
-        "ingest_title": "Log Daily Cases (Local Ingestion)",
+        "ingest_title": "✍️ Log Daily Cases (Local Ingestion)",
         "ingest_desc": "Select a reporting channel to log symptoms. Data is protected locally before transmission.",
         "ingest_method_label": "Select Reporting Channel:",
         "ingest_symptom": "Select Symptom Category:",
         "ingest_loc": "Reporter Location (Hostel / Campus Zone):",
         "ingest_tally": "Reported Case Count (Confidential Count):",
         "ingest_notes": "Clinical Notes (Avoid personal names or phones):",
-        "precomp_title": "Local Privacy Filter Preview",
-        "local_record_title": "Private Local Log (Stays on Edge):",
-        "transmitted_payload_title": "Uploaded Data (Sent to Server):",
-        "submit_btn": "Safe Upload to Server",
-        "logbook_title": "Recent Clinic Logbook (Private Node Storage)",
-        "clear_btn": "Clear Logbook",
+        "precomp_title": "🔍 Local Privacy Filter Preview",
+        "local_record_title": "🔒 Private Local Log (Stays on Edge):",
+        "transmitted_payload_title": "📡 Uploaded Data (Sent to Server):",
+        "submit_btn": "🚀 Safe Upload to Server",
+        "logbook_title": "📂 Recent Clinic Logbook (Private Node Storage)",
+        "clear_btn": "🗑️ Clear Logbook",
         "log_info": "No manual logs recorded yet. Use the channels above to enter logs.",
         "log_success": "Success! Case logged and uploaded with identity masking.",
         
@@ -1105,34 +900,34 @@ I18N = {
         "col_trans_z": "Anomaly Deviation Strength",
         
         # Tab 3 Health Officer Console
-        "officer_title": "Public Health Officer Command Console",
+        "officer_title": "🚨 Public Health Officer Command Console",
         "officer_desc": "Authorized Health Officers can configure global sensitivity and issue emergency broadcasts.",
-        "pass_prompt_officer": "Enter Officer Passcode:",
-        "pass_warn_officer": "Console Locked. Please enter the passcode (9999) to unlock controls and alert dispatch.",
-        "sec_controls": "Surveillance Parameter Tuning",
+        "pass_prompt_officer": "🔑 Enter Officer Passcode:",
+        "pass_warn_officer": "🔒 Console Locked. Please enter the passcode (9999) to unlock controls and alert dispatch.",
+        "sec_controls": "⚙️ Surveillance Parameter Tuning",
         "epsilon_label": "Privacy Protection Level (Low / Medium / High)",
         "epsilon_help": "Controls how much masking noise is added to edge tallies. Higher noise provides higher privacy.",
         "k_label": "Minimum Patient Group Size for Reporting (k-Anonymity)",
         "k_help": "Counts below this limit will be blocked to prevent linking records to small student groups.",
         "cutoff_label": "Alert Sensitivity Threshold",
         "cutoff_help": "Adjust threshold to avoid false alarms from single-day spikes.",
-        "regional_table_title": "Regional Node Deviation Metrics",
-        "broadcast_title": "Emergency Warning Broadcast Panel",
+        "regional_table_title": "🏥 Regional Node Deviation Metrics",
+        "broadcast_title": "📢 Emergency Warning Broadcast Panel",
         "broadcast_desc": "Send official warnings to mobile health units and subscriber email registries.",
         "alert_draft_label": "Draft Warning Message:",
         "alert_reg_label": "Subscriber Email List:",
-        "sign_btn": "Authorize & Dispatch Emergency Alert",
+        "sign_btn": "✍️ Authorize & Dispatch Emergency Alert",
         "log_title": "Emergency Dispatch Log",
         "alert_dispatched_success": "Advisory authorized with Health Master Key and dispatched to mobile units.",
         "xai_no_anom": "No active anomalies. Region operating within baseline parameters.",
         
         # Tab 4 Privacy Audit Log
-        "audit_title": "Privacy Assurance & Compliance Audit Log",
+        "audit_title": "🔒 Privacy Assurance & Compliance Audit Log",
         "audit_desc": "Proves mathematically that no personal names, phone numbers, or exact coordinates leave the edge nodes.",
         "privacy_compliance": "Data Protection Compliance",
         "dp_noise_distortion": "Privacy Noise Scale",
         "k_anon_suppression": "Group Suppression Active",
-        "ledger_title": "Compliance Verification Ledger",
+        "ledger_title": "⚖️ Compliance Verification Ledger",
         
         # Table Audit Columns
         "audit_col_node": "Reporting Center",
@@ -1143,17 +938,17 @@ I18N = {
         "audit_col_payload": "Transmitted Index",
         
         # Local Node Names
-        "node_campus_name": "Kalinga Institute Clinic",
+        "node_campus_name": "🏫 Kalinga Institute Clinic",
         "node_campus_desc": "Tracks student health visits and daily symptoms.",
-        "node_water_name": "Bhubaneswar Municipal Water Quality Station",
+        "node_water_name": "🧪 Bhubaneswar Municipal Water Quality Station",
         "node_water_desc": "Monitors chemical indexes, turbidity, and bacterial levels across Bhubaneswar.",
-        "node_hospital_name": "Capital Hospital Triage",
+        "node_hospital_name": "🏥 Capital Hospital Triage",
         "node_hospital_desc": "Aggregates urban outpatient registration counts.",
-        "node_weather_name": "Bhubaneswar Weather Center",
+        "node_weather_name": "☁️ Bhubaneswar Weather Center",
         "node_weather_desc": "Records ambient environmental factors correlating with disease vectors.",
-        "node_soa_name": "SOA University Clinic",
+        "node_soa_name": "🏫 SOA University Clinic",
         "node_soa_desc": "Monitors student health visits and symptoms at Siksha 'O' Anusandhan, Bhubaneswar.",
-        "node_utkal_name": "Utkal University Health Center",
+        "node_utkal_name": "🏫 Utkal University Health Center",
         "node_utkal_desc": "Monitors student health visits and symptoms across Utkal University, Vani Vihar.",
         
         # Symptom Labels
@@ -1171,39 +966,39 @@ I18N = {
         "lbl_rainfall": "Daily Rainfall (mm)"
     },
     "ଓଡ଼ିଆ (Odia)": {
-        "sidebar_lang_header": "ଭାଷା ଚୟନ (Language)",
-        "sidebar_title": "ସ୍ୱାସ୍ଥ୍ୟ ସୁରକ୍ଷା ଗ୍ରୀଡ୍",
+        "sidebar_lang_header": "🌐 ଭାଷା ଚୟନ (Language)",
+        "sidebar_title": "🛡️ ସ୍ୱାସ୍ଥ୍ୟ ସୁରକ୍ଷା ଗ୍ରୀଡ୍",
         "sidebar_desc": "ବ୍ୟକ୍ତିଗତ ତଥ୍ୟ ପ୍ରକାଶ ନକରି ସ୍ଥାନୀୟ ରୋଗ ଲକ୍ଷଣ ଟ୍ରାକ୍ କରିବାର ସହଜ ମାଧ୍ୟମ।",
-        "zero_central_policy": "**ଗୋପନୀୟତା ଗ୍ୟାରେଣ୍ଟି:** କୌଣସି ନାମ କିମ୍ବା ଫୋନ୍ ନମ୍ବର କ୍ଲିନିକ୍ ବାହାରକୁ ଯାଏ ନାହିଁ। କେନ୍ଦ୍ରୀୟ ରାଡାର କେବଳ ସାଧାରଣ ସୂଚକାଙ୍କ ଯାଞ୍ଚ କରିଥାଏ।",
+        "zero_central_policy": "🔒 **ଗୋପନୀୟତା ଗ୍ୟାରେଣ୍ଟି:** କୌଣସି ନାମ କିମ୍ବା ଫୋନ୍ ନମ୍ବର କ୍ଲିନିକ୍ ବାହାରକୁ ଯାଏ ନାହିଁ। କେନ୍ଦ୍ରୀୟ ରାଡାର କେବଳ ସାଧାରଣ ସୂଚକାଙ୍କ ଯାଞ୍ଚ କରିଥାଏ।",
         "app_title": "ସୁରକ୍ଷା-ନେଟ୍ ୩.୦",
         "app_sub": "ସହଜ ମହାମାରୀ ସତର୍କତା ବ୍ୟବସ୍ଥା (ଗୋପନୀୟତା ସୁରକ୍ଷିତ)",
-        "inject_outbreak": "ସିନାରିଓ ଚୟନ କରନ୍ତୁ",
-        "inject_location": "ପ୍ରକୋପ କେନ୍ଦ୍ର / ସ୍ଥାନ",
+        "inject_outbreak": "🕹️ ସିନାରିଓ ଚୟନ କରନ୍ତୁ",
+        "inject_location": "📍 ପ୍ରକୋପ କେନ୍ଦ୍ର / ସ୍ଥାନ",
         "epicenter_badge_label": "ମୁଖ୍ୟ ପ୍ରକୋପ ସ୍ଥାନ:",
-        "baseline_comparison_title": "ଐତିହାସିକ ହାରାହାରି ଏବଂ ଆଜିର ସଂଖ୍ୟା ତୁଳନା",
+        "baseline_comparison_title": "📊 ଐତିହାସିକ ହାରାହାରି ଏବଂ ଆଜିର ସଂଖ୍ୟା ତୁଳନା",
         "col_node_loc": "ସ୍ୱାସ୍ଥ୍ୟ କେନ୍ଦ୍ର",
         "col_hist_baseline": "ଐତିହାସିକ ସ୍ୱାଭାବିକ ସଂଖ୍ୟା",
         "col_today_val": "ଆଜିର ପ୍ରେରିତ ସଂଖ୍ୟା",
         "col_surge_ratio": "ବୃଦ୍ଧି ମାତ୍ରା",
         "col_deviation_sigma": "ଅସ୍ୱାଭାବିକ ମାତ୍ରା (Z)",
-        "map_title": "ଆଞ୍ଚଳିକ ସ୍ୱାସ୍ଥ୍ୟ ଗ୍ରିଡ୍ ମ୍ୟାପ୍",
+        "map_title": "🗺️ ଆଞ୍ଚଳିକ ସ୍ୱାସ୍ଥ୍ୟ ଗ୍ରିଡ୍ ମ୍ୟାପ୍",
         
         # Scenario Labels
         "scenario_normal": "🟢 ସ୍ୱାଭାବିକ ସ୍ଥିତି (କୌଣସି ସତର୍କତା ନାହିଁ)",
-        "scenario_gi": "🔴 ପେଟ ରୋଗ / ଜଳବାହିତ ସଂକ୍ରମଣ ସିନାରିଓ",
-        "scenario_resp": "🔴 ଥଣ୍ଡା ଜନିତ ଶ୍ୱାସକ୍ରିୟା ସଂକ୍ରମଣ ସିନାରିଓ",
-        "scenario_dual": "🔴 ଯୁଗ୍ମ ଆଉଟବ୍ରେକ୍ (ପେଟ ରୋଗ + ଶ୍ୱାସକ୍ରିୟା ସଂକ୍ରମଣ)",
-        "scenario_typo": "🟡 ତଥ୍ୟ ପ୍ରବେଶ ଭୁଲ୍ (ତ୍ରୁଟି ଯାଞ୍ଚ ସିମୁଲେସନ)",
-        "scenario_small": "🟡 ଗୋପନୀୟତା ଯାଞ୍ଚ (k-Anonymity ସିମୁଲେସନ)",
+        "scenario_gi": "🌊 ପେଟ ରୋଗ / ଜଳବାହିତ ସଂକ୍ରମଣ ସିନାରିଓ",
+        "scenario_resp": "🫁 ଥଣ୍ଡା ଜନିତ ଶ୍ୱାସକ୍ରିୟା ସଂକ୍ରମଣ ସିନାରିଓ",
+        "scenario_dual": "⚡ ଯୁଗ୍ମ ଆଉଟବ୍ରେକ୍ (ପେଟ ରୋଗ + ଶ୍ୱାସକ୍ରିୟା ସଂକ୍ରମଣ)",
+        "scenario_typo": "⚠️ ତଥ୍ୟ ପ୍ରବେଶ ଭୁଲ୍ (ତ୍ରୁଟି ଯାଞ୍ଚ ସିମୁଲେସନ)",
+        "scenario_small": "🔬 ଗୋପନୀୟତା ଯାଞ୍ଚ (k-Anonymity ସିମୁଲେସନ)",
         
         # Tabs
-        "tab_public": "ସାଧାରଣ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା",
-        "tab_clinic": "କ୍ଲିନିକ୍ / ପରିବେଶ ତଥ୍ୟ ପୋର୍ଟାଲ୍ (Passcode)",
-        "tab_officer": "ସ୍ୱାସ୍ଥ୍ୟ ଅଧିକାରୀ କନସୋଲ୍ (Passcode)",
-        "tab_audit": "ଗୋପନୀୟତା ଯାଞ୍ଚ ଲଗ୍",
+        "tab_public": "📢 ୧. ସାଧାରଣ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା",
+        "tab_clinic": "🏥 ୨. କ୍ଲିନିକ୍ / ପରିବେଶ ତଥ୍ୟ ପୋର୍ଟାଲ୍ (Passcode)",
+        "tab_officer": "🚨 ୩. ସ୍ୱାସ୍ଥ୍ୟ ଅଧିକାରୀ କନସୋଲ୍ (Passcode)",
+        "tab_audit": "🔒 ୪. ଗୋପନୀୟତା ଯାଞ୍ଚ ଲଗ୍",
         
         # Tab 1 Public Health Radar
-        "radar_title": "ସାଧାରଣ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା ଏବଂ ସୁରକ୍ଷା ପରାମର୍ଶ",
+        "radar_title": "📢 ସାଧାରଣ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା ଏବଂ ସୁରକ୍ଷା ପରାମର୍ଶ",
         "radar_desc": "ଏହି ବିଭାଗରେ ବର୍ତ୍ତମାନର ସ୍ୱାସ୍ଥ୍ୟ ସୁରକ୍ଷା ସ୍ଥିତି ଦର୍ଶାଯାଇଛି। ଯଦି କୌଣସି ଅସ୍ୱାଭାବିକ ଲକ୍ଷଣ ଦେଖାଯାଏ, ସୁରକ୍ଷା ପଦକ୍ଷେପ ତଳେ ପ୍ରଦର୍ଶିତ ହେବ।",
         "threat_prob": "ଆଉଟବ୍ରେକ୍ ଆଶଙ୍କା",
         "outbreak_prob_label": "ସିମୁଲେସନ ଆଉଟବ୍ରେକ୍ ସମ୍ଭାବନା",
@@ -1211,36 +1006,36 @@ I18N = {
         "false_alarm_badge": "ସମ୍ଭାବ୍ୟ ଭୁଲ ସତର୍କତା (Single-Source Spike)",
         "active_symptoms": "ବର୍ତ୍ତମାନ ବଢୁଥିବା ରୋଗ ଲକ୍ଷଣ",
         "adv_safe": "🟢 **ବର୍ତ୍ତମାନ ସ୍ଥିତି: ସୁରକ୍ଷିତ।** ନିୟମିତ ହାତ ଧୁଅନ୍ତୁ ଏବଂ ସଫା ପାଣି ପିଅନ୍ତୁ।",
-        "adv_gi": "🔴 **ସତର୍କତା: ପେଟ ରୋଗ / ଦୂଷିତ ଜଳବାହିତ ଆଶଙ୍କା।** \n\n* **ସୁରକ୍ଷା ପରାମର୍ଶ:** କେବଳ ଫୁଟା ହୋଇଥିବା ପାଣି ପିଅନ୍ତୁ। ବାହାର ଖାଦ୍ୟ ଖାଆନ୍ତୁ ନାହିଁ। ବାସନକୁସନ ଭଲ ଭାବରେ ସଫା କରନ୍ତୁ।",
-        "adv_resp": "🟡 **ସତର୍କତା: ଥଣ୍ଡା ଜନିତ ଶ୍ୱାସକ୍ରିୟା ସଂକ୍ରମଣ ବୃଦ୍ଧି।** \n\n* **ସୁରକ୍ଷା ପରାମର୍ଶ:** ଭିଡ଼ ଜାଗାରେ ମାସ୍କ ବ୍ୟବହାର କରନ୍ତୁ। ଶରୀରକୁ ଗରମ ରଖନ୍ତୁ। କାଶିବା ବେଳେ ରୁମାଲ୍ ବ୍ୟବହାର କରନ୍ତୁ।",
-        "adv_dual": "🔴 **ସତର୍କତା: ଯୁଗ୍ମ ଜଳବାହିତ ଏବଂ ଶ୍ୱାସକ୍ରିୟା ସଂକ୍ରମଣ।** \n\n* **ଜଳ ସୁରକ୍ଷା:** କେବଳ ଫୁଟା ହୋଇଥିବା ପାଣି ପିଅନ୍ତୁ।\n* **ଶ୍ୱାସକ୍ରିୟା ସୁରକ୍ଷା:** ମାସ୍କ ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ କାଶିବା ବେଳେ ରୁମାଲ୍ ବ୍ୟବହାର କରନ୍ତୁ।",
-        "adv_false_alarm": "🟡 **ସୂଚନା: ସମ୍ଭାବ୍ୟ ଭୁଲ ସତର୍କତା (False Alarm)।** ଗୋଟିଏ କ୍ଲିନିକରେ ଅସ୍ୱାଭାବିକ ତଥ୍ୟ ଦେଖାଯାଇଛି କିନ୍ତୁ ଅନ୍ୟ କୌଣସି କେନ୍ଦ୍ର ଏହାକୁ ସମର୍ଥନ କରିନାହିଁ। ଏହି ଆଉଟବ୍ରେକ୍ ସିଗନାଲ୍ ({outbreak_prob}%) **{false_prob}% ଭୁଲ ହେବାର ଆଶଙ୍କା** ରହିଛି। ସ୍ୱାଭାବିକ କାର୍ଯ୍ୟ ଜାରି ରଖନ୍ତୁ।",
-        "adv_general": "🟡 **ସତର୍କତା: ଅସ୍ୱାଭାବିକ ଲକ୍ଷଣ ଚିହ୍ନଟ ହୋଇଛି।** ସ୍ଥାନୀୟ ଅପଡେଟ୍ ଯାଞ୍ଚ କରନ୍ତୁ ଏବଂ ଅସୁସ୍ଥ ଅନୁଭବ କଲେ ଡାକ୍ତରଙ୍କ ସହିତ ପରାମର୍ଶ କରନ୍ତୁ।",
+        "adv_gi": "⚠️ **ସତର୍କତା: ପେଟ ରୋଗ / ଦୂଷିତ ଜଳବାହିତ ଆଶଙ୍କା।** \n\n* **ସୁରକ୍ଷା ପରାମର୍ଶ:** କେବଳ ଫୁଟା ହୋଇଥିବା ପାଣି ପିଅନ୍ତୁ। ବାହାର ଖାଦ୍ୟ ଖାଆନ୍ତୁ ନାହିଁ। ବାସନକୁସନ ଭଲ ଭାବରେ ସଫା କରନ୍ତୁ।",
+        "adv_resp": "⚠️ **ସତର୍କତା: ଥଣ୍ଡା ଜନିତ ଶ୍ୱାସକ୍ରିୟା ସଂକ୍ରମଣ ବୃଦ୍ଧି।** \n\n* **ସୁରକ୍ଷା ପରାମର୍ଶ:** ଭିଡ଼ ଜାଗାରେ ମାସ୍କ ବ୍ୟବହାର କରନ୍ତୁ। ଶରୀରକୁ ଗରମ ରଖନ୍ତୁ। କାଶିବା ବେଳେ ରୁମାଲ୍ ବ୍ୟବହାର କରନ୍ତୁ।",
+        "adv_dual": "⚠️ **ସତର୍କତା: ଯୁଗ୍ମ ଜଳବାହିତ ଏବଂ ଶ୍ୱାସକ୍ରିୟା ସଂକ୍ରମଣ।** \n\n* **💧 ଜଳ ସୁରକ୍ଷା:** କେବଳ ଫୁଟା ହୋଇଥିବା ପାଣି ପିଅନ୍ତୁ।\n* **😷 ଶ୍ୱାସକ୍ରିୟା ସୁରକ୍ଷା:** ମାସ୍କ ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ କାଶିବା ବେଳେ ରୁମାଲ୍ ବ୍ୟବହାର କରନ୍ତୁ।",
+        "adv_false_alarm": "⚠️ **ସୂଚନା: ସମ୍ଭାବ୍ୟ ଭୁଲ ସତର୍କତା (False Alarm)।** ଗୋଟିଏ କ୍ଲିନିକରେ ଅସ୍ୱାଭାବିକ ତଥ୍ୟ ଦେଖାଯାଇଛି କିନ୍ତୁ ଅନ୍ୟ କୌଣସି କେନ୍ଦ୍ର ଏହାକୁ ସମର୍ଥନ କରିନାହିଁ। ଏହି ଆଉଟବ୍ରେକ୍ ସିଗନାଲ୍ ({outbreak_prob}%) **{false_prob}% ଭୁଲ ହେବାର ଆଶଙ୍କା** ରହିଛି। ସ୍ୱାଭାବିକ କାର୍ଯ୍ୟ ଜାରି ରଖନ୍ତୁ।",
+        "adv_general": "⚠️ **ସତର୍କତା: ଅସ୍ୱାଭାବିକ ଲକ୍ଷଣ ଚିହ୍ନଟ ହୋଇଛି।** ସ୍ଥାନୀୟ ଅପଡେଟ୍ ଯାଞ୍ଚ କରନ୍ତୁ ଏବଂ ଅସୁସ୍ଥ ଅନୁଭବ କଲେ ଡାକ୍ତରଙ୍କ ସହିତ ପରାମର୍ଶ କରନ୍ତୁ।",
         
         # Tab 2 Clinic Reporter
-        "clinic_title": "କ୍ଲିନିକ୍ ଏବଂ ପରିବେଶ ତଥ୍ୟ ଏଣ୍ଟ୍ରି ପୋର୍ଟାଲ୍",
+        "clinic_title": "🏥 କ୍ଲିନିକ୍ ଏବଂ ପରିବେଶ ତଥ୍ୟ ଏଣ୍ଟ୍ରି ପୋର୍ଟାଲ୍",
         "clinic_desc": "ସ୍ଥାନୀୟ ଡାକ୍ତର, କ୍ୟାମ୍ପସ୍ କ୍ଲିନିକ୍ ଏବଂ ପରିବେଶ ଅଧିକାରୀମାନେ ଏଠାରେ ଦୈନିକ ତଥ୍ୟ ଏଣ୍ଟ୍ରି କରିପାରିବେ। ରୋଗୀଙ୍କ ବ୍ୟକ୍ତିଗତ ପରିଚୟ ସ୍ଥାନୀୟ ସ୍ତରରେ ଗୋପନ ରଖାଯାଏ।",
         "select_node": "ଯାଞ୍ଚ କରିବାକୁ ନୋଡ୍ ଚୟନ କରନ୍ତୁ:",
         "node_type_label": "ନୋଡ୍ ପ୍ରକାର:",
-        "pass_prompt_clinic": "କ୍ଲିନିକ୍ ପାସକୋଡ୍ (Passcode) ପ୍ରବେଶ କରନ୍ତୁ:",
-        "pass_warn_clinic": "କ୍ଲିନିକ୍ ପୋର୍ଟାଲ୍ ଲକ୍ ଅଛି। ତଥ୍ୟ ଦର୍ଜ କରିବା ପାଇଁ ପାସକୋଡ୍ (1234) ବ୍ୟବହାର କରନ୍ତୁ।",
-        "db_title": "ସ୍ଥାନୀୟ ବ୍ୟକ୍ତିଗତ ରେଜିଷ୍ଟ୍ରି (ଫାୟାରୱାଲ୍ ଭିତରେ)",
-        "chart_title": "ଗୋପନୀୟତା ପ୍ରଭାବ ତୁଳନା: ପ୍ରକୃତ ବନାମ ପ୍ରେରିତ ଡାଟା",
+        "pass_prompt_clinic": "🔑 କ୍ଲିନିକ୍ ପାସକୋଡ୍ (Passcode) ପ୍ରବେଶ କରନ୍ତୁ:",
+        "pass_warn_clinic": "🔒 କ୍ଲିନିକ୍ ପୋର୍ଟାଲ୍ ଲକ୍ ଅଛି। ତଥ୍ୟ ଦର୍ଜ କରିବା ପାଇଁ ପାସକୋଡ୍ (1234) ବ୍ୟବହାର କରନ୍ତୁ।",
+        "db_title": "💾 ସ୍ଥାନୀୟ ବ୍ୟକ୍ତିଗତ ରେଜିଷ୍ଟ୍ରି (ଫାୟାରୱାଲ୍ ଭିତରେ)",
+        "chart_title": "📊 ଗୋପନୀୟତା ପ୍ରଭାବ ତୁଳନା: ପ୍ରକୃତ ବନାମ ପ୍ରେରିତ ଡାଟା",
         "bar_raw": "ବ୍ୟକ୍ତିଗତ ପ୍ରକୃତ ସଂଖ୍ୟା",
         "bar_trans": "ପ୍ରେରିତ ପରିବର୍ତ୍ତିତ ସଂଖ୍ୟା",
-        "ingest_title": "ଦୈନିକ ତଥ୍ୟ ଦର୍ଜ (ସ୍ଥାନୀୟ ଏଣ୍ଟ୍ରି)",
+        "ingest_title": "✍️ ଦୈନିକ ତଥ୍ୟ ଦର୍ଜ (ସ୍ଥାନୀୟ ଏଣ୍ଟ୍ରି)",
         "ingest_desc": "ତଳେ ଥିବା ଯେକୌଣସି ମାଧ୍ୟମ ଦ୍ୱାରା ରୋଗୀଙ୍କ ଲକ୍ଷଣ ଲଗ୍ କରନ୍ତୁ। ସମସ୍ତ ତଥ୍ୟ ସ୍ଥାନୀୟ ଭାବରେ ଯାଞ୍ଚ କରାଯିବ।",
         "ingest_method_label": "ତଥ୍ୟ ପ୍ରବେଶ ମାଧ୍ୟମ ଚୟନ କରନ୍ତୁ:",
         "ingest_symptom": "ରୋଗର ଲକ୍ଷଣ ବର୍ଗ ବାଛନ୍ତୁ:",
         "ingest_loc": "ରିପୋର୍ଟ କରୁଥିବା ସ୍ଥାନ (ହଷ୍ଟେଲ / କ୍ୟାମ୍ପସ ଜୋନ୍):",
         "ingest_tally": "ରୋଗୀଙ୍କ ସଂଖ୍ୟା (ପ୍ରକୃତ ହିସାବ):",
         "ingest_notes": "କ୍ଲିନିକାଲ୍ ସୂଚନା (ବ୍ୟକ୍ତିଗତ ନାମ ବା ଫୋନ୍ ନମ୍ବର ଲେଖନ୍ତୁ ନାହିଁ):",
-        "precomp_title": "ସ୍ଥାନୀୟ ଗୋପନୀୟତା ଫିଲ୍ଟର୍ ପ୍ରି-ଭ୍ୟୁ",
-        "local_record_title": "ସ୍ଥାନୀୟ ବ୍ୟକ୍ତିଗତ ରେକର୍ଡ (ଏଜ୍ ଭିତରେ ରହିବ):",
-        "transmitted_payload_title": "ପ୍ରେରିତ ପେଲୋଡ୍ (ସର୍ଭରକୁ ପଠାଯିବ):",
-        "submit_btn": "ସର୍ଭରକୁ ସୁରକ୍ଷିତ ଅପଲୋଡ୍ କରନ୍ତୁ",
-        "logbook_title": "ନିକଟତମ କ୍ଲିନିକ୍ ଲଗ୍‌ବୁକ୍ (ବ୍ୟକ୍ତିଗତ ନୋଡ୍ ଷ୍ଟୋରେଜ୍)",
-        "clear_btn": "ଲଗ୍ କ୍ଲିୟର୍ କରନ୍ତୁ",
+        "precomp_title": "🔍 ସ୍ଥାନୀୟ ଗୋପନୀୟତା ଫିଲ୍ଟର୍ ପ୍ରି-ଭ୍ୟୁ",
+        "local_record_title": "🔒 ସ୍ଥାନୀୟ ବ୍ୟକ୍ତିଗତ ରେକର୍ଡ (ଏଜ୍ ଭିତରେ ରହିବ):",
+        "transmitted_payload_title": "📡 ପ୍ରେରିତ ପେଲୋଡ୍ (ସର୍ଭରକୁ ପଠାଯିବ):",
+        "submit_btn": "🚀 ସର୍ଭରକୁ ସୁରକ୍ଷିତ ଅପଲୋଡ୍ କରନ୍ତୁ",
+        "logbook_title": "📂 ନିକଟତମ କ୍ଲିନିକ୍ ଲଗ୍‌ବୁକ୍ (ବ୍ୟକ୍ତିଗତ ନୋଡ୍ ଷ୍ଟୋରେଜ୍)",
+        "clear_btn": "🗑️ ଲଗ୍ କ୍ଲିୟର୍ କରନ୍ତୁ",
         "log_info": "କୌଣସି ଲଗ୍ ଦର୍ଜ ହୋଇନାହିଁ | ତଥ୍ୟ ପ୍ରବେଶ କରିବାକୁ ଉପରୋକ୍ତ ମାଧ୍ୟମ ବ୍ୟବହାର କରନ୍ତୁ।",
         "log_success": "ସଫଳତାର ସହ ଆଉଟବକ୍ସରେ ଯୋଗ ହେଲା।",
         
@@ -1261,34 +1056,34 @@ I18N = {
         "col_trans_z": "ଅସ୍ୱାଭାବିକ ମାତ୍ରା",
         
         # Tab 3 Health Officer Console
-        "officer_title": "ସ୍ୱାସ୍ଥ୍ୟ ଅଧିକାରୀ କନସୋଲ୍",
+        "officer_title": "🚨 ସ୍ୱାସ୍ଥ୍ୟ ଅଧିକାରୀ କନସୋଲ୍",
         "officer_desc": "ସ୍ୱାସ୍ଥ୍ୟ ଅଧିକାରୀମାନେ ଏଠାରେ ସିଷ୍ଟମ୍ ସମ୍ବେଦନଶୀଳତା ଏବଂ ଜରୁରୀକାଳୀନ ସୂଚନା ନିୟନ୍ତ୍ରଣ କରିପାରିବେ।",
-        "pass_prompt_officer": "ଅଧିକାରୀ ପାସକୋଡ୍ (Passcode) ଦିଅନ୍ତୁ:",
-        "pass_warn_officer": "ଅଧିକାରୀ କନସୋଲ୍ ଲକ୍ ଅଛି। ନିୟନ୍ତ୍ରଣ କରିବା ପାଇଁ ପାସକୋଡ୍ (9999) ବ୍ୟବହାର କରନ୍ତୁ।",
-        "sec_controls": "ସତର୍କତା ଏବଂ ଗୋପନୀୟତା ସୀମା ନିୟନ୍ତ୍ରଣ",
+        "pass_prompt_officer": "🔑 ଅଧିକାରୀ ପାସକୋଡ୍ (Passcode) ଦିଅନ୍ତୁ:",
+        "pass_warn_officer": "🔒 ଅଧିକାରୀ କନସୋଲ୍ ଲକ୍ ଅଛି। ନିୟନ୍ତ୍ରଣ କରିବା ପାଇଁ ପାସକୋଡ୍ (9999) ବ୍ୟବହାର କରନ୍ତୁ।",
+        "sec_controls": "⚙️ ସତର୍କତା ଏବଂ ଗୋପନୀୟତା ସୀମା ନିୟନ୍ତ୍ରଣ",
         "epsilon_label": "ଗୋପନୀୟତା ସୁରକ୍ଷା ସ୍ତର (କମ୍ / ମଧ୍ୟମ / ଉଚ୍ଚ)",
         "epsilon_help": "ତଥ୍ୟ ପ୍ରେରଣରେ ଯୋଗ କରାଯାଉଥିବା ନଏଜ୍ ସୀମା। ଅଧିକ ନଏଜ୍ ଅଧିକ ଗୋପନୀୟତା ଦେଇଥାଏ।",
         "k_label": "ରୋଗୀ ସଂଖ୍ୟା ଅନାମଧେୟତା ସୀମା (k-Anonymity)",
         "k_help": "କମ୍ ସଂଖ୍ୟକ ରୋଗୀଙ୍କ ତଥ୍ୟକୁ ସମ୍ପୂର୍ଣ୍ଣ ପ୍ରତିବନ୍ଧିତ କରାଯାଏ ଯେପରି ସେମାନଙ୍କୁ ଚିହ୍ନଟ କରାଯାଇପାରିବ ନାହିଁ।",
         "cutoff_label": "ଆଲର୍ଟ ସମ୍ବେଦନଶୀଳତା ସୀମା",
         "cutoff_help": "ଭୁଲ ସତର୍କତା ହ୍ରାସ କରିବା ପାଇଁ ସୀମାକୁ ସଜାଡନ୍ତୁ।",
-        "regional_table_title": "ଆଞ୍ଚଳିକ ନୋଡ୍ ଗତିବିଧି ସୂଚକାଙ୍କ",
-        "broadcast_title": "ଜରୁରୀକାଳୀନ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା ପ୍ରେରଣ ପ୍ୟାନେଲ୍",
+        "regional_table_title": "🏥 ଆଞ୍ଚଳିକ ନୋଡ୍ ଗତିବିଧି ସୂଚକାଙ୍କ",
+        "broadcast_title": "📢 ଜରୁରୀକାଳୀନ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା ପ୍ରେରଣ ପ୍ୟାନେଲ୍",
         "broadcast_desc": "ଏଠାରୁ ସ୍ୱାସ୍ଥ୍ୟ କର୍ମୀ ଏବଂ ଜନସାଧାରଣଙ୍କ ପାଇଁ ଜରୁରୀକାଳୀନ ଆଲର୍ଟ ଜାରି କରିପାରିବେ।",
         "alert_draft_label": "ଆଲର୍ଟ ବାର୍ତ୍ତା ଡ୍ରାଫ୍ଟ:",
         "alert_reg_label": "ସକ୍ରିୟ ମୋବାଇଲ୍ ଓ ଇମେଲ୍ ରେଜିଷ୍ଟ୍ରି:",
-        "sign_btn": "ଆଲର୍ଟ ଜାରି କରନ୍ତୁ",
+        "sign_btn": "✍️ ଆଲର୍ଟ ଜାରି କରନ୍ତୁ",
         "log_title": "ସୂଚନା ପ୍ରେରଣ ଲଗ୍",
         "alert_dispatched_success": "ଜରୁରୀକାଳୀନ ସୂଚନା ସଫଳତାର ସହ ପଠାଯାଇଛି।",
         "xai_no_anom": "ସମସ୍ତ ସୂଚକାଙ୍କ ସ୍ୱାଭାବିକ ସୀମା ମଧ୍ୟରେ ଅଛି।",
         
         # Tab 4 Privacy Audit Log
-        "audit_title": "ଗୋପନୀୟତା ଅଡିଟ୍ ଏବଂ ସୁରକ୍ଷା ଲେଜର",
+        "audit_title": "🔒 ଗୋପନୀୟତା ଅଡିଟ୍ ଏବଂ ସୁରକ୍ଷା ଲେଜର",
         "audit_desc": "କୌଣସି ବ୍ୟକ୍ତିଗତ ଚିହ୍ନଟକରଣ ତଥ୍ୟ (PII) ପ୍ରକାଶ ନକରି ସ୍ୱାଧୀନ ଗଣିତ ଲେଜର।",
         "privacy_compliance": "ଡାଟା ପ୍ରୋଟେକ୍ସନ ଅନୁପାଳନ",
         "dp_noise_distortion": "ଲାପ୍ଲେସ୍ ନଏଜ୍ ପ୍ରଭାବ",
         "k_anon_suppression": "ଗୋପନ ରଖାଯାଇଥିବା ସିଗନାଲ୍",
-        "ledger_title": "ଗୋପନୀୟତା ଅନୁପାଳନ ଯାଞ୍ଚ ଲେଜର",
+        "ledger_title": "⚖️ ଗୋପନୀୟତା ଅନୁପାଳନ ଯାଞ୍ଚ ଲେଜର",
         
         # Table Audit Columns
         "audit_col_node": "ରିପୋର୍ଟିଂ କେନ୍ଦ୍ର",
@@ -1299,17 +1094,17 @@ I18N = {
         "audit_col_payload": "ପ୍ରେରିତ ପେଲୋଡ୍",
         
         # Local Node Names
-        "node_campus_name": "କଳିଙ୍ଗ ଇନଷ୍ଟିଚ୍ୟୁଟ୍ ଛାତ୍ର କ୍ଲିନିକ୍",
+        "node_campus_name": "🏫 କଳିଙ୍ଗ ଇନଷ୍ଟିଚ୍ୟୁଟ୍ ଛାତ୍ର କ୍ଲିନିକ୍",
         "node_campus_desc": "କ୍ୟାମ୍ପସରେ ଛାତ୍ରଛାତ୍ରୀଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଏବଂ ରୋଗର ଲକ୍ଷଣ ଟ୍ରାକ୍ କରେ।",
-        "node_water_name": "ଭୁବନେଶ୍ୱର ମ୍ୟୁନିସିପାଲିଟି ଜଳ ପରୀକ୍ଷାଗାର",
+        "node_water_name": "🧪 ଭୁବନେଶ୍ୱର ମ୍ୟୁନିସିପାଲିଟି ଜଳ ପରୀକ୍ଷାଗାର",
         "node_water_desc": "ଭୁବନେଶ୍ୱର ଜଳର ପିଏଚ୍, ଟର୍ବିଡିଟି ଏବଂ ବ୍ୟାକ୍ଟେରିଆ ରିଡିଂ ରେକର୍ଡ କରେ।",
-        "node_hospital_name": "କ୍ୟାପିଟାଲ୍ ହସ୍ପିଟାଲ୍ ଓପିଡି ଟ୍ରାଏଜ୍",
+        "node_hospital_name": "🏥 କ୍ୟାପିଟାଲ୍ ହସ୍ପିଟାଲ୍ ଓପିଡି ଟ୍ରାଏଜ୍",
         "node_hospital_desc": "ସହରର ପ୍ରମୁଖ ସରକାରୀ ହସ୍ପିଟาଲ୍ ଓପିଡି ରୋଗୀ ସଂଖ୍ୟା ସଂଗ୍ରହ କରେ।",
-        "node_weather_name": "ଭୁବନେଶ୍ୱର ପାଣିପାଗ କେନ୍ଦ୍ର",
+        "node_weather_name": "☁️ ଭୁବନେଶ୍ୱର ପାଣିପାଗ କେନ୍ଦ୍ର",
         "node_weather_desc": "ରୋଗ ବାହକ ଅନୁକୁଳ ପାଣିପାଗ ସୂଚନା ଟ୍ରାକ୍ କରେ।",
-        "node_soa_name": "ସୋଆ ବିଶ୍ୱବିଦ୍ୟାଳୟ ସ୍ୱାସ୍ଥ୍ୟ କେନ୍ଦ୍ର",
+        "node_soa_name": "🏫 ସୋଆ ବିଶ୍ୱବିଦ୍ୟାଳୟ ସ୍ୱାସ୍ଥ୍ୟ କେନ୍ଦ୍ର",
         "node_soa_desc": "ଭୁବନେଶ୍ୱର ସୋଆ ବିଶ୍ୱବିଦ୍ୟାଳୟ କ୍ୟାମ୍ପସର ଦୈନିକ ଚିକିତ୍ସା ତଥ୍ୟ।",
-        "node_utkal_name": "ଉତ୍କଳ ବିଶ୍ୱବିଦ୍ୟାଳୟ ସ୍ୱାସ୍ଥ୍ୟ କେନ୍ଦ୍ର",
+        "node_utkal_name": "🏫 ଉତ୍କଳ ବିଶ୍ୱବିଦ୍ୟାଳୟ ସ୍ୱାସ୍ଥ୍ୟ କେନ୍ଦ୍ର",
         "node_utkal_desc": "ବାଣୀବିହାର କ୍ୟାମ୍ପସ ଛାତ୍ର ଏବଂ କର୍ମଚାରୀଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଲକ୍ଷଣ ଟ୍ରାକ୍ କରିଥାଏ।",
         
         # Metric Labels
@@ -1327,39 +1122,39 @@ I18N = {
         "lbl_rainfall": "ଦୈନିକ ବୃଷ୍ଟିପାତ (mm)"
     },
     "हिंदी (Hindi)": {
-        "sidebar_lang_header": "भाषा चयन (Language)",
-        "sidebar_title": "स्वास्थ्य सुरक्षा ग्रिड",
+        "sidebar_lang_header": "🌐 भाषा चयन (Language)",
+        "sidebar_title": "🛡️ स्वास्थ्य सुरक्षा ग्रिड",
         "sidebar_desc": "व्यक्तिगत पहचान उजागर किए बिना बीमारी के लक्षणों को ट्रैक करने का सरल मंच।",
-        "zero_central_policy": "**गोपनीयता सुरक्षा:** कोई नाम, फोन नंबर या व्यक्तिगत जानकारी केंद्रों से बाहर नहीं जाती। केंद्रीय सर्वर केवल गुप्त सांख्यिकी का उपयोग करता है।",
+        "zero_central_policy": "🔒 **गोपनीयता सुरक्षा:** कोई नाम, फोन नंबर या व्यक्तिगत जानकारी केंद्रों से बाहर नहीं जाती। केंद्रीय सर्वर केवल गुप्त सांख्यिकी का उपयोग करता है।",
         "app_title": "सुरक्षा-नेट 3.0",
         "app_sub": "सामुदायिक स्वास्थ्य चेतावनी ग्रिड (गोपनीयता सुरक्षित)",
-        "inject_outbreak": "सिमुलेशन परिदृश्य चुनें",
-        "inject_location": "प्रकोप का मुख्य केंद्र / स्थान",
+        "inject_outbreak": "🕹️ सिमुलेशन परिदृश्य चुनें",
+        "inject_location": "📍 प्रकोप का मुख्य केंद्र / स्थान",
         "epicenter_badge_label": "मुख्य प्रकोप स्थान:",
-        "baseline_comparison_title": "ऐतिहासिक सामान्य औसत बनाम आज का प्रेषित डेटा",
+        "baseline_comparison_title": "📊 ऐतिहासिक सामान्य औसत बनाम आज का प्रेषित डेटा",
         "col_node_loc": "स्वास्थ्य केंद्र",
         "col_hist_baseline": "ऐतिहासिक सामान्य औसत",
         "col_today_val": "आज का प्रेषित मान",
         "col_surge_ratio": "वृद्धि अनुपात",
         "col_deviation_sigma": "विचलन (Z)",
-        "map_title": "क्षेत्रीय स्वास्थ्य ग्रिड मानचित्र",
+        "map_title": "🗺️ क्षेत्रीय स्वास्थ्य ग्रिड मानचित्र",
         
         # Scenario Labels
         "scenario_normal": "🟢 सामान्य स्थिति (कोई सक्रिय प्रकोप नहीं)",
-        "scenario_gi": "🔴 जलोढ़ प्रकोप / गैस्ट्रोइंटेस्टाइनल क्लस्टर",
-        "scenario_resp": "🔴 सर्दी जनित श्वसन प्रकोप क्लस्टर",
-        "scenario_dual": "🔴 दोहरा प्रकोप (जलोढ़ गैस्ट्रो + श्वसन रोग सर्ज)",
-        "scenario_typo": "🟡 एकल स्रोत प्रविष्टि त्रुटि (डेटा संगरोध)",
-        "scenario_small": "🟡 गोपनीयता जांच (k-Anonymity सिमुलेशन)",
+        "scenario_gi": "🌊 जलोढ़ प्रकोप / गैस्ट्रोइंटेस्टाइनल क्लस्टर",
+        "scenario_resp": "🫁 सर्दी जनित श्वसन प्रकोप क्लस्टर",
+        "scenario_dual": "⚡ दोहरा प्रकोप (जलोढ़ गैस्ट्रो + श्वसन रोग सर्ज)",
+        "scenario_typo": "⚠️ एकल स्रोत प्रविष्टि त्रुटि (डेटा संगरोध)",
+        "scenario_small": "🔬 गोपनीयता जांच (k-Anonymity सिमुलेशन)",
         
         # Tabs
-        "tab_public": "सार्वजनिक स्वास्थ्य सूचना",
-        "tab_clinic": "क्लिनिक / पर्यावरण रिपोर्टर पोर्टल (Passcode)",
-        "tab_officer": "स्वास्थ्य अधिकारी कंसोल (Passcode)",
-        "tab_audit": "गोपनीयता ऑडिट लॉग",
+        "tab_public": "📢 1. सार्वजनिक स्वास्थ्य सूचना",
+        "tab_clinic": "🏥 2. क्लिनिक / पर्यावरण रिपोर्टर पोर्टल (Passcode)",
+        "tab_officer": "🚨 3. स्वास्थ्य अधिकारी कंसोल (Passcode)",
+        "tab_audit": "🔒 4. गोपनीयता ऑडिट लॉग",
         
         # Tab 1 Public Health Radar
-        "radar_title": "सार्वजनिक स्वास्थ्य रडार एवं सुरक्षा दिशा-निर्देश",
+        "radar_title": "📢 सार्वजनिक स्वास्थ्य रडार एवं सुरक्षा दिशा-निर्देश",
         "radar_desc": "यह अनुभाग वर्तमान सार्वजनिक स्वास्थ्य सुरक्षा स्तर दिखाता है। यदि बीमारी का प्रकोप है, तो सुरक्षा निर्देश नीचे प्रदर्शित होंगे।",
         "threat_prob": "संक्रमण फैलने की आशंका",
         "outbreak_prob_label": "सिमुलेशन प्रकोप संभावना",
@@ -1367,36 +1162,36 @@ I18N = {
         "false_alarm_badge": "संभावित गलत अलार्म (Single-Source Spike)",
         "active_symptoms": "क्षेत्र में बढ़ते हुए बीमारी के लक्षण",
         "adv_safe": "🟢 **वर्तमान स्थिति: सुरक्षित।** सामान्य स्वच्छता बनाए रखें। नियमित रूप से हाथ धोएं और साफ पानी पीएं।",
-        "adv_gi": "🔴 **चेतावनी: पेट की बीमारी / दूषित पानी से संक्रमण की आशंका।** \n\n* **सुरक्षा निर्देश:** केवल उबला हुआ या फ़िल्टर किया हुआ पानी पीएं। खुले में बिकने वाले भोजन से बचें। बर्तनों को अच्छी तरह साफ करें।",
-        "adv_resp": "🟡 **चेतावनी: सर्दी/फ्लू और श्वसन रोग में वृद्धि।** \n\n* **सुरक्षा निर्देश:** भीड़भाड़ वाली जगहों पर मास्क पहनें। शरीर को गर्म रखें। खांसते या छींकते समय कोहनी का उपयोग करें।",
-        "adv_dual": "🔴 **चेतावनी: संयुक्त जल-जनित एवं श्वसन संक्रमण प्रकोप।** \n\n* **जल सुरक्षा:** केवल उबला हुआ या फ़िल्टर किया हुआ पानी पीएं।\n* **श्वसन सुरक्षा:** भीड़भाड़ वाली जगहों पर मास्क पहनें और खांसते समय कोहनी का उपयोग करें।",
-        "adv_false_alarm": "🟡 **सूचना: संभावित गलत अलार्म (False Alarm)।** केवल एक क्लिनिक में असामान्य वृद्धि दर्ज की गई है, जबकि अन्य सभी केंद्र सामान्य हैं। सिमुलेशन प्रकोप संकेत **{outbreak_prob}%** है, जिसके **{false_prob}% गलत होने की संभावना** है (डेटा प्रविष्टि त्रुटि)। सामान्य गतिविधियां जारी रखी जा सकती हैं।",
-        "adv_general": "🟡 **चेतावनी: असामान्य लक्षण पाए गए हैं।** स्थानीय अपडेट देखें और अस्वस्थ महसूस करने पर डॉक्टर से संपर्क करें।",
+        "adv_gi": "⚠️ **चेतावनी: पेट की बीमारी / दूषित पानी से संक्रमण की आशंका।** \n\n* **सुरक्षा निर्देश:** केवल उबला हुआ या फ़िल्टर किया हुआ पानी पीएं। खुले में बिकने वाले भोजन से बचें। बर्तनों को अच्छी तरह साफ करें।",
+        "adv_resp": "⚠️ **चेतावनी: सर्दी/फ्लू और श्वसन रोग में वृद्धि।** \n\n* **सुरक्षा निर्देश:** भीड़भाड़ वाली जगहों पर मास्क पहनें। शरीर को गर्म रखें। खांसते या छींकते समय कोहनी का उपयोग करें।",
+        "adv_dual": "⚠️ **चेतावनी: संयुक्त जल-जनित एवं श्वसन संक्रमण प्रकोप।** \n\n* **💧 जल सुरक्षा:** केवल उबला हुआ या फ़िल्टर किया हुआ पानी पीएं।\n* **😷 श्वसन सुरक्षा:** भीड़भाड़ वाली जगहों पर मास्क पहनें और खांसते समय कोहनी का उपयोग करें।",
+        "adv_false_alarm": "⚠️ **सूचना: संभावित गलत अलार्म (False Alarm)।** केवल एक क्लिनिक में असामान्य वृद्धि दर्ज की गई है, जबकि अन्य सभी केंद्र सामान्य हैं। सिमुलेशन प्रकोप संकेत **{outbreak_prob}%** है, जिसके **{false_prob}% गलत होने की संभावना** है (डेटा प्रविष्टि त्रुटि)। सामान्य गतिविधियां जारी रखी जा सकती हैं।",
+        "adv_general": "⚠️ **चेतावनी: असामान्य लक्षण पाए गए हैं।** स्थानीय अपडेट देखें और अस्वस्थ महसूस करने पर डॉक्टर से संपर्क करें।",
         
         # Tab 2 Clinic Reporter
-        "clinic_title": "क्लिनिक एवं पर्यावरण डेटा प्रविष्टि पोर्टल",
+        "clinic_title": "🏥 क्लिनिक एवं पर्यावरण डेटा प्रविष्टि पोर्टल",
         "clinic_desc": "अधिकृत क्लिनिक कर्मचारी और पर्यावरण अधिकारी दैनिक मरीजों की संख्या और सेंसर रीडिंग दर्ज कर सकते हैं।",
         "select_node": "जांच के लिए नोड चुनें:",
         "node_type_label": "नोड प्रकार:",
-        "pass_prompt_clinic": "क्लिनिक पासकोड (Passcode) दर्ज करें:",
-        "pass_warn_clinic": "क्लिनिक पोर्टल सुरक्षित है। रिपोर्ट दर्ज करने के लिए पासकोड (1234) का उपयोग करें।",
-        "db_title": "स्थानीय निजी रजिस्ट्री (फ़ायरवॉल के भीतर)",
-        "chart_title": "गोपनीयता प्रभाव तुलना: वास्तविक बनाम प्रेषित डेटा",
+        "pass_prompt_clinic": "🔑 क्लिनिक पासकोड (Passcode) दर्ज करें:",
+        "pass_warn_clinic": "🔒 क्लिनिक पोर्टल सुरक्षित है। रिपोर्ट दर्ज करने के लिए पासकोड (1234) का उपयोग करें।",
+        "db_title": "💾 स्थानीय निजी रजिस्ट्री (फ़ायरवॉल के भीतर)",
+        "chart_title": "📊 गोपनीयता प्रभाव तुलना: वास्तविक बनाम प्रेषित डेटा",
         "bar_raw": "गोपनीय वास्तविक संख्या",
         "bar_trans": "प्रेषित शोर-युक्त संख्या",
-        "ingest_title": "दैनिक रिपोर्ट दर्ज करें (स्थानीय प्रविष्टि)",
+        "ingest_title": "✍️ दैनिक रिपोर्ट दर्ज करें (स्थानीय प्रविष्टि)",
         "ingest_desc": "लक्षण लॉग करने के लिए नीचे दिए गए माध्यम का चयन करें। सभी डेटा स्थानीय रूप से संसाधित किए जाएंगे।",
         "ingest_method_label": "डेटा प्रविष्टि माध्यम चुनें:",
         "ingest_symptom": "लक्षण श्रेणी चुनें:",
         "ingest_loc": "रिपोर्टर स्थान (छात्रावास / कैंपस क्षेत्र):",
         "ingest_tally": "दर्ज मामलों की संख्या (Confidential Count):",
         "ingest_notes": "अतिरिक्त विवरण (व्यक्तिगत नाम या फोन नंबर न लिखें):",
-        "precomp_title": "स्थानीय गोपनीयता फ़िल्टर पूर्वावलोकन",
-        "local_record_title": "स्थानीय रिकॉर्ड (क्लिनिक में ही रहेगा):",
-        "transmitted_payload_title": "प्रेषित पेलोड (सर्वर को भेजा जाएगा):",
-        "submit_btn": "सर्वर पर सुरक्षित अपलोड करें",
-        "logbook_title": "स्थानीय क्लिनिक लॉगबुक (निजी नोड स्टोरेज)",
-        "clear_btn": "लॉग साफ़ करें",
+        "precomp_title": "🔍 स्थानीय गोपनीयता फ़िल्टर पूर्वावलोकन",
+        "local_record_title": "🔒 स्थानीय रिकॉर्ड (क्लिनिक में ही रहेगा):",
+        "transmitted_payload_title": "📡 प्रेषित पेलोड (सर्वर को भेजा जाएगा):",
+        "submit_btn": "🚀 सर्वर पर सुरक्षित अपलोड करें",
+        "logbook_title": "📂 स्थानीय क्लिनिक लॉगबुक (निजी नोड स्टोरेज)",
+        "clear_btn": "🗑️ लॉग साफ़ करें",
         "log_info": "अभी तक कोई लॉग दर्ज नहीं किया गया है। डेटा दर्ज करने के लिए उपरोक्त माध्यमों का उपयोग करें।",
         "log_success": "सफलतापूर्वक दर्ज और प्रेषित किया गया।",
         
@@ -1417,34 +1212,34 @@ I18N = {
         "col_trans_z": "विचलन तीव्रता",
         
         # Tab 3 Health Officer Console
-        "officer_title": "स्वास्थ्य अधिकारी नियंत्रण कंसोल",
+        "officer_title": "🚨 स्वास्थ्य अधिकारी नियंत्रण कंसोल",
         "officer_desc": "अधिकृत स्वास्थ्य अधिकारी सिस्टम संवेदनशीलता और आपातकालीन संदेशों को नियंत्रित कर सकते हैं।",
-        "pass_prompt_officer": "स्वास्थ्य अधिकारी पासकोड (Passcode) दर्ज करें:",
-        "pass_warn_officer": "कंसोल लॉक है। इसे अनलॉक करने के लिए पासकोड (9999) का उपयोग करें।",
-        "sec_controls": "सिस्टम सतर्कता एवं गोपनीयता नियंत्रण",
+        "pass_prompt_officer": "🔑 स्वास्थ्य अधिकारी पासकोड (Passcode) दर्ज करें:",
+        "pass_warn_officer": "🔒 कंसोल लॉक है। इसे अनलॉक करने के लिए पासकोड (9999) का उपयोग करें।",
+        "sec_controls": "⚙️ सिस्टम सतर्कता एवं गोपनीयता नियंत्रण",
         "epsilon_label": "गोपनीयता सुरक्षा स्तर (कम / मध्यम / उच्च)",
         "epsilon_help": "प्रेषित डेटा में जोड़ा जाने वाला शोर (noise) स्तर। अधिक शोर अधिक गोपनीयता सुनिश्चित करता है।",
         "k_label": "न्यूनतम रोगी समूह सीमा (k-Anonymity)",
         "k_help": "कम रोगी संख्या वाले मामलों की रिपोर्ट को दबा दिया जाता है ताकि किसी की पहचान न की जा सके।",
         "cutoff_label": "चेतावनी संवेदनशीलता सीमा",
         "cutoff_help": "गलत चेतावनियों को रोकने के लिए संवेदनशीलता सीमा समायोजित करें।",
-        "regional_table_title": "क्षेत्रीय नोड गतिविधि संकेतक",
-        "broadcast_title": "आपातकालीन चेतावनी प्रसारण पैनल",
+        "regional_table_title": "🏥 क्षेत्रीय नोड गतिविधि संकेतक",
+        "broadcast_title": "📢 आपातकालीन चेतावनी प्रसारण पैनल",
         "broadcast_desc": "यहां से स्वास्थ्य कर्मियों और जनता के लिए आपातकालीन संदेश जारी करें।",
         "alert_draft_label": "चेतावनी संदेश ड्राफ्ट:",
         "alert_reg_label": "सक्रिय मोबाइल एवं ईमेल सूची:",
-        "sign_btn": "चेतावनी प्रसारित करें",
+        "sign_btn": "✍️ चेतावनी प्रसारित करें",
         "log_title": "चेतावनी प्रेषण लॉग",
         "alert_dispatched_success": "आपातकालीन चेतावनी सफलतापूर्वक प्रसारित कर दी गई है।",
         "xai_no_anom": "सभी संकेतक सामान्य स्तर पर काम कर रहे हैं।",
         
         # Tab 4 Privacy Audit Log
-        "audit_title": "गोपनीयता ऑडिट एवं अनुपालन बहीखाता",
+        "audit_title": "🔒 गोपनीयता ऑडिट एवं अनुपालन बहीखाता",
         "audit_desc": "बिना किसी व्यक्तिगत पहचान डेटा (PII) को उजागर किए स्वतंत्र गणितीय बहीखाता।",
         "privacy_compliance": "डेटा गोपनीयता अनुपालन",
         "dp_noise_distortion": "लाप्लास शोर स्तर",
         "k_anon_suppression": "छिपाए गए संकेतक",
-        "ledger_title": "गोपनीयता अनुपालन सत्यापन बहीखाता",
+        "ledger_title": "⚖️ गोपनीयता अनुपालन सत्यापन बहीखाता",
         
         # Table Audit Columns
         "audit_col_node": "रिपोर्टिंग केंद्र",
@@ -1455,17 +1250,17 @@ I18N = {
         "audit_col_payload": "प्रेषित पेलोड",
         
         # Local Node Names
-        "node_campus_name": "कलिंगा इंस्टीट्यूट छात्र क्लिनिक",
+        "node_campus_name": "🏫 कलिंगा इंस्टीट्यूट छात्र क्लिनिक",
         "node_campus_desc": "कैंपस में छात्रों के स्वास्थ्य और बीमारी के लक्षणों की निगरानी करता है।",
-        "node_water_name": "भुवनेश्वर नगर निगम जल परीक्षण केंद्र",
+        "node_water_name": "🧪 भुवनेश्वर नगर निगम जल परीक्षण केंद्र",
         "node_water_desc": "भुवनेश्वर में पानी की गुणवत्ता, टर्बिडिटी और बैक्टीरिया सूचकांक रिकॉर्ड करता है।",
-        "node_hospital_name": "कैपिटल अस्पताल ओपीडी ट्राइएज",
+        "node_hospital_name": "🏥 कैपिटल अस्पताल ओपीडी ट्राइएज",
         "node_hospital_desc": "शहर के मुख्य सरकारी अस्पताल की ओपीडी रोगी संख्या एकत्र करता है।",
-        "node_weather_name": "भुवनेश्वर क्षेत्रीय मौसम केंद्र",
+        "node_weather_name": "☁️ भुवनेश्वर क्षेत्रीय मौसम केंद्र",
         "node_weather_desc": "मौसम की स्थिति ट्रैक करता है जो वेक्टर जनित रोगों को बढ़ावा दे सकती है।",
-        "node_soa_name": "सोआ विश्वविद्यालय स्वास्थ्य केंद्र",
+        "node_soa_name": "🏫 सोआ विश्वविद्यालय स्वास्थ्य केंद्र",
         "node_soa_desc": "भुवनेश्वर सोआ विश्वविद्यालय कैंपस का दैनिक स्वास्थ्य विवरण।",
-        "node_utkal_name": "उत्कल विश्वविद्यालय स्वास्थ्य केंद्र",
+        "node_utkal_name": "🏫 उत्कल विश्वविद्यालय स्वास्थ्य केंद्र",
         "node_utkal_desc": "वाणी विहार कैंपस में छात्रों और कर्मचारियों के स्वास्थ्य लक्षणों की निगरानी करता है।",
         
         # Symptom Labels
@@ -1610,7 +1405,7 @@ def get_default_presentation_notifications():
             "message": "OFFICIAL HEALTH EMERGENCY ADVISORY\nSTATUS: 🔴 Waterborne Risk Cluster Confirmed\nLIKELIHOOD: 95.0%\nCORROBORATION: Elevated Coliform & Turbidity in Municipal Water post-rainfall detected across urban zones.",
             "confidence": "95.0%",
             "hash": "SHA256:7f8a9b2c3d4e5f60...",
-            "dispatch": "Dispatched to mobile health registry (2 state officers)"
+            "dispatch": "✅ Dispatched to mobile health registry (2 state officers)"
         },
         {
             "timestamp": "2026-08-24 14:15:00 IST",
@@ -1618,7 +1413,7 @@ def get_default_presentation_notifications():
             "message": "OFFICIAL HEALTH EMERGENCY ADVISORY\nSTATUS: 🟡 Sentinel Respiratory Surge Advisory\nLIKELIHOOD: 68.0%\nCORROBORATION: Seasonal temperature drop and relative humidity surge detected across clinic outpatient wards.",
             "confidence": "68.0%",
             "hash": "SHA256:3a4b5c6d7e8f9012...",
-            "dispatch": "Dispatched to mobile health registry (2 state officers)"
+            "dispatch": "✅ Dispatched to mobile health registry (2 state officers)"
         }
     ]
 
@@ -1633,7 +1428,6 @@ if "active_officer_alert" not in st.session_state:
 st.sidebar.title(t["sidebar_title"])
 st.sidebar.markdown(t["sidebar_desc"])
 
-
 # --- Officer Broadcast Glowing Popup ---
 if st.session_state.get("active_officer_alert"):
     alert = st.session_state.active_officer_alert
@@ -1645,21 +1439,21 @@ if st.session_state.get("active_officer_alert"):
         <div class='sidebar-glow-box'>
             <div class='sidebar-glow-header'>
                 <span style='font-size: 0.72rem; font-weight: 800; color: #FCA5A5; letter-spacing: 0.8px; text-transform: uppercase; display: flex; align-items: center; gap: 6px;'>
-                    STATE OFFICER ADVISORY
+                    <span style='font-size: 1.05rem;'>🚨</span> STATE OFFICER ADVISORY
                 </span>
                 <span class='live-pulse-dot' style='width: 9px; height: 9px; background: #EF4444;'></span>
             </div>
             <div class='sidebar-glow-title'>{status_line}</div>
             <div class='sidebar-glow-msg'>{clean_msg}</div>
             <div class='sidebar-glow-meta'>
-                <span>{alert.get('timestamp', 'Live')}</span>
+                <span>🕒 {alert.get('timestamp', 'Live')}</span>
                 <span style='color: #00F2FE; font-family: monospace; font-size: 0.7rem;'>{alert.get('hash', '')[:14]}...</span>
             </div>
         </div>
         """,
         unsafe_allow_html=True
     )
-    if st.sidebar.button("Dismiss Alert Bulletin", key="dismiss_sidebar_glow_btn", use_container_width=True):
+    if st.sidebar.button("✕ Dismiss Alert Bulletin", key="dismiss_sidebar_glow_btn", use_container_width=True):
         st.session_state.active_officer_alert = None
         st.rerun()
 
@@ -1668,10 +1462,10 @@ st.sidebar.info(t["zero_central_policy"])
 
 # --- Dynamic Adaptive Baseline Controls ---
 st.sidebar.markdown("---")
-st.sidebar.subheader("Baseline Surveillance Engine")
+st.sidebar.subheader("📈 Baseline Surveillance Engine")
 baseline_mode_choice = st.sidebar.radio(
     "Baseline Adaptation Mode:",
-    ["Dynamic Moving Baseline (Auto-Adapts Over Time)", "Fixed Reference Baseline"],
+    ["🔄 Dynamic Moving Baseline (Auto-Adapts Over Time)", "📌 Fixed Reference Baseline"],
     index=0,
     help="Dynamic Moving Baseline calculates a rolling 14-day historical mean (μ) and standard deviation (σ) from incoming clinic submissions while excluding epidemic outliers."
 )
@@ -1696,14 +1490,14 @@ with col_head1:
     if hero_b64:
         img_badge = f'<img src="data:image/jpeg;base64,{hero_b64}" style="width:68px; height:68px; min-width:68px; border-radius:16px; border:2px solid #00F2FE; box-shadow:0 0 20px rgba(0,242,254,0.4); object-fit:cover;" />'
     else:
-        img_badge = '<div style="width:64px; height:64px; min-width:64px; border-radius:16px; background:linear-gradient(135deg, rgba(0,242,254,0.2) 0%, rgba(3,105,161,0.4) 100%); border:1.5px solid #00F2FE; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(0,242,254,0.35); font-size:1.35rem; font-weight:800; color:#00F2FE; letter-spacing:1px;">SN</div>'
+        img_badge = '<div style="width:64px; height:64px; min-width:64px; border-radius:16px; background:linear-gradient(135deg, rgba(0,242,254,0.2) 0%, rgba(3,105,161,0.4) 100%); border:1.5px solid #00F2FE; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(0,242,254,0.35); font-size:2rem;">🛡️</div>'
 
     header_html = (
         f'<div class="custom-hero-banner" style="display: flex; align-items: center; gap: 20px;">'
         f'{img_badge}'
         f'<div>'
         f'<div style="font-size: 0.78rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #38BDF8; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;">'
-        f'<span>TEAM CODEKRAFT</span>'
+        f'<span>⚡ TEAM CODEKRAFT</span>'
         f'<span style="opacity: 0.35; color: #FFFFFF;">•</span>'
         f'<span style="color: #94A3B8;">ODISHA HEALTH SURVEILLANCE GRID</span>'
         f'</div>'
@@ -1716,20 +1510,20 @@ with col_head1:
 
 scenario_list = [
     "🟢 Normal Baseline (No Active Outbreaks)",
-    "🔴 Gastrointestinal Outbreak Cluster (Waterborne)",
-    "🔴 Cold-Snap Acute Respiratory Surge",
-    "🔴 Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
-    "🟡 False Alarm (Single-Source Data Typo)",
-    "🟡 Small Cohort Threat (k-Anonymity Guard Demo)"
+    "🌊 Gastrointestinal Outbreak Cluster (Waterborne)",
+    "🫁 Cold-Snap Acute Respiratory Surge",
+    "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
+    "⚠️ False Alarm (Single-Source Data Typo)",
+    "🔬 Small Cohort Threat (k-Anonymity Guard Demo)"
 ]
 
 epicenter_list = [
-    "All Monitored Regions (Cross-City)",
-    "Kalinga Institute Clinic (Campus North)",
-    "SOA University Health Center (Campus South)",
-    "Utkal University Health Center (Campus East)",
-    "Capital Hospital (Central OPD)",
-    "Municipal Water Treatment Zone"
+    "🌐 All Monitored Regions (Cross-City)",
+    "🏫 Kalinga Institute Clinic (Campus North)",
+    "🏫 SOA University Health Center (Campus South)",
+    "🏫 Utkal University Health Center (Campus East)",
+    "🏥 Capital Hospital (Central OPD)",
+    "🧪 Municipal Water Treatment Zone"
 ]
 
 if "current_scenario" not in st.session_state or st.session_state.current_scenario not in scenario_list:
@@ -1759,7 +1553,7 @@ with col_head2:
             cur_epi = st.session_state.current_epicenter
             epi_idx = epicenter_list.index(cur_epi) if cur_epi in epicenter_list else 0
             epicenter = st.selectbox(
-                t.get("inject_location", "Outbreak Location / Epicenter"),
+                t.get("inject_location", "📍 Outbreak Location / Epicenter"),
                 epicenter_list,
                 index=epi_idx,
                 key="outbreak_epicenter_choice"
@@ -1775,11 +1569,11 @@ with col_head2:
                 <div style='background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.3); border-left: 4px solid #38BDF8; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
                     <div style='display: flex; align-items: center; justify-content: space-between;'>
                         <div>
-                            <div style='font-size: 0.75rem; font-weight: 700; color: #38BDF8; letter-spacing: 0.5px; text-transform: uppercase;'>Clinic Ingestion Node</div>
+                            <div style='font-size: 0.75rem; font-weight: 700; color: #38BDF8; letter-spacing: 0.5px; text-transform: uppercase;'>🏥 Clinic Ingestion Node</div>
                             <div style='font-size: 0.95rem; font-weight: 700; color: #F8FAFC;'>Grassroots Telemetry Terminal</div>
                         </div>
                         <span style='background: rgba(56, 189, 248, 0.15); color: #38BDF8; border: 1px solid #38BDF8; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
-                            DPDP ACT SECURE
+                            🔒 DPDP ACT SECURE
                         </span>
                     </div>
                 </div>
@@ -1791,11 +1585,11 @@ with col_head2:
                 <div style='background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-left: 4px solid #EF4444; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
                     <div style='display: flex; align-items: center; justify-content: space-between;'>
                         <div>
-                            <div style='font-size: 0.75rem; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; text-transform: uppercase;'>Health Officer Console</div>
+                            <div style='font-size: 0.75rem; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; text-transform: uppercase;'>🏛️ Health Officer Console</div>
                             <div style='font-size: 0.95rem; font-weight: 700; color: #F8FAFC;'>Statutory Surveillance & Dispatch</div>
                         </div>
                         <span style='background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid #EF4444; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
-                            MASTER KEY AUTH
+                            🛡️ MASTER KEY AUTH
                         </span>
                     </div>
                 </div>
@@ -2065,7 +1859,7 @@ def seed_gsheet_preset(url):
 # --- Dynamic Adaptive Baseline Engine ---
 def compute_adaptive_baseline(node_id, metric_id, ref_mean, ref_std, sheet_logs, is_dynamic_mode=True):
     if not is_dynamic_mode:
-        return ref_mean, ref_std, "Fixed Reference"
+        return ref_mean, ref_std, "📌 Fixed Reference"
     
     # Extract empirical logs from Google Sheet / session memory for this node and metric
     historical_vals = []
@@ -2088,18 +1882,17 @@ def compute_adaptive_baseline(node_id, metric_id, ref_mean, ref_std, sheet_logs,
     adaptive_mean = round(float(np.mean(combined_window)), 2)
     adaptive_std = round(max(0.2, float(np.std(combined_window))), 2)
     
-    return adaptive_mean, adaptive_std, f"Dynamic 14d (μ={adaptive_mean}, σ={adaptive_std})"
+    return adaptive_mean, adaptive_std, f"🔄 Dynamic 14d (μ={adaptive_mean}, σ={adaptive_std})"
 
 
 # --- Data Generation Helper ---
 def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mode=True):
     seed_map = {
         "🟢 Normal Baseline (No Active Outbreaks)": 100,
-        "🔴 Gastrointestinal Outbreak Cluster (Waterborne)": 200,
-        "🔴 Cold-Snap Acute Respiratory Surge": 300,
-        "🔴 Dual Outbreak (Waterborne Gastro + Respiratory Surge)": 350,
-        "🟡 False Alarm (Single-Source Data Typo)": 400,
-        "🟡 Small Cohort Threat (k-Anonymity Guard Demo)": 500
+        "🌊 Gastrointestinal Outbreak Cluster (Waterborne)": 200,
+        "🫁 Cold-Snap Acute Respiratory Surge": 300,
+        "⚠️ False Alarm (Single-Source Data Typo)": 400,
+        "🔬 Small Cohort Threat (k-Anonymity Guard Demo)": 500
     }
     np.random.seed(seed_map.get(scenario, 100))
     
@@ -2165,7 +1958,7 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
             if scenario == "🟢 Normal Baseline (No Active Outbreaks)":
                 pass # Already set to safe baseline
             
-            elif "Gastrointestinal Outbreak Cluster" in scenario:
+            elif scenario == "🌊 Gastrointestinal Outbreak Cluster (Waterborne)":
                 # Epicenter: Kalinga Campus North & Water Treatment Station -> 🔴 RED Outbreak
                 if (is_kalinga_epicenter or is_all_regions) and node_id == "node_campus":
                     if metric_id == "gastrointestinal": val = 14.0 # 🔴 RED (> 10σ Outbreak Surge)
@@ -2182,7 +1975,7 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                     if metric_id == "rainfall": val = 24.0 # 🟡 YELLOW (Heavy Precipitation Trigger)
                     elif metric_id == "temp": val = 32.8
                     
-            elif "Cold-Snap Acute Respiratory Surge" in scenario:
+            elif scenario == "🫁 Cold-Snap Acute Respiratory Surge":
                 # Epicenter: Capital Hospital Central OPD & Kalinga Clinic -> 🔴 RED Outbreak
                 if node_id == "node_hospital":
                     if metric_id == "ili": val = 32.0 # 🔴 RED (~5.5σ Outbreak Surge)
@@ -2198,7 +1991,7 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                     if metric_id == "temp": val = 16.5 # 🟡 Cold Snap Meteorological Anomaly
                     elif metric_id == "humidity": val = 93.0
                     
-            elif "Dual Outbreak" in scenario:
+            elif scenario == "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)":
                 # Compound Multi-Pathogen Outbreak: Varied Red, Yellow, Green
                 if node_id == "node_campus":
                     if metric_id == "gastrointestinal": val = 14.0 # 🔴 RED
@@ -2214,7 +2007,7 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                 elif node_id == "node_weather":
                     if metric_id == "rainfall": val = 24.0 # 🟡 YELLOW
                     
-            elif "False Alarm" in scenario:
+            elif scenario == "⚠️ False Alarm (Single-Source Data Typo)":
                 # Only 1 single isolated center enters extreme outlier: 🔴 RED
                 if (node_id == "node_campus" and is_kalinga_epicenter) or (not is_soa_epicenter and not is_utkal_epicenter and not is_hospital_epicenter and node_id == "node_campus"):
                     if metric_id == "fever": val = 142.0 # 🔴 RED Isolated Outlier
@@ -2225,7 +2018,7 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                 elif node_id == "node_hospital" and is_hospital_epicenter:
                     if metric_id == "fever_high": val = 180.0
                     
-            elif "Small Cohort Threat" in scenario:
+            elif scenario == "🔬 Small Cohort Threat (k-Anonymity Guard Demo)":
                 if node_id in ["node_campus", "node_soa", "node_utkal"] and metric_id == "gastrointestinal":
                     val = 3.0 # Suppressed locally
             
@@ -2319,7 +2112,7 @@ def run_federated_aggregation(node_data, threshold, scenario_name="", epicenter_
         risk_class = "safe"
         is_false_alarm = False
         false_alarm_prob = 0.0
-    elif "Small Cohort Threat" in scenario_name:
+    elif scenario_name == "🔬 Small Cohort Threat (k-Anonymity Guard Demo)":
         outbreak_prob = 0.0
         confidence = 0.0
         status = "Baseline Normal (Privacy Guard Active)"
@@ -2327,7 +2120,7 @@ def run_federated_aggregation(node_data, threshold, scenario_name="", epicenter_
         risk_class = "safe"
         is_false_alarm = False
         false_alarm_prob = 0.0
-    elif "False Alarm" in scenario_name or (num_alerts == 1 and "node_water" not in active_node_alerts and "node_weather" not in active_node_alerts):
+    elif scenario_name == "⚠️ False Alarm (Single-Source Data Typo)" or (num_alerts == 1 and "node_water" not in active_node_alerts and "node_weather" not in active_node_alerts):
         alert_node_name = node_data[list(active_node_alerts.keys())[0]]["name"] if active_node_alerts else "Kalinga Institute Clinic"
         outbreak_prob = min(35.0, round(24.5 + total_z_excess * 1.2, 1))
         confidence = outbreak_prob
@@ -2345,7 +2138,7 @@ def run_federated_aggregation(node_data, threshold, scenario_name="", epicenter_
         risk_class = "safe"
         is_false_alarm = False
         false_alarm_prob = 0.0
-    elif "Gastrointestinal Outbreak Cluster" in scenario_name:
+    elif scenario_name == "🌊 Gastrointestinal Outbreak Cluster (Waterborne)":
         outbreak_prob = min(98.0, round(95.0 + min(3.0, total_z_excess * 0.1), 1))
         confidence = outbreak_prob
         is_false_alarm = False
@@ -2353,7 +2146,7 @@ def run_federated_aggregation(node_data, threshold, scenario_name="", epicenter_
         status = "Waterborne Gastrointestinal Outbreak Cluster Confirmed"
         desc = f"Corroborated waterborne outbreak ({epicenter_name}): Elevated gastrointestinal and diarrheal cases across {num_alerts} centers confirmed by municipal wastewater coliform surge and heavy rainfall."
         risk_class = "danger"
-    elif "Cold-Snap Acute Respiratory Surge" in scenario_name:
+    elif scenario_name == "🫁 Cold-Snap Acute Respiratory Surge":
         outbreak_prob = min(88.0, round(82.0 + min(6.0, total_z_excess * 0.2), 1))
         confidence = outbreak_prob
         is_false_alarm = False
@@ -2361,12 +2154,12 @@ def run_federated_aggregation(node_data, threshold, scenario_name="", epicenter_
         status = "Sentinel Respiratory & Influenza Surge Advisory"
         desc = f"Seasonal respiratory surge ({epicenter_name}): Upper respiratory infections and ILI triage spikes across {num_alerts} centers corroborated by regional cold snap (16.5°C) and high humidity (93%)."
         risk_class = "warning"
-    elif "Dual Outbreak" in scenario_name:
+    elif scenario_name == "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)":
         outbreak_prob = 99.0
         confidence = 99.0
         is_false_alarm = False
         false_alarm_prob = 1.0
-        status = "🔴 Compound Multi-Syndromic Outbreak Cluster Confirmed"
+        status = "🚨 Compound Multi-Syndromic Outbreak Cluster Confirmed"
         desc = f"Simultaneous dual-pathogen surge ({epicenter_name}): Severe spikes in both waterborne diarrheal cases and acute respiratory/ILI triage across {num_alerts} centers, corroborated by municipal coliform contamination and weather cold-snap."
         risk_class = "danger"
     else:
@@ -2508,8 +2301,8 @@ if active_nav_idx == 0:
     with col_scope2:
         st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
         view_scope = st.radio(
-            "Surveillance Data Scope:",
-            ["Focus on Selected Location", "Regional City Grid View"],
+            "🔭 Surveillance Data Scope:",
+            ["🎯 Focus on Selected Location", "🌐 Regional City Grid View"],
             index=0 if is_specific_loc else 1,
             horizontal=True,
             key="radar_view_scope"
@@ -2517,7 +2310,7 @@ if active_nav_idx == 0:
         
     # Evaluate scoped display variables
     loc_info = agg_results.get("local_metrics")
-    is_local_focus = (view_scope == "Focus on Selected Location" and loc_info is not None)
+    is_local_focus = (view_scope == "🎯 Focus on Selected Location" and loc_info is not None)
     
     if is_local_focus:
         display_status = loc_info["status"]
@@ -2525,14 +2318,14 @@ if active_nav_idx == 0:
         display_risk = loc_info["risk_class"]
         display_outbreak_p = loc_info["outbreak_prob"]
         display_signals = loc_info["signals"]
-        location_scope_label = f"Showing Data Specific to: <strong>{loc_info['short_name']}</strong> ({loc_info['zone']})"
+        location_scope_label = f"🎯 Showing Data Specific to: <strong>{loc_info['short_name']}</strong> ({loc_info['zone']})"
     else:
         display_status = agg_results["status"]
         display_desc = agg_results["description"]
         display_risk = agg_results["risk_class"]
         display_outbreak_p = agg_results["outbreak_prob"]
         display_signals = agg_results["contributing_signals"]
-        location_scope_label = f"Showing Aggregated Regional Data Across <strong>All Monitored Centers</strong>"
+        location_scope_label = f"🌐 Showing Aggregated Regional Data Across <strong>All Monitored Centers</strong>"
         
     is_false_alarm = agg_results["is_false_alarm"]
     false_p = agg_results["false_alarm_prob"]
@@ -2541,7 +2334,7 @@ if active_nav_idx == 0:
     if is_false_alarm:
         alert_bg = "rgba(245, 158, 11, 0.15)"
         alert_border = "#F59E0B"
-        alert_icon = "🟡"
+        alert_icon = "⚠️"
         safety_advice = t.get("adv_false_alarm", "").replace("{false_prob}", str(false_p)).replace("{outbreak_prob}", str(display_outbreak_p))
     elif display_risk == "safe":
         alert_bg = "rgba(16, 185, 129, 0.12)"
@@ -2556,7 +2349,7 @@ if active_nav_idx == 0:
         else:
             alert_bg = "rgba(239, 68, 68, 0.18)"
             alert_border = "#EF4444"
-            alert_icon = "🔴"
+            alert_icon = "🚨"
             
         # Determine advice based on scenario and dominant symptoms (multilingual safe)
         scenario_lower = scenario.lower()
@@ -2567,7 +2360,7 @@ if active_nav_idx == 0:
         elif any(k in scenario_lower for k in ["gastrointestinal", "waterborne", "diarrhea", "ଜଳବାହିତ", "ପେଟ", "जल जनित", "पेट"]):
             safety_advice = t.get("adv_gi", "")
         elif any(k in scenario_lower for k in ["small cohort", "k-anonymity", "ଗୋପନୀୟତା", "गोपनीयता"]):
-            safety_advice = "**k-Anonymity Guard Active:** Low symptom counts are automatically suppressed locally on-device to prevent re-identification of small patient clusters."
+            safety_advice = "🔒 **k-Anonymity Guard Active:** Low symptom counts are automatically suppressed locally on-device to prevent re-identification of small patient clusters."
         else:
             # For custom/mixed clinic data, evaluate strongest transmitted signal
             resp_max = max([s["z_score"] for s in display_signals if any(k in str(s["metric_label"]).lower() for k in ["respir", "cough", "ili", "ଶ୍ୱାସ", "खांसी"])], default=0.0)
@@ -2580,16 +2373,16 @@ if active_nav_idx == 0:
             elif gi_max > 1.5:
                 safety_advice = t.get("adv_gi", "")
             else:
-                safety_advice = t.get("adv_general", "🟡 **Alert: Unusual symptom activity detected.** Watch regional updates and practice preventive health hygiene.")
+                safety_advice = t.get("adv_general", "⚠️ **Alert: Unusual symptom activity detected.** Watch regional updates and practice preventive health hygiene.")
             
     # Fallback guard
     if not safety_advice:
-        safety_advice = t.get("adv_general", "🟡 **Alert: Outbreak signal detected.** Follow public health hygiene advisories.")
+        safety_advice = t.get("adv_general", "⚠️ **Alert: Outbreak signal detected.** Follow public health hygiene advisories.")
 
     # Determine dynamic class for animations
     if display_risk == "safe":
-        alert_class = "class='alert-banner-safe'"
-        alert_style = "border: 1px solid #10B981 !important; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);"
+        alert_class = ""
+        alert_style = "background: linear-gradient(135deg, rgba(6, 78, 59, 0.7) 0%, #0B132B 100%) !important; border: 1px solid #10B981 !important; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);"
     elif is_false_alarm or display_risk == "warning":
         alert_class = "class='alert-banner-warning'"
         alert_style = f"background-color: {alert_bg};"
@@ -2599,7 +2392,7 @@ if active_nav_idx == 0:
         
     # Banner Metric Badges
     if is_false_alarm:
-        badge_html = f"<div style='display:flex;gap:14px;text-align:right;flex-wrap:wrap;justify-content:flex-end;'><div style='background:var(--card-bg);padding:10px 16px;border-radius:10px;border:1px solid #F59E0B;box-shadow:var(--card-shadow);'><span style='font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#F59E0B;'>{t['threat_prob']}</span><div style='font-size:1.9rem;font-weight:800;color:#F59E0B;line-height:1.1;'>{display_outbreak_p}%</div></div><div style='background:rgba(245,158,11,0.18);padding:10px 16px;border-radius:10px;border:2px solid #F59E0B;box-shadow:0 4px 15px rgba(245,158,11,0.2);'><span style='font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#D97706;'>False Alarm Prob</span><div style='font-size:1.9rem;font-weight:800;color:#D97706;line-height:1.1;'>{false_p}%</div></div></div>"
+        badge_html = f"<div style='display:flex;gap:14px;text-align:right;flex-wrap:wrap;justify-content:flex-end;'><div style='background:var(--card-bg);padding:10px 16px;border-radius:10px;border:1px solid #F59E0B;box-shadow:var(--card-shadow);'><span style='font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#F59E0B;'>{t['threat_prob']}</span><div style='font-size:1.9rem;font-weight:800;color:#F59E0B;line-height:1.1;'>{display_outbreak_p}%</div></div><div style='background:rgba(245,158,11,0.18);padding:10px 16px;border-radius:10px;border:2px solid #F59E0B;box-shadow:0 4px 15px rgba(245,158,11,0.2);'><span style='font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#D97706;'>⚠️ False Alarm Prob</span><div style='font-size:1.9rem;font-weight:800;color:#D97706;line-height:1.1;'>{false_p}%</div></div></div>"
     else:
         badge_html = f"<div style='text-align:right;min-width:150px;background:var(--card-bg);padding:10px 18px;border-radius:10px;border:1px solid {alert_border};box-shadow:var(--card-shadow);'><span style='font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);'>{t['threat_prob']}</span><div style='font-size:2.2rem;font-weight:800;color:{alert_border};line-height:1.1;'>{display_outbreak_p}%</div></div>"
 
@@ -2624,7 +2417,7 @@ if active_nav_idx == 0:
             f"""
             <div class='glass-card' style='border-left: 5px solid #F59E0B !important; margin-bottom: 20px;'>
                 <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 12px;'>
-                    
+                    <span style='font-size: 1.4rem;'>🔍</span>
                     <h4 style='margin: 0; color: #F59E0B !important;'>False Alarm vs. Outbreak Signal Verification</h4>
                 </div>
                 <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 10px;'>
@@ -2648,7 +2441,10 @@ if active_nav_idx == 0:
             """, unsafe_allow_html=True
         )
 
-    # Safety Advice Container
+    # Safety Advice Container (Unified HTML Card Rendering)
+    adv_border_accent = alert_border
+    
+    # Format safety_advice markdown strings into clean HTML
     formatted_advice_html = (
         safety_advice
         .replace("\n\n* ", "<br><br>• ")
@@ -2659,14 +2455,23 @@ if active_nav_idx == 0:
     )
     formatted_advice_html = re.sub(r'\*\*(.*?)\*\*', r'<strong style="color:var(--text-primary);font-weight:700;">\1</strong>', formatted_advice_html)
     
-    st.markdown(
-        f"""
-        <div class='glass-card' style='border-top: 4px solid {alert_border};'>
-            <h4 style='margin: 0 0 10px 0;'>Public Safety Advisory</h4>
-            <div style='font-size: 1.05rem; line-height: 1.6;'>{formatted_advice_html}</div>
+    action_plan_card_html = f"""
+    <div class='glass-card' style='border-left: 5px solid {adv_border_accent} !important; padding: 22px 26px; margin-bottom: 22px;'>
+        <div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;'>
+            <div style='display: flex; align-items: center; gap: 10px;'>
+                <span style='font-size: 1.35rem;'>💡</span>
+                <h4 style='margin: 0; font-size: 1.18rem; font-weight: 800; letter-spacing: -0.3px; color: var(--heading-color) !important;'>Public Health & Safety Action Plan</h4>
+            </div>
+            <span class='status-badge' style='background: {alert_bg}; color: {alert_border}; border: 1px solid {alert_border}; font-size: 0.8rem;'>
+                {alert_icon} ADVISORY LEVEL: {display_risk.upper()}
+            </span>
         </div>
-        """, unsafe_allow_html=True
-    )
+        <div style='color: var(--text-secondary) !important; font-size: 1.02rem; line-height: 1.7; font-weight: 500; background: var(--inner-card-bg); padding: 18px 22px; border-radius: 12px; border: 1px solid var(--card-border);'>
+            {formatted_advice_html}
+        </div>
+    </div>
+    """
+    st.markdown(action_plan_card_html, unsafe_allow_html=True)
 
     
     # Visual Trends Chart & Gauge
@@ -2700,7 +2505,6 @@ if active_nav_idx == 0:
             fig_pub.update_layout(
                 plot_bgcolor='rgba(0,0,0,0)',
                 paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(family='Inter, sans-serif', color='#0284C7'),
                 height=250,
                 coloraxis_showscale=False,
                 margin=dict(t=10, b=10, l=10, r=10)
@@ -2708,17 +2512,17 @@ if active_nav_idx == 0:
             st.plotly_chart(fig_pub, use_container_width=True)
             
     with col_pub2:
-        st.markdown(f"<p style='text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--heading-color);'>{t['threat_prob']} (%) - {loc_info['short_name'] if is_local_focus else 'Regional Grid'}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: #F8FAFC;'>{t['threat_prob']} (%) - {loc_info['short_name'] if is_local_focus else 'Regional Grid'}</p>", unsafe_allow_html=True)
         fig_gauge_pub = go.Figure(go.Indicator(
             mode = "gauge+number",
             value = display_outbreak_p,
             domain = {'x': [0, 1], 'y': [0, 1]},
             gauge = {
-                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': 'rgba(128, 128, 128, 0.6)'},
+                'axis': {'range': [0, 100], 'tickwidth': 1},
                 'bar': {'color': alert_border},
-                'bgcolor': "rgba(128, 128, 128, 0.12)",
+                'bgcolor': "#0F172A",
                 'borderwidth': 2,
-                'bordercolor': "rgba(128, 128, 128, 0.25)",
+                'bordercolor': "#334155",
                 'steps': [
                     {'range': [0, 35], 'color': 'rgba(16, 185, 129, 0.2)'},
                     {'range': [35, 70], 'color': 'rgba(245, 158, 11, 0.2)'},
@@ -2737,14 +2541,14 @@ if active_nav_idx == 0:
             st.markdown(
                 f"""
                 <div style='text-align: center; background: rgba(245, 158, 11, 0.18); padding: 10px 14px; border-radius: 8px; border: 1px solid #F59E0B; margin-top: -10px;'>
-                    <strong style='color: #FBBF24; font-size: 0.9rem;'>Consensus Guard: {false_p}% chance this outbreak signal is a False Alarm</strong>
+                    <strong style='color: #FBBF24; font-size: 0.9rem;'>⚠️ Consensus Guard: {false_p}% chance this outbreak signal is a False Alarm</strong>
                 </div>
                 """, unsafe_allow_html=True
             )
 
     # Historical Baseline vs. Current Privatized Health Radar Table
     st.markdown("---")
-    st.markdown(f"#### {t.get('baseline_comparison_title', 'Historical Baseline vs. Current Privatized Health Radar')}")
+    st.markdown(f"#### {t.get('baseline_comparison_title', '📊 Historical Baseline vs. Current Privatized Health Radar')}")
     
     baseline_rows = []
     # Filter nodes if local focus is active
@@ -2758,13 +2562,13 @@ if active_nav_idx == 0:
             elif z <= 3.0:
                 stat_badge = "🟡 Elevated Warning"
             else:
-                stat_badge = "🔴 Outbreak Surge"
+                stat_badge = "🚨 Outbreak Surge"
                 
             baseline_rows.append({
                 t.get("col_node_loc", "Health Center / Sensor Node"): f"{node_info['name']} ({node_info['zone']})",
                 t["col_indicator"]: m["label"],
                 t.get("col_hist_baseline", "Historical Normal Baseline"): f"{m['baseline_mean']} (±{m['baseline_std']})",
-                "Baseline Model": m.get("baseline_type", "Fixed"),
+                "Baseline Model": m.get("baseline_type", "📌 Fixed"),
                 t.get("col_today_val", "Today's Transmitted Count"): f"{m['transmitted_val']}",
                 t.get("col_surge_ratio", "Surge Factor"): f"{m['surge_ratio']}x",
                 t.get("col_deviation_sigma", "Baseline Deviation (Z)"): f"{'+' if z>=0 else ''}{z} σ",
@@ -2776,7 +2580,7 @@ if active_nav_idx == 0:
 
     # Interactive Geospatial Map (Plotly Mapbox)
     st.markdown("---")
-    st.markdown(f"#### {t.get('map_title', 'Regional Health Grid Geospatial Map')}")
+    st.markdown(f"#### {t.get('map_title', '🗺️ Regional Health Grid Geospatial Map')}")
     
     map_rows = []
     for node_id, node_info in node_data.items():
@@ -2878,7 +2682,7 @@ if active_nav_idx == 0:
 
     # Grassroots Surveillance Grid Nodes (Real-Time Visual Telemetry)
     st.markdown("---")
-    st.markdown("#### Grassroots Surveillance Grid Centers (Live Facility Telemetry)")
+    st.markdown("#### 🏥 Grassroots Surveillance Grid Centers (Live Facility Telemetry)")
     st.markdown("Live anonymized stream from Primary Health Centres, municipal water testing stations, and hospital outpatient departments across the region:")
     
     col_nc1, col_nc2, col_nc3, col_nc4 = st.columns(4)
@@ -2889,7 +2693,7 @@ if active_nav_idx == 0:
         utkal_data = node_data.get("node_utkal", {})
         utkal_metrics = utkal_data.get("metrics", {})
         max_z_u = max([m["z_score"] for m in utkal_metrics.values()]) if utkal_metrics else 0.0
-        badge_u = "🟢 Normal" if max_z_u <= 1.5 else ("🟡 Warning" if max_z_u <= 3.0 else "🔴 Outbreak")
+        badge_u = "🟢 Normal" if max_z_u <= 1.5 else ("🟡 Warning" if max_z_u <= 3.0 else "🚨 Outbreak")
         st.markdown(f"""
         <div class="node-telemetry-box">
             <strong style="font-size:0.95rem; font-weight:700;">Kanpur PHC Clinic</strong><br>
@@ -2905,7 +2709,7 @@ if active_nav_idx == 0:
         water_data = node_data.get("node_water", {})
         water_metrics = water_data.get("metrics", {})
         max_z_w = max([m["z_score"] for m in water_metrics.values()]) if water_metrics else 0.0
-        badge_w = "🟢 Normal" if max_z_w <= 1.5 else ("🟡 Warning" if max_z_w <= 3.0 else "🔴 Outbreak")
+        badge_w = "🟢 Normal" if max_z_w <= 1.5 else ("🟡 Warning" if max_z_w <= 3.0 else "🚨 Outbreak")
         turb_val = water_metrics.get("turbidity", {}).get("transmitted_val", 1.0)
         colif_val = water_metrics.get("coliform", {}).get("transmitted_val", 1.2)
         st.markdown(f"""
@@ -2923,7 +2727,7 @@ if active_nav_idx == 0:
         hosp_data = node_data.get("node_hospital", {})
         hosp_metrics = hosp_data.get("metrics", {})
         max_z_h = max([m["z_score"] for m in hosp_metrics.values()]) if hosp_metrics else 0.0
-        badge_h = "🟢 Normal" if max_z_h <= 1.5 else ("🟡 Warning" if max_z_h <= 3.0 else "🔴 Outbreak")
+        badge_h = "🟢 Normal" if max_z_h <= 1.5 else ("🟡 Warning" if max_z_h <= 3.0 else "🚨 Outbreak")
         diarrhea_h = hosp_metrics.get("diarrheal", {}).get("transmitted_val", 12.0)
         ili_h = hosp_metrics.get("ili", {}).get("transmitted_val", 15.0)
         st.markdown(f"""
@@ -2941,7 +2745,7 @@ if active_nav_idx == 0:
         campus_data = node_data.get("node_campus", {})
         campus_metrics = campus_data.get("metrics", {})
         max_z_c = max([m["z_score"] for m in campus_metrics.values()]) if campus_metrics else 0.0
-        badge_c = "🟢 Normal" if max_z_c <= 1.5 else ("🟡 Warning" if max_z_c <= 3.0 else "🔴 Outbreak")
+        badge_c = "🟢 Normal" if max_z_c <= 1.5 else ("🟡 Warning" if max_z_c <= 3.0 else "🚨 Outbreak")
         fever_c = campus_metrics.get("fever", {}).get("transmitted_val", 8.0)
         st.markdown(f"""
         <div class="node-telemetry-box">
@@ -2954,12 +2758,12 @@ if active_nav_idx == 0:
 
     # Preventive Community Health Action Protocols
     st.markdown("---")
-    st.markdown("#### Verified Public Health & Preventive Protocols")
+    st.markdown("#### 🛡️ Verified Public Health & Preventive Protocols")
     col_hy1, col_hy2, col_hy3 = st.columns(3)
     with col_hy1:
         st.markdown("""
         <div class="hygiene-card">
-            <div style="font-size:0.75rem; font-weight:800; color:#0284C7; letter-spacing:1px; margin-bottom:6px;">WATER SAFETY</div>
+            <span style="font-size:1.8rem;">💧</span>
             <div>
                 <strong style="color:#38BDF8; font-size:1.02rem;">Drinking Water Safety</strong><br>
                 <span style="font-size:0.86rem; color:#CBD5E1; line-height:1.5; display:inline-block; margin-top:4px;">
@@ -2973,7 +2777,7 @@ if active_nav_idx == 0:
     with col_hy2:
         st.markdown("""
         <div class="hygiene-card">
-            <div style="font-size:0.75rem; font-weight:800; color:#10B981; letter-spacing:1px; margin-bottom:6px;">CLINICAL CARE</div>
+            <span style="font-size:1.8rem;">🥤</span>
             <div>
                 <strong style="color:#10B981; font-size:1.02rem;">ORS & Hydration Protocol</strong><br>
                 <span style="font-size:0.86rem; color:#CBD5E1; line-height:1.5; display:inline-block; margin-top:4px;">
@@ -2987,7 +2791,7 @@ if active_nav_idx == 0:
     with col_hy3:
         st.markdown("""
         <div class="hygiene-card">
-            <div style="font-size:0.75rem; font-weight:800; color:#8B5CF6; letter-spacing:1px; margin-bottom:6px;">RESPIRATORY</div>
+            <span style="font-size:1.8rem;">😷</span>
             <div>
                 <strong style="color:#F59E0B; font-size:1.02rem;">Respiratory Care</strong><br>
                 <span style="font-size:0.86rem; color:#CBD5E1; line-height:1.5; display:inline-block; margin-top:4px;">
@@ -3017,14 +2821,15 @@ elif active_nav_idx == 1:
             shake_cls = " denial-shake" if st.session_state.clinic_auth_denied else ""
             denial_html = """
                 <div class="denial-msg" style="margin-top: 14px;">
-                    <span>Unauthorized Passcode. Access Denied (Authorized Hint: 1234)</span>
+                    <span>⛔</span> <span>Invalid Passcode. Access Denied (Authorized Hint: 1234)</span>
                 </div>
             """ if st.session_state.clinic_auth_denied else ""
             
             st.markdown(
                 f"""
                 <div class="auth-card-clinic{shake_cls}">
-                    <span class="auth-badge-clinic" style="display: block; text-align: center; font-weight: 700; margin-bottom: 10px;">Restricted Health Reporter Portal</span>
+                    <div class="auth-icon-halo">🛡️</div>
+                    <span class="auth-badge-clinic" style="display: block; text-align: center; font-weight: 700; margin-bottom: 10px;">🔒 Restricted Health Reporter Portal</span>
                     <h2 style="margin: 0 0 8px 0; text-align: center; font-size: 1.45rem; font-weight: 700;">{t["clinic_title"]}</h2>
                     <p style="opacity: 0.95; font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px; text-align: center;">
                         {t["pass_warn_clinic"]}
@@ -3044,9 +2849,9 @@ elif active_nav_idx == 1:
                 )
                 col_btn_auth1, col_btn_auth2 = st.columns([1.2, 1])
                 with col_btn_auth1:
-                    submit_clinic = st.form_submit_button("Unlock Terminal", type="primary", use_container_width=True)
+                    submit_clinic = st.form_submit_button("🔓 Unlock Terminal", type="primary", use_container_width=True)
                 with col_btn_auth2:
-                    autofill_clinic = st.form_submit_button("Quick PIN (1234)", use_container_width=True)
+                    autofill_clinic = st.form_submit_button("⚡ Quick PIN (1234)", use_container_width=True)
                 
                 if submit_clinic or autofill_clinic:
                     attempt_pin = "1234" if autofill_clinic else clinic_auth.strip()
@@ -3054,17 +2859,17 @@ elif active_nav_idx == 1:
                         st.session_state.clinic_auth_success = True
                         st.session_state.clinic_auth_denied = False
                         st.session_state.active_nav_index = 1
-                        st.toast("Clinic Portal Unlocked. Welcome, Health Reporter.")
+                        st.toast("✅ Clinic Portal Unlocked! Welcome, Health Reporter.", icon="🔓")
                         st.rerun()
                     else:
                         st.session_state.clinic_auth_denied = True
-                        st.toast("Incorrect PIN. Access Denied!")
+                        st.toast("⛔ Incorrect PIN. Access Denied!", icon="🔒")
                         st.rerun()
                         
             st.markdown(
                 """
                 <div class="auth-footer-shield">
-                    <strong>Zero-Central-PII Guarantee:</strong> Edge Differential Privacy is locally enforced prior to data transmission.
+                    🔒 <strong>Zero-Central-PII Guarantee:</strong> Edge Differential Privacy is locally enforced prior to data transmission.
                 </div>
                 """, unsafe_allow_html=True
             )
@@ -3110,7 +2915,7 @@ elif active_nav_idx == 1:
         for m_id, m in node["metrics"].items():
             status_text = "🟢 Safe (Privacy Preserved)"
             if m["suppressed"]:
-                status_text = f"Suppressed (< Group Size {k_anonymity})"
+                status_text = f"❌ Blocked (< Group Size {k_anonymity})"
                 
             metric_rows.append({
                 t["col_indicator"]: m["label"],
@@ -3255,27 +3060,27 @@ elif active_nav_idx == 1:
             with prev_col1:
                 st.markdown(
                     f"""
-                    <div style='background: var(--inner-card-bg); color: var(--text-primary); border: 1px solid var(--card-border); border-left: 4px solid #38BDF8; padding: 14px 16px; border-radius: 10px; box-shadow: var(--card-shadow);'>
-                        <strong style='color:#0284C7; font-size: 1.05rem;'>{local_card_title}</strong><br>
-                        <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);'>
-                            • {item_header_text}: <strong style='color: var(--text-primary);'>{symptom_labels[selected_symptom]}</strong><br>
-                            • Original {val_header_text}: <strong style='color: #0284C7;'>{raw_case_count}</strong><br>
-                            • Site: <strong style='color: var(--text-primary);'>{location_input}</strong><br>
-                            • Date/Time: <strong style='color: var(--text-muted);'>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
+                    <div style='background: #0F172A; color: #F8FAFC; border: 1px solid #334155; border-left: 4px solid #38BDF8; padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);'>
+                        <strong style='color:#38BDF8; font-size: 1.05rem;'>{local_card_title}</strong><br>
+                        <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: #CBD5E1;'>
+                            • {item_header_text}: <strong style='color: #F8FAFC;'>{symptom_labels[selected_symptom]}</strong><br>
+                            • Original {val_header_text}: <strong style='color: #00F2FE;'>{raw_case_count}</strong><br>
+                            • Site: <strong style='color: #F8FAFC;'>{location_input}</strong><br>
+                            • Date/Time: <strong style='color: #94A3B8;'>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
                         </div>
                     </div>
                     """, unsafe_allow_html=True
                 )
             with prev_col2:
-                suppress_alert = "<span style='color:#EF4444; font-weight:bold;'>Masked (Under threshold)</span>" if sim_suppressed else "<span style='color:#10B981; font-weight:bold;'>Secure Upload Allowed</span>"
+                suppress_alert = "<span style='color:#EF4444; font-weight:bold;'>⚠️ Masked (Under threshold)</span>" if sim_suppressed else "<span style='color:#10B981; font-weight:bold;'>✅ Secure Upload Allowed</span>"
                 st.markdown(
                     f"""
-                    <div style='background: var(--inner-card-bg); color: var(--text-primary); border: 1px solid var(--card-border); border-left: 4px solid #0284C7; padding: 14px 16px; border-radius: 10px; box-shadow: var(--card-shadow);'>
-                        <strong style='color:#0284C7; font-size: 1.05rem;'>{transmitted_card_title}</strong><br>
-                        <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);'>
-                            • Uploaded Value: <strong style='color: #0284C7;'>{sim_transmitted_tally}</strong> ({suppress_alert})<br>
-                            • Uploaded Site: <strong style='color: var(--text-primary);'>{sim_transmitted_location}</strong><br>
-                            • Date/Time: <strong style='color: var(--text-muted);'>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
+                    <div style='background: #0F172A; color: #F8FAFC; border: 1px solid #334155; border-left: 4px solid #00F2FE; padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);'>
+                        <strong style='color:#00F2FE; font-size: 1.05rem;'>{transmitted_card_title}</strong><br>
+                        <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: #CBD5E1;'>
+                            • Uploaded Value: <strong style='color: #00F2FE;'>{sim_transmitted_tally}</strong> ({suppress_alert})<br>
+                            • Uploaded Site: <strong style='color: #F8FAFC;'>{sim_transmitted_location}</strong><br>
+                            • Date/Time: <strong style='color: #94A3B8;'>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
                         </div>
                     </div>
                     """, unsafe_allow_html=True
@@ -3293,8 +3098,8 @@ elif active_nav_idx == 1:
                     add_gsheet_log(st.session_state.gsheet_url, selected_node_id, new_log)
                 else:
                     st.session_state.local_logs[selected_node_id].append(new_log)
-                st.toast("Case report securely logged with Differential Privacy.")
-                st.toast("Timestamp recorded in IST.")
+                st.toast("✅ Case report securely logged with Differential Privacy!", icon="🛡️")
+                st.toast("🕒 Timestamp stamped in IST", icon="🕒")
                 st.success(t["log_success"])
                 st.rerun()
                 
@@ -3306,10 +3111,10 @@ elif active_nav_idx == 1:
             with ivr_col_ctrl:
                 st.markdown(
                     """
-                    <div style="background: var(--inner-card-bg); color: var(--text-primary); padding: 18px; border-radius: 14px; border: 1px solid var(--card-border); border-left: 4px solid #0284C7; margin-bottom: 14px; box-shadow: var(--card-shadow);">
-                        <h3 style="color: #0284C7; margin: 0; font-size: 1.25rem;">Toll-Free: 1800-SURAKSHA</h3>
+                    <div style="background: #0F172A; color: #F8FAFC; padding: 18px; border-radius: 14px; border: 1px solid #334155; border-left: 4px solid #00F2FE; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                        <h3 style="color: #00F2FE; margin: 0; font-size: 1.25rem;">📞 1800-SURAKSHA</h3>
                         <div style="margin: 6px 0 8px 0;"><span class="grassroots-badge">Grassroots Feature Phone Gateway</span></div>
-                        <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 4px 0 0 0; line-height: 1.45;">
+                        <p style="color: #CBD5E1; font-size: 0.88rem; margin: 4px 0 0 0; line-height: 1.45;">
                             Community health workers (ASHA/Anganwadi) in remote villages dial without internet. Automated vernacular voice prompts (Odia, Hindi, English) guide symptom tallies using phone keypads.
                         </p>
                     </div>
@@ -3333,7 +3138,7 @@ elif active_nav_idx == 1:
                     ivr_count = st.number_input("DTMF Keypad Tally Input (#):", min_value=1, max_value=150, value=8)
                     ivr_loc = st.selectbox("Location / Ward Code:", ["Hostel 1", "Hostel 2", "Hostel 3", "General Campus", "Village Ward 4"])
                     
-                    if st.button("Transmit DTMF Code (#)", use_container_width=True, type="primary"):
+                    if st.button("📲 Transmit DTMF Code (#)", use_container_width=True, type="primary"):
                         new_log = {
                             "symptom": ivr_symptom,
                             "location": ivr_loc,
@@ -3346,20 +3151,20 @@ elif active_nav_idx == 1:
                         else:
                             st.session_state.local_logs[selected_node_id].append(new_log)
                         st.session_state.ivr_call_active = False
-                        st.toast("IVR Case Count Successfully Registered.")
+                        st.toast("📞 IVR Case Count Successfully Registered!", icon="✅")
                         st.success(t["log_success"])
                         st.rerun()
                     
         elif t["opt3"] in ingest_method:
-            st.markdown("#### Edge OCR Scanner: Paper Daily OPD Register")
+            st.markdown("#### 📋 Edge OCR Scanner: Paper Daily OPD Register")
             ocr_col_img, ocr_col_ctrl = st.columns([1.3, 1.2])
             with ocr_col_img:
-                render_app_image("assets/paper_opd_register.jpg", caption="Handwritten Daily OPD Register Sheet (Kanpur PHC, Odisha Health Mission)")
+                render_app_image("assets/paper_opd_register.jpg", caption="📷 Actual Handwritten Daily OPD Register Sheet (Kanpur PHC, Odisha Health Mission)")
             with ocr_col_ctrl:
                 st.markdown("""
-                <div style="background: var(--inner-card-bg); border: 1px solid var(--card-border); border-left: 4px solid #0284C7; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: var(--card-shadow);">
-                    <strong style="color:#0284C7; font-size: 1.05rem;">Zero-Burden Paper Ingestion for PHCs</strong><br>
-                    <span style="font-size:0.86rem; color: var(--text-secondary); line-height: 1.45; display: inline-block; margin-top: 4px;">
+                <div style="background: #0F172A; border: 1px solid #334155; border-left: 4px solid #00F2FE; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                    <strong style="color:#00F2FE; font-size: 1.05rem;">Zero-Burden Paper Ingestion for PHCs</strong><br>
+                    <span style="font-size:0.86rem; color: #CBD5E1; line-height: 1.45; display: inline-block; margin-top: 4px;">
                     Rural clinic staff write by hand in physical register books. Nurses don't need to type data—they simply take a smartphone photo of today's sheet, and local Edge OCR extracts symptom counts automatically!
                     </span>
                 </div>
@@ -3367,7 +3172,7 @@ elif active_nav_idx == 1:
                 
                 col_btn_ocr1, col_btn_ocr2 = st.columns(2)
                 with col_btn_ocr1:
-                    sim_sample_ocr = st.button("Load & Scan Sample Sheet", type="primary", use_container_width=True, help="Scans the handwritten register photo on the left")
+                    sim_sample_ocr = st.button("⚡ Load & Scan Sample Sheet", type="primary", use_container_width=True, help="1-Click demo: scans the handwritten register photo on the left")
                 with col_btn_ocr2:
                     uploaded_file = st.file_uploader("Upload custom photo", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
                     
@@ -3375,13 +3180,13 @@ elif active_nav_idx == 1:
                     st.session_state.ocr_scanned_done = True
                     st.markdown("""
                     <div style="background: rgba(6, 78, 59, 0.45); border: 1px solid #10B981; border-radius: 10px; padding: 14px; margin: 10px 0; color: #ECFDF5; box-shadow: 0 4px 15px rgba(16,185,129,0.25);">
-                        <strong style="color:#34D399; font-size: 1.02rem;">Handwritten OCR Extraction Successful.</strong><br>
+                        <strong style="color:#34D399; font-size: 1.02rem;">✅ Handwritten OCR Extraction Successful!</strong><br>
                         <span style="font-size:0.86rem; line-height: 1.6; color: #D1FAE5; display: inline-block; margin-top: 4px;">
                         • <strong>Date Detected:</strong> 26/10/2023<br>
                         • <strong>Fever Tallies (ଜ୍ୱର):</strong> 4 cases (Rakesh, Ganesh, Bishnu, Arjun)<br>
                         • <strong>Diarrheal Tallies (ଝାଡ଼ା):</strong> 3 cases (Sita, Kamala)<br>
                         • <strong>Cough / Cold Tallies (କାଶ):</strong> 4 cases (Laxmi, Arjun, Kamala)<br>
-                        <em>Zero-Central-PII: Patient names & IDs remain strictly on the local device.</em>
+                        🔒 <em>Zero-Central-PII: Patient names & IDs remain strictly on the local device.</em>
                         </span>
                     </div>
                     """, unsafe_allow_html=True)
@@ -3389,7 +3194,7 @@ elif active_nav_idx == 1:
                     ocr_symptom_pick = st.selectbox("Select Extracted Cohort to Sync:", ["Diarrheal / Gastro (3 cases)", "Fever (4 cases)", "Respiratory / Cough (4 cases)"])
                     ocr_val_map = {"Diarrheal / Gastro (3 cases)": (symptom_options[0], 3.0), "Fever (4 cases)": ("fever" if "fever" in symptom_options else symptom_options[0], 4.0), "Respiratory / Cough (4 cases)": ("respiratory" if "respiratory" in symptom_options else symptom_options[0], 4.0)}
                     
-                    if st.button("Upload Extracted OCR Tallies to Health Grid", use_container_width=True, type="primary"):
+                    if st.button("🚀 Upload Extracted OCR Tallies to Health Grid", use_container_width=True, type="primary"):
                         chosen_sym, chosen_count = ocr_val_map[ocr_symptom_pick]
                         new_log = {
                             "symptom": chosen_sym,
@@ -3403,7 +3208,7 @@ elif active_nav_idx == 1:
                         else:
                             st.session_state.local_logs[selected_node_id].append(new_log)
                         st.session_state.ocr_scanned_done = False
-                        st.toast("Paper Register OCR tally securely uploaded.")
+                        st.toast("📋 Paper Register OCR tally securely uploaded!", icon="🛡️")
                         st.success(t["log_success"])
                         st.rerun()
 
@@ -3411,7 +3216,7 @@ elif active_nav_idx == 1:
         elif t["opt4"] in ingest_method:
             st.markdown("#### Database Synchronizer Daemon")
             st.code("# Secure Connector pushes anonymized averages directly.\nresult = db.query('SELECT COUNT(*) FROM patient_logs')\nupload_safely(result)", language="python")
-            if st.button("Trigger Sync Simulation", use_container_width=True, type="primary"):
+            if st.button("🔄 Trigger Sync Sync Simulation", use_container_width=True, type="primary"):
                 new_log = {
                     "symptom": symptom_options[0],
                     "location": "Main Center",
@@ -3423,8 +3228,8 @@ elif active_nav_idx == 1:
                     add_gsheet_log(st.session_state.gsheet_url, selected_node_id, new_log)
                 else:
                     st.session_state.local_logs[selected_node_id].append(new_log)
-                st.toast("Hospital DB sync batch safely uploaded.")
-                st.toast("Timestamp recorded in IST.")
+                st.toast("🔄 Hospital DB sync batch safely uploaded!", icon="⚡")
+                st.toast("🕒 Timestamp stamped in IST", icon="🕒")
                 st.success(t["log_success"])
                 st.rerun()
 
@@ -3477,38 +3282,38 @@ elif active_nav_idx == 1:
                         clean_notes = clean_notes[clean_notes.find("]")+1:].strip()
                     st.markdown(
                         f"""
-                        <div style='background: var(--inner-card-bg); border: 1px solid var(--card-border); border-left: 4px solid #0284C7; padding: 14px 16px; border-radius: 10px; margin-bottom: 10px; box-shadow: var(--card-shadow); color: var(--text-primary);'>
+                        <div style='background: #0F172A; border: 1px solid #334155; border-left: 4px solid #00F2FE; padding: 14px 16px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); color: #F8FAFC;'>
                             <div style='display: flex; justify-content: space-between; align-items: center;'>
-                                <strong style='font-size: 1.05rem; color: var(--text-primary);'>{symptom_labels.get(log["symptom"], log["symptom"])}</strong>
-                                <span style='font-size: 0.78rem; color: var(--text-muted); background: var(--card-bg); border: 1px solid var(--card-border); padding: 3px 8px; border-radius: 6px;'>{time_badge}</span>
+                                <strong style='font-size: 1.05rem; color: #F8FAFC;'>{symptom_labels.get(log["symptom"], log["symptom"])}</strong>
+                                <span style='font-size: 0.78rem; color: #94A3B8; background: #1E293B; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px;'>🕒 {time_badge}</span>
                             </div>
                             <div style='margin-top: 5px;'>
-                                <span style='font-size: 0.88rem; color: var(--text-secondary);'>Location: <strong style='color: var(--text-primary);'>{log["location"]}</strong> | {val_header_text}: <strong style='color: #0284C7;'>{log["raw_val"]}</strong></span><br>
-                                <span style='font-size: 0.82rem; color: var(--text-muted);'>Notes: {clean_notes if clean_notes else 'None'}</span>
+                                <span style='font-size: 0.88rem; color: #CBD5E1;'>📍 Location: <strong style='color: #F8FAFC;'>{log["location"]}</strong> | {val_header_text}: <strong style='color: #00F2FE;'>{log["raw_val"]}</strong></span><br>
+                                <span style='font-size: 0.82rem; color: #94A3B8;'>📝 Notes: {clean_notes if clean_notes else 'None'}</span>
                             </div>
                         </div>
                         """, unsafe_allow_html=True
                     )
                 with col_l2:
                     badge_color = "#10B981" if not log_suppressed else "#EF4444"
-                    status_badge = f"<span style='color:{badge_color}; font-weight:bold;'>{'Safe Upload' if not log_suppressed else 'Suppressed'}</span>"
+                    status_badge = f"<span style='color:{badge_color}; font-weight:bold;'>{'✅ Safe Upload' if not log_suppressed else '❌ Suppressed'}</span>"
                     st.markdown(
                         f"""
-                        <div style='text-align: left; padding: 12px 5px; color: var(--text-primary);'>
+                        <div style='text-align: left; padding: 12px 5px; color: #F8FAFC;'>
                             <span style='font-size:0.88rem;'>{status_badge}</span><br>
-                            <span style='font-size:0.85rem; color: var(--text-muted);'>Shared: <strong style='color: var(--text-primary);'>{0.0 if log_suppressed else log_dp}</strong></span>
+                            <span style='font-size:0.85rem; color: #94A3B8;'>Shared: <strong style='color: #F8FAFC;'>{0.0 if log_suppressed else log_dp}</strong></span>
                         </div>
                         """, unsafe_allow_html=True
                     )
                 with col_l3:
                     st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
                     btn_unique_key = f"del_btn_{selected_node_id}_{idx}_{log.get('row_id', idx)}"
-                    if st.button("Delete", key=btn_unique_key, use_container_width=True, help="Delete this entry"):
+                    if st.button("🗑️", key=btn_unique_key, use_container_width=True, help="Delete this entry"):
                         if active_gsheet_url:
                             delete_gsheet_log(active_gsheet_url, log["row_id"])
                         else:
                             st.session_state.local_logs[selected_node_id].pop(idx)
-                        st.toast("Entry deleted and baseline recalculated.")
+                        st.toast("🗑️ Entry deleted and baseline recalculated.", icon="ℹ️")
                         st.success("Entry deleted!")
                         st.rerun()
             if not active_gsheet_url:
@@ -3518,7 +3323,7 @@ elif active_nav_idx == 1:
                     st.rerun()
 
 # ==============================================================================
-# TAB 3: STATE MEDICAL BOARD CONSOLE (TERTIARY - HEALTH GOVERNANCE)
+# TAB 3: HEALTH OFFICER CONSOLE (TERTIARY - HEALTH OFFICERS)
 # ==============================================================================
 elif active_nav_idx == 2:
     # Initialize authentication state for Tab 3
@@ -3533,14 +3338,15 @@ elif active_nav_idx == 2:
             shake_cls = " denial-shake" if st.session_state.officer_auth_denied else ""
             denial_html = """
                 <div class="denial-msg" style="margin-top: 14px;">
-                    <span>Unauthorized Passcode. Access Denied (Authorized Hint: 9999)</span>
+                    <span>⛔</span> <span>Unauthorized Passcode. Access Denied (Authorized Hint: 9999)</span>
                 </div>
             """ if st.session_state.officer_auth_denied else ""
             
             st.markdown(
                 f"""
                 <div class="auth-card-officer{shake_cls}">
-                    <span class="auth-badge-officer" style="display: block; text-align: center; font-weight: 700; margin-bottom: 10px;">Restricted State Level 3 Clearance</span>
+                    <div class="auth-icon-halo-officer">🔑</div>
+                    <span class="auth-badge-officer" style="display: block; text-align: center; font-weight: 700; margin-bottom: 10px;">🚨 Restricted State Level 3 Clearance</span>
                     <h2 style="margin: 0 0 8px 0; text-align: center; font-size: 1.45rem; font-weight: 700;">{t["officer_title"]}</h2>
                     <p style="opacity: 0.95; font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px; text-align: center;">
                         {t["pass_warn_officer"]}
@@ -3560,9 +3366,9 @@ elif active_nav_idx == 2:
                 )
                 col_btn_off1, col_btn_off2 = st.columns([1.2, 1])
                 with col_btn_off1:
-                    submit_officer = st.form_submit_button("Access Console", type="primary", use_container_width=True)
+                    submit_officer = st.form_submit_button("🛡️ Access Console", type="primary", use_container_width=True)
                 with col_btn_off2:
-                    autofill_officer = st.form_submit_button("Master Key (9999)", use_container_width=True)
+                    autofill_officer = st.form_submit_button("⚡ Master Key (9999)", use_container_width=True)
                 
                 if submit_officer or autofill_officer:
                     attempt_pin = "9999" if autofill_officer else officer_auth.strip()
@@ -3570,17 +3376,17 @@ elif active_nav_idx == 2:
                         st.session_state.officer_auth_success = True
                         st.session_state.officer_auth_denied = False
                         st.session_state.active_nav_index = 2
-                        st.toast("Health Officer Console Unlocked! Welcome, Officer.")
+                        st.toast("✅ Health Officer Console Unlocked! Welcome, Officer.", icon="🔑")
                         st.rerun()
                     else:
                         st.session_state.officer_auth_denied = True
-                        st.toast("Invalid Officer PIN. Access Denied!")
+                        st.toast("⛔ Invalid Officer PIN. Access Denied!", icon="🚨")
                         st.rerun()
                         
             st.markdown(
                 """
                 <div class="auth-footer-shield">
-                    <strong>DPDP Act 2023 Statutory Compliance:</strong> Cryptographically sealed dispatch ledger & emergency alert broadcasting.
+                    ⚖️ <strong>DPDP Act 2023 Statutory Compliance:</strong> Cryptographically sealed dispatch ledger & emergency alert broadcasting.
                 </div>
                 """, unsafe_allow_html=True
             )
@@ -3593,7 +3399,7 @@ elif active_nav_idx == 2:
         st.markdown(
             """
             <div class='glass-card' style='border-top: 3px solid #00F2FE;'>
-                <h4 style='margin: 0 0 8px 0; color: #F8FAFC;'>Shared Database Configuration</h4>
+                <h4 style='margin: 0 0 8px 0; color: #F8FAFC;'>🔗 Shared Database Configuration</h4>
                 <p style='font-size: 0.9rem; color: #CBD5E1; margin-bottom: 15px; line-height: 1.5;'>
                     Connect to a Google Sheet to enable real-time shared data across all clinic nodes. 
                     Only Health Officers can configure this setting.
@@ -3610,12 +3416,12 @@ elif active_nav_idx == 2:
         )
         col_gs1, col_gs2 = st.columns(2)
         with col_gs1:
-            if st.button("Save & Enable Shared DB", type="primary", use_container_width=True):
+            if st.button("✅ Save & Enable Shared DB", type="primary", use_container_width=True):
                 st.session_state.gsheet_url = gsheet_url_officer
-                st.success("Google Sheet connected. All case reports will now sync to the shared database.")
+                st.success("✅ Google Sheet connected! All case reports will now sync to the shared database.")
                 st.rerun()
         with col_gs2:
-            if st.button("Disconnect Google Sheet", use_container_width=True):
+            if st.button("🚫 Disconnect Google Sheet", use_container_width=True):
                 st.session_state.gsheet_url = ""
                 st.success("Disconnected. App is now using local session memory.")
                 st.rerun()
@@ -3623,13 +3429,13 @@ elif active_nav_idx == 2:
             st.markdown(f"<p style='color:#10B981; font-size:0.85rem;'>🟢 <strong>Connected:</strong> {st.session_state.gsheet_url[:60]}...</p>", unsafe_allow_html=True)
             col_seed1, col_seed2 = st.columns(2)
             with col_seed1:
-                if st.button("Seed Diverse Simulated Dataset", help="Populates varied, realistic test logs across all 6 nodes"):
+                if st.button("✨ Seed Diverse Simulated Dataset", help="Populates varied, realistic test logs across all 6 nodes"):
                     seed_gsheet_preset(st.session_state.gsheet_url)
                     st.session_state.seed_popup_active = True
-                    st.toast("Multi-Facility Seeding Initiated. 39 records transmitting to database...")
+                    st.toast("🌱 Multi-Facility Seeding Initiated! 39 records transmitting to database...", icon="🚀")
                     st.rerun()
             with col_seed2:
-                if st.button("Clear All Spreadsheet Data", help="Clears all rows from the Google Sheet"):
+                if st.button("🧹 Clear All Spreadsheet Data", help="Clears all rows from the Google Sheet"):
                     def _clear_all():
                         try:
                             rows = requests.get(st.session_state.gsheet_url, timeout=10).json()
@@ -3642,7 +3448,7 @@ elif active_nav_idx == 2:
                     st.session_state.gsheet_logs_cache = []
                     st.session_state.gsheet_cache_dirty = True
                     st.session_state.seed_popup_active = False
-                    st.toast("All spreadsheet data cleared successfully.")
+                    st.toast("🧹 All spreadsheet data cleared successfully.", icon="🧼")
                     st.rerun()
 
             if st.session_state.get("seed_popup_active"):
@@ -3651,7 +3457,7 @@ elif active_nav_idx == 2:
                     <div class='green-popup'>
                         <div style='display: flex; align-items: center; justify-content: space-between;'>
                             <div style='display: flex; align-items: center; gap: 14px;'>
-                                
+                                <span style='font-size: 2.2rem;'>🌱</span>
                                 <div>
                                     <strong style='color: #10B981; font-size: 1.15rem;'>Simulated Dataset Seeding Initiated!</strong><br>
                                     <span style='font-size: 0.9rem; opacity: 0.9;'>
@@ -3705,7 +3511,7 @@ elif active_nav_idx == 2:
             lai = agg_results["node_lais"][node_id]
             status_label = "🟢 Normal Baseline"
             if lai > false_alarm_threshold:
-                status_label = "🔴 Outbreak Alert"
+                status_label = "🚨 Anomaly Alert"
             elif lai > (false_alarm_threshold * 0.7):
                 status_label = "🟡 Elevated Warning"
                 
@@ -3718,11 +3524,11 @@ elif active_nav_idx == 2:
         
         # Dynamic Baseline Learning & Seasonality Engine Panel
         st.markdown("---")
-        st.markdown("#### Dynamic Baseline & Moving Average Learning Engine")
+        st.markdown("#### 📈 Dynamic Baseline & Moving Average Learning Engine")
         st.markdown(
             """
             <div class='glass-card' style='border-left: 4px solid #10B981; margin-bottom: 15px;'>
-                <h5 style='margin: 0 0 6px 0; color: #10B981;'>Self-Calibrating Epidemic Baseline Engine</h5>
+                <h5 style='margin: 0 0 6px 0; color: #10B981;'>🔄 Self-Calibrating Epidemic Baseline Engine</h5>
                 <p style='font-size: 0.88rem; color: #CBD5E1; margin: 0; line-height: 1.5;'>
                     SurakshaNet continuously recalculates facility baselines over a <strong>rolling 14-day window</strong>. 
                     As seasonal background illnesses naturally rise and fall (e.g., winter rhinovirus vs monsoon gastroenteritis), the baseline updates smoothly (μ, σ) while an <strong>Outlier Exclusion Guard (&gt; 3.5σ)</strong> prevents true epidemic surges from inflating the baseline.
@@ -3753,13 +3559,13 @@ elif active_nav_idx == 2:
                 first_l = raw_lines[0]
                 if "STATUS:" in first_l:
                     custom_title = first_l.split("STATUS:", 1)[1].strip()
-                elif "OFFICIAL STATE MEDICAL BOARD ADVISORY" in first_l or "OFFICIAL HEALTH EMERGENCY ADVISORY" in first_l:
+                elif "OFFICIAL HEALTH EMERGENCY ADVISORY" in first_l:
                     for l in raw_lines[1:]:
                         if "STATUS:" in l:
                             custom_title = l.split("STATUS:", 1)[1].strip()
                             break
                 else:
-                    custom_title = f"{first_l[:45]}"
+                    custom_title = f"📢 {first_l[:45]}"
 
             new_notif = {
                 "timestamp": datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S IST"),
@@ -3767,34 +3573,34 @@ elif active_nav_idx == 2:
                 "message": clean_draft,
                 "confidence": f"{agg_results['confidence']}%",
                 "hash": f"SHA256:{base64.b64encode(clean_draft.encode()).decode()[:16]}...",
-                "dispatch": "Dispatched to mobile health registry (2 state officers)"
+                "dispatch": "✅ Dispatched to mobile health registry (2 state officers)"
             }
             st.session_state.notifications.append(new_notif)
             st.session_state.alert_dispatched_popup = new_notif
             st.session_state.active_officer_alert = new_notif
-            st.toast(f"Official Advisory Dispatched: {custom_title}")
-            st.toast("SHA256 cryptographic seal recorded in Ledger.")
+            st.toast(f"📢 Official Advisory Dispatched: {custom_title}", icon="🚨")
+            st.toast("🔒 SHA256 cryptographic seal recorded in Ledger", icon="✅")
             st.rerun()
 
         if st.session_state.get("alert_dispatched_popup"):
             p = st.session_state.alert_dispatched_popup
             st.markdown(
                 f"""
-                <div class='green-popup' style='border-left: 6px solid #10B981; background: var(--card-bg); border: 1px solid #10B981; box-shadow: var(--card-shadow);'>
+                <div class='green-popup' style='border-left: 6px solid #10B981; background: #0F172A; border: 1px solid #10B981; box-shadow: 0 10px 30px rgba(0,0,0,0.6);'>
                     <div style='display: flex; align-items: center; justify-content: space-between;'>
                         <div style='display: flex; align-items: flex-start; gap: 14px; width: 100%;'>
-                            
+                            <span style='font-size: 2.2rem;'>📡</span>
                             <div style='flex: 1;'>
                                 <strong style='color: #10B981; font-size: 1.15rem;'>Official Emergency Advisory Dispatched!</strong><br>
                                 <div style='font-size: 1.05rem; font-weight: 700; color: #EF4444; margin: 4px 0;'>
                                     {p['status']}
                                 </div>
-                                <div style='background: var(--inner-card-bg); border: 1px solid rgba(16,185,129,0.3); border-left: 3px solid #10B981; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-family: sans-serif; white-space: pre-wrap; margin: 8px 0; color: var(--text-primary);'>
+                                <div style='background: #1E293B; border: 1px solid rgba(16,185,129,0.3); border-left: 3px solid #10B981; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-family: sans-serif; white-space: pre-wrap; margin: 8px 0; color: #F8FAFC;'>
 {p.get('message', p['status'])}
                                 </div>
-                                <span style='font-size: 0.82rem; color: var(--text-secondary);'>
+                                <span style='font-size: 0.82rem; color: #CBD5E1;'>
                                     <strong>Certified Timestamp:</strong> {p['timestamp']} | <strong>Confidence:</strong> {p['confidence']}<br>
-                                    <strong>Cryptographic Audit Seal:</strong> <code style='color: #0284C7; font-size:0.8rem;'>{p['hash']}</code>
+                                    <strong>Cryptographic Audit Seal:</strong> <code style='color: #00F2FE; font-size:0.8rem;'>{p['hash']}</code>
                                 </span>
                             </div>
                         </div>
@@ -3815,15 +3621,15 @@ elif active_nav_idx == 2:
                 msg_content = n.get("message", "").strip()
                 st.markdown(
                     f"""
-                    <div style='background: var(--card-bg); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--card-border); border-left: 4px solid #EF4444; margin-bottom: 12px; box-shadow: var(--card-shadow); color: var(--text-primary);'>
+                    <div style='background: #0F172A; padding: 14px 16px; border-radius: 10px; border: 1px solid #334155; border-left: 4px solid #EF4444; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); color: #F8FAFC;'>
                         <div style='display: flex; justify-content: space-between; align-items: center;'>
                             <strong style='color:#EF4444; font-size: 1.05rem;'>{n['status']}</strong>
-                            <span style='font-size: 0.8rem; color: var(--text-muted); background: var(--inner-card-bg); border: 1px solid var(--card-border); padding: 2px 8px; border-radius: 6px;'>{n['timestamp']}</span>
+                            <span style='font-size: 0.8rem; color: #94A3B8; background: #1E293B; border: 1px solid #334155; padding: 2px 8px; border-radius: 6px;'>🕒 {n['timestamp']}</span>
                         </div>
-                        {f"<div style='background: var(--inner-card-bg); padding: 10px 14px; border-radius: 6px; font-size: 0.88rem; line-height: 1.45; white-space: pre-wrap; margin: 8px 0; border-left: 3px solid #00F2FE; color: var(--text-primary);'>{msg_content}</div>" if msg_content else ""}
+                        {f"<div style='background: #1E293B; padding: 10px 14px; border-radius: 6px; font-size: 0.88rem; line-height: 1.45; white-space: pre-wrap; margin: 8px 0; border-left: 3px solid #00F2FE; color: #F8FAFC;'>{msg_content}</div>" if msg_content else ""}
                         <div style='display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; margin-top: 8px;'>
-                            <span style='color: #10B981; font-weight: 600;'>{n.get('dispatch', 'Dispatched to mobile health registry')}</span>
-                            <span style='font-family: var(--font-mono); color: #0284C7;'>{n['hash']}</span>
+                            <span style='color: #10B981; font-weight: 600;'>{n.get('dispatch', '✅ Dispatched to mobile health registry')}</span>
+                            <span style='font-family: var(--font-mono); color: #00F2FE;'>{n['hash']}</span>
                         </div>
                     </div>
                     """, unsafe_allow_html=True
@@ -3876,7 +3682,7 @@ elif active_nav_idx == 3:
     with col_dp_form:
         st.markdown(f"""
         <div class="glass-card" style="border-left: 4px solid #0284C7;">
-            <strong style="color: #0284C7; font-size: 1.05rem;">On-Device Differential Privacy (Laplace Mechanism)</strong>
+            <strong style="color: #0284C7; font-size: 1.05rem;">🔒 On-Device Differential Privacy (Laplace Mechanism)</strong>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 6px 0 10px 0; line-height: 1.5;">
                 Noise is injected at the edge device before any number reaches the network. An observer cannot mathematically distinguish whether a specific patient reported or not:
             </p>
@@ -3889,7 +3695,7 @@ elif active_nav_idx == 3:
     with col_dp_act:
         st.markdown(f"""
         <div class="glass-card" style="border-left: 4px solid #10B981;">
-            <strong style="color: #10B981; font-size: 1.05rem;">100% DPDP Act 2023 & HIPAA Compliant</strong>
+            <strong style="color: #10B981; font-size: 1.05rem;">⚖️ 100% DPDP Act 2023 & HIPAA Compliant</strong>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 6px 0 10px 0; line-height: 1.5;">
                 Certified compliance with India's <strong>Digital Personal Data Protection (DPDP) Act 2023</strong>:
             </p>
@@ -3911,7 +3717,7 @@ elif active_nav_idx == 3:
                 t["audit_col_field"]: m["label"],
                 t["audit_col_eps"]: f"Eps = {epsilon}",
                 t["audit_col_noise"]: m["dp_noise"],
-                t["audit_col_guard"]: "Passed (Group size safe)" if not m["suppressed"] else f"Masked (Group size {m['raw_val']} < limit {k_anonymity})",
+                t["audit_col_guard"]: "Passed (Group size safe)" if not m["suppressed"] else f"🚨 Masked (Group size {m['raw_val']} < limit {k_anonymity})",
                 t["audit_col_payload"]: f"{m['transmitted_val']} (Anonymized)"
             })
     st.dataframe(pd.DataFrame(audit_records), use_container_width=True, hide_index=True)
