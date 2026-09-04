@@ -96,14 +96,21 @@ st.markdown("""
     }
     div[data-baseweb="select"] * {
         cursor: pointer !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
     }
     div[data-baseweb="select"] input {
         caret-color: transparent !important;
         cursor: pointer !important;
-        pointer-events: none !important;
         user-select: none !important;
         -webkit-user-select: none !important;
         -webkit-touch-callout: none !important;
+        color: transparent !important;
+        text-shadow: 0 0 0 var(--input-text) !important;
+    }
+    div[data-baseweb="select"] input::selection {
+        background: transparent !important;
+        color: transparent !important;
     }
     div[data-baseweb="select"] input:focus {
         outline: none !important;
@@ -750,43 +757,149 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Suppress mobile virtual keyboard and blinking cursor on all selectbox inputs
+st.markdown("""
+<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="display:none;" onload="
+(function(){
+    function guard(){
+        try {
+            var inputs = document.querySelectorAll('div[data-baseweb=&quot;select&quot;] input');
+            for(var i=0; i<inputs.length; i++){
+                var inp = inputs[i];
+                if(!inp.readOnly) inp.readOnly = true;
+                if(inp.getAttribute('readonly')!=='readonly') inp.setAttribute('readonly', 'readonly');
+                if(inp.getAttribute('inputmode')!=='none') { inp.setAttribute('inputmode', 'none'); inp.inputMode = 'none'; }
+                if(inp.getAttribute('virtualkeyboardpolicy')!=='manual') inp.setAttribute('virtualkeyboardpolicy', 'manual');
+                inp.style.caretColor = 'transparent';
+                inp.style.cursor = 'pointer';
+            }
+        } catch(e){}
+    }
+    guard();
+    if(!window.__suraksha_select_guard_installed){
+        window.__suraksha_select_guard_installed = true;
+        document.addEventListener('touchstart', function(e){
+            var sel = e.target.closest ? e.target.closest('div[data-baseweb=&quot;select&quot;]') : null;
+            if(sel){
+                var inp = sel.querySelector('input');
+                if(inp){
+                    inp.readOnly = true;
+                    inp.setAttribute('readonly', 'readonly');
+                    inp.inputMode = 'none';
+                    inp.setAttribute('inputmode', 'none');
+                    inp.setAttribute('virtualkeyboardpolicy', 'manual');
+                    inp.style.caretColor = 'transparent';
+                }
+            }
+        }, {capture: true, passive: true});
+        document.addEventListener('mousedown', function(e){
+            var sel = e.target.closest ? e.target.closest('div[data-baseweb=&quot;select&quot;]') : null;
+            if(sel){
+                var inp = sel.querySelector('input');
+                if(inp){
+                    inp.readOnly = true;
+                    inp.setAttribute('readonly', 'readonly');
+                    inp.inputMode = 'none';
+                    inp.setAttribute('inputmode', 'none');
+                    inp.setAttribute('virtualkeyboardpolicy', 'manual');
+                    inp.style.caretColor = 'transparent';
+                }
+            }
+        }, {capture: true});
+        document.addEventListener('focusin', function(e){
+            if(e.target && e.target.matches && e.target.matches('div[data-baseweb=&quot;select&quot;] input')){
+                e.target.readOnly = true;
+                e.target.setAttribute('readonly', 'readonly');
+                e.target.inputMode = 'none';
+                e.target.setAttribute('inputmode', 'none');
+                e.target.setAttribute('virtualkeyboardpolicy', 'manual');
+                e.target.style.caretColor = 'transparent';
+            }
+        }, true);
+        if(window.MutationObserver && document.body){
+            new MutationObserver(guard).observe(document.body, {childList: true, subtree: true});
+        }
+        setInterval(guard, 250);
+    }
+})();
+" />
+""", unsafe_allow_html=True)
+
 components.html("""
 <script>
 (function() {
-    function suppressSelectboxKeyboard() {
+    function enforceSelectboxGuard() {
         try {
             const doc = window.parent ? window.parent.document : document;
             if (!doc) return;
             const selectInputs = doc.querySelectorAll('div[data-baseweb="select"] input');
             selectInputs.forEach(input => {
-                if (!input.hasAttribute('data-kbd-suppressed')) {
-                    input.setAttribute('data-kbd-suppressed', 'true');
-                    input.setAttribute('readonly', 'readonly');
-                    input.setAttribute('inputmode', 'none');
-                    input.setAttribute('autocomplete', 'off');
-                    input.setAttribute('autocorrect', 'off');
-                    input.setAttribute('autocapitalize', 'off');
-                    input.setAttribute('spellcheck', 'false');
-                    
-                    input.addEventListener('focus', function(e) {
-                        input.setAttribute('readonly', 'readonly');
-                        input.setAttribute('inputmode', 'none');
-                    });
-                    input.addEventListener('touchstart', function(e) {
-                        input.setAttribute('readonly', 'readonly');
-                        input.setAttribute('inputmode', 'none');
-                    }, { passive: true });
-                }
+                input.readOnly = true;
+                input.setAttribute('readonly', 'readonly');
+                input.setAttribute('inputmode', 'none');
+                input.inputMode = 'none';
+                input.setAttribute('virtualkeyboardpolicy', 'manual');
+                input.setAttribute('autocomplete', 'off');
+                input.setAttribute('autocorrect', 'off');
+                input.setAttribute('autocapitalize', 'off');
+                input.setAttribute('spellcheck', 'false');
+                input.style.caretColor = 'transparent';
+                input.style.cursor = 'pointer';
             });
         } catch(e) {}
     }
-    suppressSelectboxKeyboard();
-    setInterval(suppressSelectboxKeyboard, 400);
+    enforceSelectboxGuard();
+    setInterval(enforceSelectboxGuard, 250);
     try {
         const doc = window.parent ? window.parent.document : document;
-        if (doc && doc.body) {
-            const observer = new MutationObserver(suppressSelectboxKeyboard);
-            observer.observe(doc.body, { childList: true, subtree: true });
+        if (doc) {
+            if (!window.parent.__suraksha_parent_guard) {
+                window.parent.__suraksha_parent_guard = true;
+                doc.addEventListener('touchstart', function(e) {
+                    const select = e.target.closest ? e.target.closest('div[data-baseweb="select"]') : null;
+                    if (select) {
+                        const inp = select.querySelector('input');
+                        if (inp) {
+                            inp.readOnly = true;
+                            inp.setAttribute('readonly', 'readonly');
+                            inp.inputMode = 'none';
+                            inp.setAttribute('inputmode', 'none');
+                            inp.setAttribute('virtualkeyboardpolicy', 'manual');
+                            inp.style.caretColor = 'transparent';
+                        }
+                    }
+                }, { capture: true, passive: true });
+
+                doc.addEventListener('mousedown', function(e) {
+                    const select = e.target.closest ? e.target.closest('div[data-baseweb="select"]') : null;
+                    if (select) {
+                        const inp = select.querySelector('input');
+                        if (inp) {
+                            inp.readOnly = true;
+                            inp.setAttribute('readonly', 'readonly');
+                            inp.inputMode = 'none';
+                            inp.setAttribute('inputmode', 'none');
+                            inp.setAttribute('virtualkeyboardpolicy', 'manual');
+                            inp.style.caretColor = 'transparent';
+                        }
+                    }
+                }, { capture: true });
+
+                doc.addEventListener('focusin', function(e) {
+                    if (e.target && e.target.matches && e.target.matches('div[data-baseweb="select"] input')) {
+                        e.target.readOnly = true;
+                        e.target.setAttribute('readonly', 'readonly');
+                        e.target.inputMode = 'none';
+                        e.target.setAttribute('inputmode', 'none');
+                        e.target.setAttribute('virtualkeyboardpolicy', 'manual');
+                        e.target.style.caretColor = 'transparent';
+                    }
+                }, true);
+
+                if (doc.body) {
+                    const observer = new MutationObserver(enforceSelectboxGuard);
+                    observer.observe(doc.body, { childList: true, subtree: true });
+                }
+            }
         }
     } catch(e) {}
 })();
