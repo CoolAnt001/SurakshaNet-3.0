@@ -997,9 +997,10 @@ with col_head1:
             {img_html}
             <div>
                 <div style="display:flex; gap:8px; align-items:center; margin-bottom: 4px; flex-wrap:wrap;">
-                    <span class="grassroots-badge">🏛️ SIH 2026 Submission</span>
+                    <span class="grassroots-badge" style="border-color:#38BDF8; color:#38BDF8; font-weight:700;">🏛️ SIH 2026 · PS ID: SIH26198</span>
+                    <span class="grassroots-badge" style="border-color:#A855F7; color:#A855F7; font-weight:700;">⚡ Team CodeKraft</span>
                     <span class="grassroots-badge" style="border-color:#10B981; color:#10B981;">🛡️ Zero-Central-PII</span>
-                    <span class="grassroots-badge" style="border-color:#38BDF8; color:#38BDF8;">🇮🇳 Odisha Health Grid</span>
+                    <span class="grassroots-badge" style="border-color:#F59E0B; color:#F59E0B;">🇮🇳 Odisha Health Grid</span>
                 </div>
                 <h1 style="margin: 0; font-size: 2.1rem; line-height: 1.1;">{t["app_title"]}</h1>
                 <p style="margin: 3px 0 0 0; opacity: 0.85; font-size: 0.95rem;">{t["app_sub"]}</p>
@@ -1049,9 +1050,9 @@ with col_head2:
         st.session_state.current_epicenter = epicenter
 
 # --- SIH 2026 Judge Walkthrough & System Architecture Expander ---
-with st.expander("🏆 SIH 2026 Judge Executive Summary & Architecture Pipeline (Click to Expand)", expanded=False):
-    st.markdown("#### 🏛️ Decentralized Privacy-Preserving Health Surveillance Grid")
-    st.markdown("SurakshaNet 3.0 connects rural village Primary Health Centres (PHCs), ASHA workers, municipal water quality testing stations, and urban hospital OPDs into an edge-native, zero-central-PII outbreak early-warning system.")
+with st.expander("🏆 SIH 2026 (Problem ID: SIH26198 · Team CodeKraft) Judge Executive Summary & Architecture Pipeline (Click to Expand)", expanded=False):
+    st.markdown("#### 🏛️ Smart India Hackathon 2026 · Problem Statement ID: SIH26198 · Team CodeKraft")
+    st.markdown("**Decentralized Privacy-Preserving Health Surveillance Grid** — SurakshaNet 3.0 connects rural village Primary Health Centres (PHCs), ASHA workers, municipal water quality testing stations, and urban hospital OPDs into an edge-native, zero-central-PII outbreak early-warning system.")
     
     col_arch_img, col_arch_desc = st.columns([1.5, 1.2])
     with col_arch_img:
