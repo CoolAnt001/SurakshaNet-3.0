@@ -615,6 +615,64 @@ st.markdown("""
         letter-spacing: 0.2px;
     }
 
+    /* Sidebar Glowing Alert Popup */
+    .sidebar-glow-box {
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.28) 0%, rgba(15, 23, 42, 0.96) 100%) !important;
+        border: 1.5px solid #EF4444 !important;
+        border-left: 5px solid #EF4444 !important;
+        border-radius: 12px;
+        padding: 13px 15px;
+        margin: 12px 0 16px 0;
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.45);
+        animation: sidebar-glow-pulse 2.2s infinite ease-in-out;
+        color: #F8FAFC !important;
+        position: relative;
+    }
+    @keyframes sidebar-glow-pulse {
+        0%, 100% {
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.45), inset 0 0 10px rgba(239, 68, 68, 0.15);
+            border-color: #EF4444;
+        }
+        50% {
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.85), inset 0 0 20px rgba(239, 68, 68, 0.35);
+            border-color: #F87171;
+        }
+    }
+    .sidebar-glow-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    .sidebar-glow-title {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #FFFFFF !important;
+        line-height: 1.35;
+        margin-bottom: 6px;
+        letter-spacing: -0.2px;
+    }
+    .sidebar-glow-msg {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 8px;
+        padding: 9px 12px;
+        font-size: 0.8rem;
+        color: #E2E8F0;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        margin-bottom: 8px;
+        max-height: 130px;
+        overflow-y: auto;
+    }
+    .sidebar-glow-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.72rem;
+        color: #94A3B8;
+    }
+
     /* Portal Banners */
     .portal-banner {
         background: var(--card-bg) !important;
@@ -1359,9 +1417,46 @@ def get_default_presentation_notifications():
         }
     ]
 
+# --- Initialize Notifications & Active Officer Alert ---
+if "notifications" not in st.session_state:
+    st.session_state.notifications = get_default_presentation_notifications()
+
+if "active_officer_alert" not in st.session_state:
+    st.session_state.active_officer_alert = st.session_state.notifications[0] if st.session_state.notifications else None
+
 # --- Sidebar Controls (Simplified) ---
 st.sidebar.title(t["sidebar_title"])
 st.sidebar.markdown(t["sidebar_desc"])
+
+# --- Officer Broadcast Glowing Popup ---
+if st.session_state.get("active_officer_alert"):
+    alert = st.session_state.active_officer_alert
+    clean_msg = alert.get("message", alert.get("status", "")).strip()
+    status_line = alert.get("status", "Emergency Advisory")
+    
+    st.sidebar.markdown(
+        f"""
+        <div class='sidebar-glow-box'>
+            <div class='sidebar-glow-header'>
+                <span style='font-size: 0.72rem; font-weight: 800; color: #FCA5A5; letter-spacing: 0.8px; text-transform: uppercase; display: flex; align-items: center; gap: 6px;'>
+                    <span style='font-size: 1.05rem;'>🚨</span> STATE OFFICER ADVISORY
+                </span>
+                <span class='live-pulse-dot' style='width: 9px; height: 9px; background: #EF4444;'></span>
+            </div>
+            <div class='sidebar-glow-title'>{status_line}</div>
+            <div class='sidebar-glow-msg'>{clean_msg}</div>
+            <div class='sidebar-glow-meta'>
+                <span>🕒 {alert.get('timestamp', 'Live')}</span>
+                <span style='color: #00F2FE; font-family: monospace; font-size: 0.7rem;'>{alert.get('hash', '')[:14]}...</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    if st.sidebar.button("✕ Dismiss Alert Bulletin", key="dismiss_sidebar_glow_btn", use_container_width=True):
+        st.session_state.active_officer_alert = None
+        st.rerun()
+
 st.sidebar.markdown("---")
 st.sidebar.info(t["zero_central_policy"])
 
@@ -1375,6 +1470,10 @@ baseline_mode_choice = st.sidebar.radio(
     help="Dynamic Moving Baseline calculates a rolling 14-day historical mean (μ) and standard deviation (σ) from incoming clinic submissions while excluding epidemic outliers."
 )
 is_dynamic_baseline = "Dynamic" in baseline_mode_choice
+
+# --- Active Nav State Initialization ---
+if "active_nav_index" not in st.session_state or st.session_state.active_nav_index not in [0, 1, 2, 3]:
+    st.session_state.active_nav_index = 0
 
 # --- Top Navigation / Main Header ---
 hero_b64 = ""
@@ -1409,46 +1508,93 @@ with col_head1:
     )
     st.markdown(header_html, unsafe_allow_html=True)
 
+scenario_list = [
+    "🟢 Normal Baseline (No Active Outbreaks)",
+    "🌊 Gastrointestinal Outbreak Cluster (Waterborne)",
+    "🫁 Cold-Snap Acute Respiratory Surge",
+    "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
+    "⚠️ False Alarm (Single-Source Data Typo)",
+    "🔬 Small Cohort Threat (k-Anonymity Guard Demo)"
+]
+
+epicenter_list = [
+    "🌐 All Monitored Regions (Cross-City)",
+    "🏫 Kalinga Institute Clinic (Campus North)",
+    "🏫 SOA University Health Center (Campus South)",
+    "🏫 Utkal University Health Center (Campus East)",
+    "🏥 Capital Hospital (Central OPD)",
+    "🧪 Municipal Water Treatment Zone"
+]
+
+if "current_scenario" not in st.session_state or st.session_state.current_scenario not in scenario_list:
+    st.session_state.current_scenario = scenario_list[0]
+if "current_epicenter" not in st.session_state or st.session_state.current_epicenter not in epicenter_list:
+    st.session_state.current_epicenter = epicenter_list[0]
+
+# Hide simulation controls on Tab 2 (Clinic Reporter) and Tab 3 (Officer Console)
+show_sim_selectors = (st.session_state.active_nav_index not in [1, 2])
+
 with col_head2:
     st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
-    col_sel1, col_sel2 = st.columns(2)
-    with col_sel1:
-        scenario_list = [
-            "🟢 Normal Baseline (No Active Outbreaks)",
-            "🌊 Gastrointestinal Outbreak Cluster (Waterborne)",
-            "🫁 Cold-Snap Acute Respiratory Surge",
-            "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
-            "⚠️ False Alarm (Single-Source Data Typo)",
-            "🔬 Small Cohort Threat (k-Anonymity Guard Demo)"
-        ]
-        if "sim_scenario_choice" not in st.session_state or st.session_state.sim_scenario_choice not in scenario_list:
-            st.session_state.sim_scenario_choice = scenario_list[0]
-        
-        scenario = st.selectbox(
-            t["inject_outbreak"],
-            scenario_list,
-            key="sim_scenario_choice"
-        )
-        st.session_state.current_scenario = scenario
-        
-    with col_sel2:
-        epicenter_list = [
-            "🌐 All Monitored Regions (Cross-City)",
-            "🏫 Kalinga Institute Clinic (Campus North)",
-            "🏫 SOA University Health Center (Campus South)",
-            "🏫 Utkal University Health Center (Campus East)",
-            "🏥 Capital Hospital (Central OPD)",
-            "🧪 Municipal Water Treatment Zone"
-        ]
-        if "outbreak_epicenter_choice" not in st.session_state or st.session_state.outbreak_epicenter_choice not in epicenter_list:
-            st.session_state.outbreak_epicenter_choice = epicenter_list[0]
+    if show_sim_selectors:
+        col_sel1, col_sel2 = st.columns(2)
+        with col_sel1:
+            cur_scen = st.session_state.current_scenario
+            scen_idx = scenario_list.index(cur_scen) if cur_scen in scenario_list else 0
+            scenario = st.selectbox(
+                t["inject_outbreak"],
+                scenario_list,
+                index=scen_idx,
+                key="sim_scenario_choice"
+            )
+            st.session_state.current_scenario = scenario
             
-        epicenter = st.selectbox(
-            t.get("inject_location", "📍 Outbreak Location / Epicenter"),
-            epicenter_list,
-            key="outbreak_epicenter_choice"
-        )
-        st.session_state.current_epicenter = epicenter
+        with col_sel2:
+            cur_epi = st.session_state.current_epicenter
+            epi_idx = epicenter_list.index(cur_epi) if cur_epi in epicenter_list else 0
+            epicenter = st.selectbox(
+                t.get("inject_location", "📍 Outbreak Location / Epicenter"),
+                epicenter_list,
+                index=epi_idx,
+                key="outbreak_epicenter_choice"
+            )
+            st.session_state.current_epicenter = epicenter
+    else:
+        scenario = st.session_state.current_scenario
+        epicenter = st.session_state.current_epicenter
+        
+        if st.session_state.active_nav_index == 1:
+            st.markdown(
+                """
+                <div style='background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.3); border-left: 4px solid #38BDF8; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
+                    <div style='display: flex; align-items: center; justify-content: space-between;'>
+                        <div>
+                            <div style='font-size: 0.75rem; font-weight: 700; color: #38BDF8; letter-spacing: 0.5px; text-transform: uppercase;'>🏥 Clinic Ingestion Node</div>
+                            <div style='font-size: 0.95rem; font-weight: 700; color: #F8FAFC;'>Grassroots Telemetry Terminal</div>
+                        </div>
+                        <span style='background: rgba(56, 189, 248, 0.15); color: #38BDF8; border: 1px solid #38BDF8; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
+                            🔒 DPDP ACT SECURE
+                        </span>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True
+            )
+        elif st.session_state.active_nav_index == 2:
+            st.markdown(
+                """
+                <div style='background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-left: 4px solid #EF4444; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
+                    <div style='display: flex; align-items: center; justify-content: space-between;'>
+                        <div>
+                            <div style='font-size: 0.75rem; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; text-transform: uppercase;'>🏛️ Health Officer Console</div>
+                            <div style='font-size: 0.95rem; font-weight: 700; color: #F8FAFC;'>Statutory Surveillance & Dispatch</div>
+                        </div>
+                        <span style='background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid #EF4444; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
+                            🛡️ MASTER KEY AUTH
+                        </span>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True
+            )
 
 # --- Node Parameter Schema ---
 NODES = {
@@ -1566,43 +1712,62 @@ if "gsheet_url" not in st.session_state:
 if "gsheet_logs_cache" not in st.session_state:
     st.session_state.gsheet_logs_cache = []
 if "gsheet_cache_dirty" not in st.session_state:
-    st.session_state.gsheet_cache_dirty = True
+    st.session_state.gsheet_cache_dirty = False
 
+# Initialize cache instantly from local preset logs so page never blocks on cloud network
+if not st.session_state.gsheet_logs_cache:
+    preset_dict = get_default_presentation_logs()
+    initial_dataset = []
+    _row_counter = 1
+    for nid, logs in preset_dict.items():
+        node_name = NODES.get(nid, {}).get("name", nid) if "NODES" in globals() else nid
+        for l in logs:
+            initial_dataset.append({
+                "row_id": _row_counter,
+                "node_id": nid,
+                "node_name": node_name,
+                "symptom": l["symptom"],
+                "location": l["location"],
+                "raw_val": float(l["raw_val"]),
+                "timestamp": l["timestamp"],
+                "details": l["details"]
+            })
+            _row_counter += 1
+    st.session_state.gsheet_logs_cache = initial_dataset
 
 epsilon = st.session_state.epsilon
 k_anonymity = st.session_state.k_anonymity
 false_alarm_threshold = st.session_state.false_alarm_threshold
 gsheet_url = st.session_state.gsheet_url
 
-# --- Google Sheets API Connectors ---
-@st.cache_data(ttl=30)
-def get_gsheet_logs(url):
-    """Cached fetch — hits Google Sheets at most once every 30 seconds."""
-    if not url:
-        return []
-    try:
-        response = requests.get(url, timeout=8)
-        if response.status_code == 200:
-            data = response.json()
-            if isinstance(data, list):
-                return [item for item in data if isinstance(item, dict)]
-    except Exception:
-        pass
-    return []
-
+# --- Google Sheets API Connectors (Zero-Latency Async Background Sync) ---
 def _invalidate_gsheet_cache():
-    """Clear the log cache so the next render fetches fresh data."""
-    get_gsheet_logs.clear()
+    """Mark cache dirty for background async update."""
     st.session_state.gsheet_cache_dirty = True
 
 def fetch_gsheet_logs_cached(url):
-    """Wrapper that resolves local cached logs instantly or triggers a refresh."""
+    """Instant non-blocking cache return (0ms latency)."""
     if not url:
-        return []
-    if not st.session_state.gsheet_logs_cache or st.session_state.gsheet_cache_dirty:
-        st.session_state.gsheet_logs_cache = get_gsheet_logs(url)
-        st.session_state.gsheet_cache_dirty = False
-    return st.session_state.gsheet_logs_cache
+        return st.session_state.get("gsheet_logs_cache", [])
+    
+    # Non-blocking async background fetch if cache flagged dirty
+    if st.session_state.get("gsheet_cache_dirty", False) and not st.session_state.get("_gsheet_fetching", False):
+        st.session_state._gsheet_fetching = True
+        def _bg_fetch():
+            try:
+                response = requests.get(url, timeout=5)
+                if response.status_code == 200:
+                    data = response.json()
+                    if isinstance(data, list) and len(data) > 0:
+                        st.session_state.gsheet_logs_cache = [item for item in data if isinstance(item, dict)]
+            except Exception:
+                pass
+            finally:
+                st.session_state._gsheet_fetching = False
+                st.session_state.gsheet_cache_dirty = False
+        threading.Thread(target=_bg_fetch, daemon=True).start()
+        
+    return st.session_state.get("gsheet_logs_cache", [])
 
 def add_gsheet_log(url, node_id, log):
     if not url:
@@ -3412,6 +3577,7 @@ elif active_nav_idx == 2:
             }
             st.session_state.notifications.append(new_notif)
             st.session_state.alert_dispatched_popup = new_notif
+            st.session_state.active_officer_alert = new_notif
             st.toast(f"📢 Official Advisory Dispatched: {custom_title}", icon="🚨")
             st.toast("🔒 SHA256 cryptographic seal recorded in Ledger", icon="✅")
             st.rerun()
