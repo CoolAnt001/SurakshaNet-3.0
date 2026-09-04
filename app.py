@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -40,7 +41,7 @@ st.markdown("""
         --neon-crimson: #EF4444;
         --neon-purple: #A855F7;
 
-        /* Default Dark Mode Tokens */
+        /* Core Unified Theme Tokens */
         --card-bg: #0F172A;
         --inner-card-bg: #1E293B;
         --card-border: rgba(56, 189, 248, 0.25);
@@ -76,82 +77,6 @@ st.markdown("""
         --grassroots-badge-text: #00F2FE;
     }
 
-    /* Automatic Light Mode System (OS Preference + Streamlit Light Theme) */
-    @media (prefers-color-scheme: light) {
-        :root {
-            --card-bg: #FFFFFF;
-            --inner-card-bg: #F8FAFC;
-            --card-border: #E2E8F0;
-            --card-border-hover: #0284C7;
-            --text-primary: #0F172A;
-            --text-secondary: #334155;
-            --text-muted: #64748B;
-            --heading-color: #0F172A;
-            --nav-bar-bg: #F1F5F9;
-            --nav-border: #CBD5E1;
-            --nav-text: #475569;
-            --nav-active-bg: #FFFFFF;
-            --nav-active-text: #0284C7;
-            --nav-active-border: #0284C7;
-            --nav-active-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
-            --hero-bg: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-            --hero-border: #0284C7;
-            --hero-title-grad: linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 100%);
-            --hero-sub: #E0F2FE;
-            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            --input-bg: #FFFFFF;
-            --input-border: #CBD5E1;
-            --input-text: #0F172A;
-            --btn-bg: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-            --btn-hover-bg: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
-            --btn-text: #FFFFFF;
-            --auth-clinic-bg: radial-gradient(circle at 50% 0%, #F0F9FF 0%, #E0F2FE 75%);
-            --auth-officer-bg: radial-gradient(circle at 50% 0%, #FEF2F2 0%, #FEE2E2 75%);
-            --auth-border-clinic: #0284C7;
-            --auth-border-officer: #DC2626;
-            --grassroots-badge-bg: #E0F2FE;
-            --grassroots-badge-border: #0284C7;
-            --grassroots-badge-text: #0369A1;
-        }
-    }
-
-    /* Streamlit explicit light-theme selector support */
-    [data-theme="light"], .stApp[data-theme="light"], body[data-theme="light"] {
-        --card-bg: #FFFFFF;
-        --inner-card-bg: #F8FAFC;
-        --card-border: #E2E8F0;
-        --card-border-hover: #0284C7;
-        --text-primary: #0F172A;
-        --text-secondary: #334155;
-        --text-muted: #64748B;
-        --heading-color: #0F172A;
-        --nav-bar-bg: #F1F5F9;
-        --nav-border: #CBD5E1;
-        --nav-text: #475569;
-        --nav-active-bg: #FFFFFF;
-        --nav-active-text: #0284C7;
-        --nav-active-border: #0284C7;
-        --nav-active-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
-        --hero-bg: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-        --hero-border: #0284C7;
-        --hero-title-grad: linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 100%);
-        --hero-sub: #E0F2FE;
-        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        --input-bg: #FFFFFF;
-        --input-border: #CBD5E1;
-        --input-text: #0F172A;
-        --btn-bg: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-        --btn-hover-bg: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
-        --btn-text: #FFFFFF;
-        --auth-clinic-bg: radial-gradient(circle at 50% 0%, #F0F9FF 0%, #E0F2FE 75%);
-        --auth-officer-bg: radial-gradient(circle at 50% 0%, #FEF2F2 0%, #FEE2E2 75%);
-        --auth-border-clinic: #0284C7;
-        --auth-border-officer: #DC2626;
-        --grassroots-badge-bg: #E0F2FE;
-        --grassroots-badge-border: #0284C7;
-        --grassroots-badge-text: #0369A1;
-    }
-
     html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select {
         font-family: var(--font-sans) !important;
     }
@@ -162,17 +87,46 @@ st.markdown("""
 
     footer {visibility: hidden;}
 
-    /* Form Controls & Inputs */
+    /* Form Controls & Inputs - Touch & Mobile Keyboard Friendly */
+    div[data-baseweb="select"] {
+        cursor: pointer !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -webkit-touch-callout: none !important;
+    }
+    div[data-baseweb="select"] * {
+        cursor: pointer !important;
+    }
+    div[data-baseweb="select"] input {
+        caret-color: transparent !important;
+        cursor: pointer !important;
+        pointer-events: none !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -webkit-touch-callout: none !important;
+    }
+    div[data-baseweb="select"] input:focus {
+        outline: none !important;
+        caret-color: transparent !important;
+        box-shadow: none !important;
+    }
     div[data-baseweb="select"] > div {
         background-color: var(--input-bg) !important;
         border: 1px solid var(--input-border) !important;
         color: var(--input-text) !important;
         border-radius: 10px !important;
+        cursor: pointer !important;
     }
     div[data-baseweb="popover"] > div, div[data-baseweb="menu"] {
         background-color: var(--card-bg) !important;
         border: 1px solid var(--input-border) !important;
         color: var(--text-primary) !important;
+    }
+    div[data-baseweb="popover"] [role="option"] {
+        cursor: pointer !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -webkit-tap-highlight-color: transparent !important;
     }
     div[data-baseweb="input"], div[data-baseweb="base-input"] {
         background-color: var(--input-bg) !important;
@@ -186,6 +140,16 @@ st.markdown("""
     }
     input::placeholder, textarea::placeholder {
         color: var(--text-muted) !important;
+    }
+    
+    /* Zero footprint for background helper iframe */
+    iframe[title="streamlit.components.v1.html"] {
+        position: absolute !important;
+        height: 0px !important;
+        width: 0px !important;
+        border: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
     }
 
     /* Premium Glassmorphism & Adaptive Surface Cards */
@@ -726,6 +690,50 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+# Suppress mobile virtual keyboard and blinking cursor on all selectbox inputs
+components.html("""
+<script>
+(function() {
+    function suppressSelectboxKeyboard() {
+        try {
+            const doc = window.parent ? window.parent.document : document;
+            if (!doc) return;
+            const selectInputs = doc.querySelectorAll('div[data-baseweb="select"] input');
+            selectInputs.forEach(input => {
+                if (!input.hasAttribute('data-kbd-suppressed')) {
+                    input.setAttribute('data-kbd-suppressed', 'true');
+                    input.setAttribute('readonly', 'readonly');
+                    input.setAttribute('inputmode', 'none');
+                    input.setAttribute('autocomplete', 'off');
+                    input.setAttribute('autocorrect', 'off');
+                    input.setAttribute('autocapitalize', 'off');
+                    input.setAttribute('spellcheck', 'false');
+                    
+                    input.addEventListener('focus', function(e) {
+                        input.setAttribute('readonly', 'readonly');
+                        input.setAttribute('inputmode', 'none');
+                    });
+                    input.addEventListener('touchstart', function(e) {
+                        input.setAttribute('readonly', 'readonly');
+                        input.setAttribute('inputmode', 'none');
+                    }, { passive: true });
+                }
+            });
+        } catch(e) {}
+    }
+    suppressSelectboxKeyboard();
+    setInterval(suppressSelectboxKeyboard, 400);
+    try {
+        const doc = window.parent ? window.parent.document : document;
+        if (doc && doc.body) {
+            const observer = new MutationObserver(suppressSelectboxKeyboard);
+            observer.observe(doc.body, { childList: true, subtree: true });
+        }
+    } catch(e) {}
+})();
+</script>
+""", height=0, width=0)
 
 def render_app_image(image_path, caption=None, width=None):
     import os
@@ -2178,27 +2186,34 @@ if active_nav_idx == 0:
             alert_border = "#EF4444"
             alert_icon = "🚨"
             
-        # Determine advice based on scenario and dominant symptoms
-        if "Dual" in scenario:
-            safety_advice = t.get("adv_dual", t["adv_gi"] + "\n\n---\n\n" + t["adv_resp"])
-        elif "Respiratory" in scenario or "Cold" in scenario:
-            safety_advice = t["adv_resp"]
-        elif "Gastrointestinal" in scenario or "Waterborne" in scenario:
-            safety_advice = t["adv_gi"]
+        # Determine advice based on scenario and dominant symptoms (multilingual safe)
+        scenario_lower = scenario.lower()
+        if "dual" in scenario_lower or "ଯୁଗ୍ମ" in scenario or "दोहरा" in scenario:
+            safety_advice = t.get("adv_dual", t.get("adv_gi", "") + "\n\n---\n\n" + t.get("adv_resp", ""))
+        elif any(k in scenario_lower for k in ["respiratory", "cold", "flu", "ଶ୍ୱାସ", "श्वसन", "सर्दी"]):
+            safety_advice = t.get("adv_resp", "")
+        elif any(k in scenario_lower for k in ["gastrointestinal", "waterborne", "diarrhea", "ଜଳବାହିତ", "ପେଟ", "जल जनित", "पेट"]):
+            safety_advice = t.get("adv_gi", "")
+        elif any(k in scenario_lower for k in ["small cohort", "k-anonymity", "ଗୋପନୀୟତା", "गोपनीयता"]):
+            safety_advice = "🔒 **k-Anonymity Guard Active:** Low symptom counts are automatically suppressed locally on-device to prevent re-identification of small patient clusters."
         else:
-            # For custom/mixed data, compare maximum Z-score of respiratory vs gastrointestinal
-            resp_max = max([s["z_score"] for s in display_signals if any(k in str(s["metric_label"]).lower() for k in ["respir", "cough", "ili"])], default=0.0)
-            gi_max = max([s["z_score"] for s in display_signals if any(k in str(s["metric_label"]).lower() for k in ["gastro", "diarrh", "coliform"])], default=0.0)
+            # For custom/mixed clinic data, evaluate strongest transmitted signal
+            resp_max = max([s["z_score"] for s in display_signals if any(k in str(s["metric_label"]).lower() for k in ["respir", "cough", "ili", "ଶ୍ୱାସ", "खांसी"])], default=0.0)
+            gi_max = max([s["z_score"] for s in display_signals if any(k in str(s["metric_label"]).lower() for k in ["gastro", "diarrh", "coliform", "ପେଟ", "पेट"])], default=0.0)
             
             if resp_max > 2.5 and gi_max > 2.5:
-                safety_advice = t.get("adv_dual", t["adv_gi"] + "\n\n---\n\n" + t["adv_resp"])
+                safety_advice = t.get("adv_dual", t.get("adv_gi", "") + "\n\n---\n\n" + t.get("adv_resp", ""))
             elif resp_max > gi_max and resp_max > 1.5:
-                safety_advice = t["adv_resp"]
+                safety_advice = t.get("adv_resp", "")
             elif gi_max > 1.5:
-                safety_advice = t["adv_gi"]
+                safety_advice = t.get("adv_gi", "")
             else:
-                safety_advice = t["adv_general"]
+                safety_advice = t.get("adv_general", "⚠️ **Alert: Unusual symptom activity detected.** Watch regional updates and practice preventive health hygiene.")
             
+    # Fallback guard
+    if not safety_advice:
+        safety_advice = t.get("adv_general", "⚠️ **Alert: Outbreak signal detected.** Follow public health hygiene advisories.")
+
     # Determine dynamic class for animations
     if display_risk == "safe":
         alert_class = ""
@@ -2261,28 +2276,37 @@ if active_nav_idx == 0:
             """, unsafe_allow_html=True
         )
 
-    # Safety Advice Container (Enhanced Dual-Theme Adaptive Design)
+    # Safety Advice Container (Unified HTML Card Rendering)
     adv_border_accent = alert_border
     
-    st.markdown(
-        f"""
-        <div class='glass-card' style='border-left: 5px solid {adv_border_accent} !important; padding: 22px 26px; margin-bottom: 22px;'>
-            <div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;'>
-                <div style='display: flex; align-items: center; gap: 10px;'>
-                    <span style='font-size: 1.35rem;'>💡</span>
-                    <h4 style='margin: 0; font-size: 1.18rem; font-weight: 800; letter-spacing: -0.3px;'>Public Health & Safety Action Plan</h4>
-                </div>
-                <span class='status-badge' style='background: {alert_bg}; color: {alert_border}; border: 1px solid {alert_border}; font-size: 0.8rem;'>
-                    {alert_icon} ADVISORY LEVEL: {display_risk.upper()}
-                </span>
-            </div>
-            <div style='color: var(--text-primary) !important; font-size: 1.02rem; line-height: 1.65; font-weight: 500; background: var(--inner-card-bg); padding: 16px 20px; border-radius: 12px; border: 1px solid var(--card-border);'>
-        """, unsafe_allow_html=True
+    # Format safety_advice markdown strings into clean HTML
+    formatted_advice_html = (
+        safety_advice
+        .replace("\n\n* ", "<br><br>• ")
+        .replace("\n* ", "<br>• ")
+        .replace("\n*", "<br>• ")
+        .replace("\n\n", "<br><br>")
+        .replace("\n", "<br>")
     )
-    st.markdown(safety_advice)
-    st.markdown("</div></div>", unsafe_allow_html=True)
-    st.markdown(safety_advice)
-    st.markdown("</div></div>", unsafe_allow_html=True)
+    formatted_advice_html = re.sub(r'\*\*(.*?)\*\*', r'<strong style="color:var(--text-primary);font-weight:700;">\1</strong>', formatted_advice_html)
+    
+    action_plan_card_html = f"""
+    <div class='glass-card' style='border-left: 5px solid {adv_border_accent} !important; padding: 22px 26px; margin-bottom: 22px;'>
+        <div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;'>
+            <div style='display: flex; align-items: center; gap: 10px;'>
+                <span style='font-size: 1.35rem;'>💡</span>
+                <h4 style='margin: 0; font-size: 1.18rem; font-weight: 800; letter-spacing: -0.3px; color: var(--heading-color) !important;'>Public Health & Safety Action Plan</h4>
+            </div>
+            <span class='status-badge' style='background: {alert_bg}; color: {alert_border}; border: 1px solid {alert_border}; font-size: 0.8rem;'>
+                {alert_icon} ADVISORY LEVEL: {display_risk.upper()}
+            </span>
+        </div>
+        <div style='color: var(--text-secondary) !important; font-size: 1.02rem; line-height: 1.7; font-weight: 500; background: var(--inner-card-bg); padding: 18px 22px; border-radius: 12px; border: 1px solid var(--card-border);'>
+            {formatted_advice_html}
+        </div>
+    </div>
+    """
+    st.markdown(action_plan_card_html, unsafe_allow_html=True)
 
     
     # Visual Trends Chart & Gauge
