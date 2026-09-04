@@ -28,295 +28,325 @@ DEFAULT_GSHEET_URL = "https://script.google.com/macros/s/AKfycbzt_VXGXKrFKQltXEe
 # --- Custom CSS Styling (Premium Glassmorphism & Micro-animations) ---
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
-    /* Global Font Override & Hide Default Streamlit Branding */
-    html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select {
-        font-family: 'Outfit', sans-serif !important;
+    /* Global Typography & Theme Tokens */
+    :root {
+        --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-mono: 'JetBrains Mono', monospace;
+        --neon-cyan: #00F2FE;
+        --neon-blue: #38BDF8;
+        --neon-emerald: #10B981;
+        --neon-amber: #F59E0B;
+        --neon-crimson: #EF4444;
+        --neon-purple: #A855F7;
     }
+
+    html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select {
+        font-family: var(--font-sans) !important;
+    }
+
+    code, kbd, samp, pre {
+        font-family: var(--font-mono) !important;
+    }
+
     footer {visibility: hidden;}
 
-    /* Premium glassmorphic card style */
+    /* Premium Obsidian Glassmorphism Cards */
     .glass-card {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(128, 128, 128, 0.15);
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 16px;
         padding: 24px;
         margin-bottom: 20px;
         color: var(--text-color);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
     }
     .glass-card:hover {
         transform: translateY(-3px);
-        border-color: rgba(0, 242, 254, 0.4);
-        box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.35);
+        border-color: rgba(0, 242, 254, 0.45);
+        box-shadow: 0 16px 40px -10px rgba(0, 242, 254, 0.2), inset 0 1px 0 rgba(0, 242, 254, 0.2);
     }
 
-    /* Light Theme override for glassmorphic cards */
+    /* Light Theme Adaptation */
     @media (prefers-color-scheme: light) {
         .glass-card {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06);
         }
         .glass-card:hover {
-            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.09);
+            box-shadow: 0 16px 40px -10px rgba(14, 165, 233, 0.15);
+            border-color: rgba(14, 165, 233, 0.4);
         }
     }
 
+    /* KPI Metrics Styling */
     .metric-value {
+        font-family: var(--font-mono) !important;
         font-size: 2.2rem;
         font-weight: 800;
         color: var(--primary-color);
         line-height: 1.1;
+        letter-spacing: -0.5px;
     }
     .metric-label {
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         color: var(--text-color);
-        opacity: 0.7;
-        font-weight: 600;
+        opacity: 0.75;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.8px;
     }
+
+    /* Live Telemetry Pulse & Status Badges */
+    .live-pulse-dot {
+        width: 8px;
+        height: 8px;
+        background: #10B981;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 10px #10B981;
+        animation: pulse-ring 1.8s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    }
+    @keyframes pulse-ring {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
     .status-badge {
-        padding: 6px 14px;
+        padding: 5px 12px;
         border-radius: 9999px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: 700;
         display: inline-flex;
         align-items: center;
         gap: 6px;
+        letter-spacing: 0.3px;
     }
     .status-safe {
-        background-color: rgba(16, 185, 129, 0.15);
+        background: rgba(16, 185, 129, 0.12);
         color: #10B981;
-        border: 1px solid rgba(16, 185, 129, 0.3);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
     }
     .status-warning {
-        background-color: rgba(245, 158, 11, 0.15);
+        background: rgba(245, 158, 11, 0.12);
         color: #F59E0B;
-        border: 1px solid rgba(245, 158, 11, 0.3);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
     }
     .status-danger {
-        background-color: rgba(239, 68, 68, 0.15);
+        background: rgba(239, 68, 68, 0.14);
         color: #EF4444;
-        border: 1px solid rgba(239, 68, 68, 0.3);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);
     }
     
-    /* Style headers to dynamically adapt to Light/Dark modes */
+    /* Headers with Elegant Gradient Contrast */
     h1, h2, h3, h4 {
         color: var(--text-color) !important;
-        font-weight: 700 !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.4px !important;
     }
 
-    /* Premium Header Hero Banner overrides */
+    /* Command Center Hero Banner */
     .custom-hero-banner {
-        background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%) !important;
-        padding: 24px 30px;
-        border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        margin-bottom: 15px;
+        background: linear-gradient(135deg, rgba(11, 19, 43, 0.95) 0%, rgba(20, 31, 56, 0.95) 100%) !important;
+        padding: 22px 28px;
+        border-radius: 18px;
+        border: 1px solid rgba(0, 242, 254, 0.2);
+        box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        margin-bottom: 12px;
+        backdrop-filter: blur(24px);
     }
     .custom-hero-banner h1 {
-        color: #00F2FE !important;
+        background: linear-gradient(135deg, #00F2FE 0%, #38BDF8 60%, #FFFFFF 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
         margin: 0 !important;
-        font-size: 2.2rem !important;
+        font-size: 2.15rem !important;
         font-weight: 800 !important;
-        letter-spacing: -0.5px !important;
-        text-shadow: 0 0 15px rgba(0,242,254,0.3) !important;
+        letter-spacing: -0.6px !important;
     }
     .custom-hero-banner p {
         color: rgba(255, 255, 255, 0.85) !important;
-        margin: 6px 0 0 0 !important;
-        font-size: 1.05rem !important;
+        margin: 4px 0 0 0 !important;
+        font-size: 0.95rem !important;
         font-weight: 500 !important;
     }
 
-    /* Custom tabs styling adapting to Streamlit theme */
+    /* Live Telemetry Ticker Strip */
+    .telemetry-ticker {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        background: rgba(15, 23, 42, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding: 8px 16px;
+        margin-bottom: 16px;
+        font-size: 0.82rem;
+        color: var(--text-color);
+        opacity: 0.9;
+    }
+    .ticker-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+    }
+
+    /* Segmented Modern Navigation Tabs */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background-color: var(--background-color);
+        gap: 6px;
+        background: rgba(15, 23, 42, 0.6);
         padding: 6px;
-        border-radius: 8px;
-        border: 1px solid rgba(128, 128, 128, 0.2);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     .stTabs [data-baseweb="tab"] {
-        padding: 10px 20px;
-        background-color: var(--secondary-background-color);
-        border-radius: 6px;
+        padding: 10px 22px;
+        background: transparent;
+        border-radius: 8px;
         color: var(--text-color);
-        opacity: 0.8;
+        opacity: 0.75;
         font-weight: 600;
+        font-size: 0.92rem;
         border: none;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .stTabs [data-baseweb="tab"]:hover {
         opacity: 1.0;
-        color: var(--primary-color);
+        color: #00F2FE;
+        background: rgba(0, 242, 254, 0.08);
     }
     .stTabs [aria-selected="true"] {
-        background-color: var(--primary-color) !important;
-        color: var(--background-color) !important;
+        background: linear-gradient(135deg, rgba(0, 242, 254, 0.2) 0%, rgba(56, 189, 248, 0.15) 100%) !important;
+        color: #00F2FE !important;
         font-weight: 700 !important;
         opacity: 1.0 !important;
+        border: 1px solid rgba(0, 242, 254, 0.4) !important;
+        box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2) !important;
     }
 
-    /* Customized Gradient Buttons */
+    /* High-Impact Cyber Action Buttons */
     div.stButton > button {
-        background: linear-gradient(135deg, #00F2FE 0%, #4FACFE 100%) !important;
-        color: white !important;
-        font-weight: 700 !important;
-        border-radius: 8px !important;
-        border: none !important;
-        padding: 8px 24px !important;
-        box-shadow: 0 4px 15px rgba(0, 242, 254, 0.25) !important;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        background: linear-gradient(135deg, #00F2FE 0%, #0284C7 100%) !important;
+        color: #070B14 !important;
+        font-weight: 800 !important;
+        font-size: 0.9rem !important;
+        border-radius: 10px !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        padding: 8px 22px !important;
+        box-shadow: 0 4px 18px rgba(0, 242, 254, 0.35) !important;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        letter-spacing: 0.3px !important;
     }
     div.stButton > button:hover {
-        transform: scale(1.03) !important;
-        box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4) !important;
-        color: white !important;
-        border: none !important;
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 8px 25px rgba(0, 242, 254, 0.5) !important;
+        color: #070B14 !important;
+        background: linear-gradient(135deg, #38BDF8 0%, #00F2FE 100%) !important;
     }
     div.stButton > button:active {
-        transform: scale(0.97) !important;
+        transform: translateY(0) scale(0.98) !important;
     }
 
-    /* Custom Centered Gateway Lock Card */
-    .lock-card {
-        max-width: 480px;
-        margin: 40px auto;
-        padding: 40px;
-        text-align: center;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(128, 128, 128, 0.2);
-        border-radius: 20px;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-    }
-    @media (prefers-color-scheme: light) {
-        .lock-card {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 15px 35px rgba(31, 38, 135, 0.06);
-        }
-    }
-    .lock-icon {
-        font-size: 3rem;
-        margin-bottom: 15px;
-        animation: lock-wiggle 3s infinite ease-in-out;
-        display: inline-block;
-    }
-    @keyframes lock-wiggle {
-        0%, 100% { transform: rotate(0deg); }
-        15% { transform: rotate(-8deg); }
-        30% { transform: rotate(8deg); }
-        45% { transform: rotate(-4deg); }
-        60% { transform: rotate(4deg); }
-    }
-
-    /* Outbreak Alert Dynamic Animations */
+    /* Modern Alert Banners */
     .alert-banner-warning {
-        animation: pulse-orange 2.2s infinite ease-in-out;
-        border-radius: 8px;
-        padding: 18px;
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%);
+        border: 1px solid rgba(245, 158, 11, 0.45);
+        border-radius: 14px;
+        padding: 20px;
         margin-bottom: 20px;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2);
     }
     .alert-banner-danger {
-        animation: blink-red 1.6s infinite ease-in-out;
-        border-radius: 8px;
-        padding: 18px;
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(185, 28, 28, 0.12) 100%);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        border-radius: 14px;
+        padding: 20px;
         margin-bottom: 20px;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    @keyframes pulse-orange {
-        0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); }
-        50% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.45); border-color: rgba(245, 158, 11, 1); }
-    }
-    @keyframes blink-red {
-        0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); }
-        50% { box-shadow: 0 0 28px rgba(239, 68, 68, 0.55); border-color: rgba(239, 68, 68, 1); }
+        box-shadow: 0 8px 30px rgba(239, 68, 68, 0.3);
     }
 
-    /* Interactive Feedback Animations (Denial Shake & Green Popups) */
+    /* Interactive Feedback Animations */
     @keyframes denial-shake {
         0%, 100% { transform: translateX(0); }
-        15% { transform: translateX(-14px) rotate(-1deg); }
-        30% { transform: translateX(12px) rotate(1deg); }
-        45% { transform: translateX(-9px) rotate(-0.5deg); }
-        60% { transform: translateX(7px) rotate(0.5deg); }
+        15% { transform: translateX(-12px); }
+        30% { transform: translateX(10px); }
+        45% { transform: translateX(-8px); }
+        60% { transform: translateX(6px); }
         75% { transform: translateX(-3px); }
-    }
-    .denial-shake {
-        animation: denial-shake 0.55s ease-in-out !important;
-        border: 2px solid #EF4444 !important;
-        box-shadow: 0 0 30px rgba(239, 68, 68, 0.45) !important;
     }
     .denial-msg {
         background: rgba(239, 68, 68, 0.15);
         border: 1px solid #EF4444;
         color: #F87171;
         padding: 10px 16px;
-        border-radius: 8px;
+        border-radius: 10px;
         font-size: 0.9rem;
         font-weight: 600;
         margin-top: 14px;
-        animation: denial-shake 0.55s ease-in-out;
+        animation: denial-shake 0.5s ease-in-out;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
     }
-    @keyframes green-pop {
-        0% { transform: scale(0.93); opacity: 0; }
-        60% { transform: scale(1.02); opacity: 1; }
-        100% { transform: scale(1); opacity: 1; }
-    }
     .green-popup {
         background: rgba(16, 185, 129, 0.12);
-        border: 2px solid #10B981;
-        box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
+        border: 1px solid #10B981;
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
         border-radius: 12px;
         padding: 16px 20px;
         margin: 15px 0;
-        animation: green-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+        animation: green-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes green-pop {
+        0% { transform: scale(0.94); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
     }
     
     /* Grassroots & Node Card Visuals */
     .grassroots-badge {
-        background: linear-gradient(135deg, rgba(0, 242, 254, 0.15) 0%, rgba(79, 172, 254, 0.1) 100%);
+        background: rgba(15, 23, 42, 0.7);
         border: 1px solid rgba(0, 242, 254, 0.35);
         color: #00F2FE;
-        padding: 4px 10px;
+        padding: 4px 12px;
         border-radius: 20px;
-        font-size: 0.75rem;
+        font-size: 0.76rem;
         font-weight: 700;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.6px;
         text-transform: uppercase;
         display: inline-flex;
         align-items: center;
-        gap: 5px;
+        gap: 6px;
+        backdrop-filter: blur(10px);
     }
     .node-visual-card {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(128, 128, 128, 0.18);
-        border-radius: 14px;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
         overflow: hidden;
-        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease, box-shadow 0.25s ease;
-        margin-bottom: 15px;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 16px;
     }
     .node-visual-card:hover {
-        transform: translateY(-3px);
-        border-color: rgba(0, 242, 254, 0.5);
-        box-shadow: 0 10px 25px rgba(0, 242, 254, 0.15);
+        transform: translateY(-4px);
+        border-color: rgba(0, 242, 254, 0.4);
+        box-shadow: 0 14px 35px -10px rgba(0, 242, 254, 0.2);
     }
     .node-card-body {
-        padding: 14px 16px;
+        padding: 16px 18px;
     }
     .pipeline-step-badge {
         background: rgba(0, 242, 254, 0.12);
@@ -326,18 +356,24 @@ st.markdown("""
         padding: 3px 8px;
         font-size: 0.75rem;
         font-weight: 700;
+        font-family: var(--font-mono);
     }
     .hygiene-card {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(128, 128, 128, 0.18);
+        background: rgba(15, 23, 42, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 12px;
-        padding: 14px;
+        padding: 16px;
         margin-bottom: 12px;
         display: flex;
         align-items: flex-start;
-        gap: 12px;
+        gap: 14px;
+        transition: border-color 0.2s ease;
+    }
+    .hygiene-card:hover {
+        border-color: rgba(0, 242, 254, 0.3);
     }
 </style>
+
 """, unsafe_allow_html=True)
 
 def render_app_image(image_path, caption=None, width=None):
@@ -982,25 +1018,31 @@ baseline_mode_choice = st.sidebar.radio(
 is_dynamic_baseline = "Dynamic" in baseline_mode_choice
 
 # --- Top Navigation / Main Header ---
-hero_b64 = ""
-import os, base64
-if os.path.exists("assets/surakshanet_hero.jpg"):
-    with open("assets/surakshanet_hero.jpg", "rb") as f:
-        hero_b64 = base64.b64encode(f.read()).decode()
-
 col_head1, col_head2 = st.columns([1.5, 1.5])
 with col_head1:
-    img_html = f"<img src='data:image/jpeg;base64,{hero_b64}' style='width:64px; height:64px; border-radius:12px; border:2px solid #00F2FE; box-shadow:0 0 15px rgba(0,242,254,0.4); object-fit:cover;' />" if hero_b64 else "🛡️"
+    logo_svg = """
+    <div style="width:64px; height:64px; min-width:64px; border-radius:16px; background:linear-gradient(135deg, rgba(0,242,254,0.18) 0%, rgba(56,189,248,0.08) 100%); border:1.5px solid rgba(0,242,254,0.5); display:flex; align-items:center; justify-content:center; box-shadow:0 0 22px rgba(0,242,254,0.35), inset 0 1px 0 rgba(255,255,255,0.25); flex-shrink:0;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L3 7V12C3 17.52 6.84 22.74 12 24C17.16 22.74 21 17.52 21 12V7L12 2Z" fill="url(#shield_g)" stroke="#00F2FE" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M12 7V17M7 12H17" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="7.5" stroke="#38BDF8" stroke-width="1" stroke-dasharray="2 2"/>
+            <defs>
+                <linearGradient id="shield_g" x1="12" y1="2" x2="12" y2="24" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#00F2FE" stop-opacity="0.35"/>
+                    <stop stop-color="#0369A1" stop-opacity="0.85"/>
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+    """
     st.markdown(
         f"""
         <div class="custom-hero-banner" style="display: flex; align-items: center; gap: 18px;">
-            {img_html}
+            {logo_svg}
             <div>
                 <div style="display:flex; gap:8px; align-items:center; margin-bottom: 4px; flex-wrap:wrap;">
-                    <span class="grassroots-badge" style="border-color:#38BDF8; color:#38BDF8; font-weight:700;">🏛️ SIH 2026 · PS ID: SIH26198</span>
                     <span class="grassroots-badge" style="border-color:#A855F7; color:#A855F7; font-weight:700;">⚡ Team CodeKraft</span>
-                    <span class="grassroots-badge" style="border-color:#10B981; color:#10B981;">🛡️ Zero-Central-PII</span>
-                    <span class="grassroots-badge" style="border-color:#F59E0B; color:#F59E0B;">🇮🇳 Odisha Health Grid</span>
+                    <span class="grassroots-badge" style="border-color:#38BDF8; color:#38BDF8;">🇮🇳 Odisha Health Grid</span>
                 </div>
                 <h1 style="margin: 0; font-size: 2.1rem; line-height: 1.1;">{t["app_title"]}</h1>
                 <p style="margin: 3px 0 0 0; opacity: 0.85; font-size: 0.95rem;">{t["app_sub"]}</p>
@@ -1042,45 +1084,22 @@ with col_head2:
         if "outbreak_epicenter_choice" not in st.session_state or st.session_state.outbreak_epicenter_choice not in epicenter_list:
             st.session_state.outbreak_epicenter_choice = epicenter_list[0]
             
-        epicenter = st.selectbox(
-            t.get("inject_location", "📍 Outbreak Location / Epicenter"),
-            epicenter_list,
-            key="outbreak_epicenter_choice"
-        )
         st.session_state.current_epicenter = epicenter
 
-# --- SIH 2026 Judge Walkthrough & System Architecture Expander ---
-with st.expander("🏆 SIH 2026 (Problem ID: SIH26198 · Team CodeKraft) Judge Executive Summary & Architecture Pipeline (Click to Expand)", expanded=False):
-    st.markdown("#### 🏛️ Smart India Hackathon 2026 · Problem Statement ID: SIH26198 · Team CodeKraft")
-    st.markdown("**Decentralized Privacy-Preserving Health Surveillance Grid** — SurakshaNet 3.0 connects rural village Primary Health Centres (PHCs), ASHA workers, municipal water quality testing stations, and urban hospital OPDs into an edge-native, zero-central-PII outbreak early-warning system.")
-    
-    col_arch_img, col_arch_desc = st.columns([1.5, 1.2])
-    with col_arch_img:
-        render_app_image("assets/architecture_diagram.jpg", caption="SurakshaNet 3.0 Complete Edge-to-Radar Architecture Pipeline")
-    with col_arch_desc:
-        st.markdown("""
-        **Four Groundbreaking Innovations:**
-        1. **Inclusive 4-Channel Ingestion**: Bridges the rural-urban tech divide from basic feature phone IVR & paper registers to hospital EMRs.
-        2. **On-Device Mathematical Privacy**: Differential Privacy Laplace mechanism ($Y = X + \\text{Lap}(1/\\epsilon)$) ensures plausible deniability.
-        3. **k-Anonymity Guard**: Suppresses small cohorts (< 5 cases) to prevent student/villager micro-targeting.
-        4. **Multi-Sensor Cross-Validation**: Cross-checks clinic symptom spikes against municipal water contamination and rainfall to eliminate false alarms.
-        """)
-        
-        st.markdown("---")
-        st.markdown("**⚡ 1-Click Live Demonstration Shortcuts for Judges:**")
-        col_demo1, col_demo2, col_demo3 = st.columns(3)
-        with col_demo1:
-            if st.button("🌊 Waterborne Epidemic", use_container_width=True):
-                st.session_state.sim_scenario_choice = "🌊 Gastrointestinal Outbreak Cluster (Waterborne)"
-                st.rerun()
-        with col_demo2:
-            if st.button("⚠️ Clerical Typo Quarantined", use_container_width=True):
-                st.session_state.sim_scenario_choice = "⚠️ False Alarm (Single-Source Data Typo)"
-                st.rerun()
-        with col_demo3:
-            if st.button("🟢 Normal Safe Baseline", use_container_width=True):
-                st.session_state.sim_scenario_choice = "🟢 Normal Baseline (No Active Outbreaks)"
-                st.rerun()
+# --- Top Telemetry Ticker Strip ---
+st.markdown("""
+<div class="telemetry-ticker">
+    <div class="ticker-item"><span class="live-pulse-dot"></span> <strong style="color:#10B981; letter-spacing:0.5px;">GRID ONLINE</strong></div>
+    <span style="opacity:0.25;">|</span>
+    <div class="ticker-item"><span style="color:#00F2FE;">🏥</span> <strong>5/5</strong> Grassroots Health Nodes</div>
+    <span style="opacity:0.25;">|</span>
+    <div class="ticker-item"><span style="color:#A855F7;">🔒</span> Local Differential Privacy (&epsilon;=0.8)</div>
+    <span style="opacity:0.25;">|</span>
+    <div class="ticker-item"><span style="color:#38BDF8;">🛡️</span> Zero-Central-PII Enforced</div>
+    <span style="opacity:0.25;">|</span>
+    <div class="ticker-item"><span style="color:#F59E0B;">📡</span> Telemetry Sync: Live</div>
+</div>
+""", unsafe_allow_html=True)
 
 
 # --- Node Parameter Schema ---
