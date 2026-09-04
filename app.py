@@ -346,7 +346,10 @@ def render_app_image(image_path, caption=None, width=None):
         if width:
             st.image(image_path, caption=caption, width=width)
         else:
-            st.image(image_path, caption=caption, use_column_width=True)
+            try:
+                st.image(image_path, caption=caption, use_container_width=True)
+            except TypeError:
+                st.image(image_path, caption=caption, use_column_width=True)
     elif caption:
         st.caption(f"🖼️ {caption}")
 
@@ -1212,7 +1215,9 @@ def get_gsheet_logs(url):
     try:
         response = requests.get(url, timeout=8)
         if response.status_code == 200:
-            return response.json()
+            data = response.json()
+            if isinstance(data, list):
+                return [item for item in data if isinstance(item, dict)]
     except Exception:
         pass
     return []
@@ -2029,27 +2034,63 @@ with tab_public:
     center_lon = float(loc_info["lon"]) if is_local_focus else float(df_map["lon"].mean())
     map_zoom = 12.8 if is_local_focus else 10.8
     
-    # Map rendering with compatibility across Plotly versions (px.scatter_map for Plotly >= 5.24 / 6.0+, fallback to px.scatter_mapbox)
-    map_func = getattr(px, "scatter_map", None) or getattr(px, "scatter_mapbox", None)
-    map_style_kwargs = {"map_style": "open-street-map"} if hasattr(px, "scatter_map") else {"mapbox_style": "open-street-map"}
+    # Map rendering with compatibility across all Plotly versions
+    try:
+        if hasattr(px, "scatter_map"):
+            fig_map = px.scatter_map(
+                df_map,
+                lat="lat",
+                lon="lon",
+                color="Status",
+                color_discrete_map={
+                    "Safe (Normal Baseline)": "#10B981",
+                    "Elevated Warning": "#F59E0B",
+                    "Outbreak Cluster (Red Zone)": "#EF4444"
+                },
+                size="Size",
+                hover_name="Short_Name",
+                hover_data={"lat": False, "lon": False, "Zone": True, "Status": True, "Primary Indicator": True, "Max Z-Score": True, "Size": False},
+                zoom=map_zoom,
+                center={"lat": center_lat, "lon": center_lon}
+            )
+            fig_map.update_layout(map_style="open-street-map")
+        else:
+            fig_map = px.scatter_mapbox(
+                df_map,
+                lat="lat",
+                lon="lon",
+                color="Status",
+                color_discrete_map={
+                    "Safe (Normal Baseline)": "#10B981",
+                    "Elevated Warning": "#F59E0B",
+                    "Outbreak Cluster (Red Zone)": "#EF4444"
+                },
+                size="Size",
+                hover_name="Short_Name",
+                hover_data={"lat": False, "lon": False, "Zone": True, "Status": True, "Primary Indicator": True, "Max Z-Score": True, "Size": False},
+                zoom=map_zoom,
+                center={"lat": center_lat, "lon": center_lon},
+                mapbox_style="open-street-map"
+            )
+    except Exception:
+        fig_map = px.scatter_mapbox(
+            df_map,
+            lat="lat",
+            lon="lon",
+            color="Status",
+            color_discrete_map={
+                "Safe (Normal Baseline)": "#10B981",
+                "Elevated Warning": "#F59E0B",
+                "Outbreak Cluster (Red Zone)": "#EF4444"
+            },
+            size="Size",
+            hover_name="Short_Name",
+            hover_data={"lat": False, "lon": False, "Zone": True, "Status": True, "Primary Indicator": True, "Max Z-Score": True, "Size": False},
+            zoom=map_zoom,
+            center={"lat": center_lat, "lon": center_lon},
+            mapbox_style="open-street-map"
+        )
 
-    fig_map = map_func(
-        df_map,
-        lat="lat",
-        lon="lon",
-        color="Status",
-        color_discrete_map={
-            "Safe (Normal Baseline)": "#10B981",
-            "Elevated Warning": "#F59E0B",
-            "Outbreak Cluster (Red Zone)": "#EF4444"
-        },
-        size="Size",
-        hover_name="Short_Name",
-        hover_data={"lat": False, "lon": False, "Zone": True, "Status": True, "Primary Indicator": True, "Max Z-Score": True, "Size": False},
-        zoom=map_zoom,
-        center={"lat": center_lat, "lon": center_lon},
-        **map_style_kwargs
-    )
     fig_map.update_layout(
         autosize=True,
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
