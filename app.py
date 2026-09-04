@@ -968,7 +968,7 @@ I18N = {
         # Tabs
         "tab_public": "Public Health Radar",
         "tab_clinic": "Clinic / Environment Reporter Portal (Passcode)",
-        "tab_officer": "State Medical Board Console (Passcode)",
+        "tab_officer": "Health Officer Console (Passcode)",
         "tab_audit": "Privacy Audit Log",
         
         # Tab 1 Public Health Radar
@@ -1029,11 +1029,11 @@ I18N = {
         "col_trans_val": "Safe Shared Count",
         "col_trans_z": "Anomaly Deviation Strength",
         
-        # Tab 3 State Medical Board Console
-        "officer_title": "State Medical Board Command Console",
-        "officer_desc": "Authorized State Medical Board members can configure global sensitivity and issue emergency broadcasts.",
-        "pass_prompt_officer": "Enter Medical Board Passcode:",
-        "pass_warn_officer": "Console Locked. Please enter the Medical Board passcode (9999) to unlock controls and alert dispatch.",
+        # Tab 3 Health Officer Console
+        "officer_title": "Public Health Officer Command Console",
+        "officer_desc": "Authorized Health Officers can configure global sensitivity and issue emergency broadcasts.",
+        "pass_prompt_officer": "Enter Officer Passcode:",
+        "pass_warn_officer": "Console Locked. Please enter the passcode (9999) to unlock controls and alert dispatch.",
         "sec_controls": "Surveillance Parameter Tuning",
         "epsilon_label": "Privacy Protection Level (Low / Medium / High)",
         "epsilon_help": "Controls how much masking noise is added to edge tallies. Higher noise provides higher privacy.",
@@ -1048,7 +1048,7 @@ I18N = {
         "alert_reg_label": "Subscriber Email List:",
         "sign_btn": "Authorize & Dispatch Emergency Alert",
         "log_title": "Emergency Dispatch Log",
-        "alert_dispatched_success": "Advisory authorized with Medical Board Master Key and dispatched to mobile units.",
+        "alert_dispatched_success": "Advisory authorized with Health Master Key and dispatched to mobile units.",
         "xai_no_anom": "No active anomalies. Region operating within baseline parameters.",
         
         # Tab 4 Privacy Audit Log
@@ -1124,7 +1124,7 @@ I18N = {
         # Tabs
         "tab_public": "ସାଧାରଣ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା",
         "tab_clinic": "କ୍ଲିନିକ୍ / ପରିବେଶ ତଥ୍ୟ ପୋର୍ଟାଲ୍ (Passcode)",
-        "tab_officer": "ରାଜ୍ୟ ମେଡିକାଲ ବୋର୍ଡ କନସୋଲ୍ (Passcode)",
+        "tab_officer": "ସ୍ୱାସ୍ଥ୍ୟ ଅଧିକାରୀ କନସୋଲ୍ (Passcode)",
         "tab_audit": "ଗୋପନୀୟତା ଯାଞ୍ଚ ଲଗ୍",
         
         # Tab 1 Public Health Radar
@@ -1185,11 +1185,11 @@ I18N = {
         "col_trans_val": "ପ୍ରେରିତ ସଂଖ୍ୟା",
         "col_trans_z": "ଅସ୍ୱାଭାବିକ ମାତ୍ରା",
         
-        # Tab 3 State Medical Board Console
-        "officer_title": "ରାଜ୍ୟ ମେଡିକାଲ ବୋର୍ଡ କନସୋଲ୍",
-        "officer_desc": "ରାଜ୍ୟ ମେଡିକାଲ ବୋର୍ଡ ସଦସ୍ୟମାନେ ଏଠାରେ ସିଷ୍ଟମ୍ ସମ୍ବେଦନଶୀଳତା ଏବଂ ଜରୁରୀକାଳୀନ ସ୍ୱାସ୍ଥ୍ୟ ପରାମର୍ଶ ନିୟନ୍ତ୍ରଣ କରିପାରିବେ।",
-        "pass_prompt_officer": "ମେଡିକାଲ ବୋର୍ଡ ପାସକୋଡ୍ (Passcode) ଦିଅନ୍ତୁ:",
-        "pass_warn_officer": "ମେଡିକାଲ ବୋର୍ଡ କନସୋଲ୍ ଲକ୍ ଅଛି। ନିୟନ୍ତ୍ରଣ କରିବା ପାଇଁ ପାସକୋଡ୍ (9999) ବ୍ୟବହାର କରନ୍ତୁ।",
+        # Tab 3 Health Officer Console
+        "officer_title": "ସ୍ୱାସ୍ଥ୍ୟ ଅଧିକାରୀ କନସୋଲ୍",
+        "officer_desc": "ସ୍ୱାସ୍ଥ୍ୟ ଅଧିକାରୀମାନେ ଏଠାରେ ସିଷ୍ଟମ୍ ସମ୍ବେଦନଶୀଳତା ଏବଂ ଜରୁରୀକାଳୀନ ସୂଚନା ନିୟନ୍ତ୍ରଣ କରିପାରିବେ।",
+        "pass_prompt_officer": "ଅଧିକାରୀ ପାସକୋଡ୍ (Passcode) ଦିଅନ୍ତୁ:",
+        "pass_warn_officer": "ଅଧିକାରୀ କନସୋଲ୍ ଲକ୍ ଅଛି। ନିୟନ୍ତ୍ରଣ କରିବା ପାଇଁ ପାସକୋଡ୍ (9999) ବ୍ୟବହାର କରନ୍ତୁ।",
         "sec_controls": "ସତର୍କତା ଏବଂ ଗୋପନୀୟତା ସୀମା ନିୟନ୍ତ୍ରଣ",
         "epsilon_label": "ଗୋପନୀୟତା ସୁରକ୍ଷା ସ୍ତର (କମ୍ / ମଧ୍ୟମ / ଉଚ୍ଚ)",
         "epsilon_help": "ତଥ୍ୟ ପ୍ରେରଣରେ ଯୋଗ କରାଯାଉଥିବା ନଏଜ୍ ସୀମା। ଅଧିକ ନଏଜ୍ ଅଧିକ ଗୋପନୀୟତା ଦେଇଥାଏ।",
@@ -1280,7 +1280,7 @@ I18N = {
         # Tabs
         "tab_public": "सार्वजनिक स्वास्थ्य सूचना",
         "tab_clinic": "क्लिनिक / पर्यावरण रिपोर्टर पोर्टल (Passcode)",
-        "tab_officer": "राज्य मेडिकल बोर्ड कंसोल (Passcode)",
+        "tab_officer": "स्वास्थ्य अधिकारी कंसोल (Passcode)",
         "tab_audit": "गोपनीयता ऑडिट लॉग",
         
         # Tab 1 Public Health Radar
@@ -1341,11 +1341,11 @@ I18N = {
         "col_trans_val": "प्रेषित मान",
         "col_trans_z": "विचलन तीव्रता",
         
-        # Tab 3 State Medical Board Console
-        "officer_title": "राज्य मेडिकल बोर्ड कमांड कंसोल",
-        "officer_desc": "अधिकृत राज्य मेडिकल बोर्ड सदस्य सिस्टम संवेदनशीलता और आपातकालीन स्वास्थ्य परामर्श जारी कर सकते हैं।",
-        "pass_prompt_officer": "मेडिकल बोर्ड पासकोड (Passcode) दर्ज करें:",
-        "pass_warn_officer": "मेडिकल बोर्ड कंसोल लॉक है। इसे अनलॉक करने के लिए पासकोड (9999) का उपयोग करें।",
+        # Tab 3 Health Officer Console
+        "officer_title": "स्वास्थ्य अधिकारी नियंत्रण कंसोल",
+        "officer_desc": "अधिकृत स्वास्थ्य अधिकारी सिस्टम संवेदनशीलता और आपातकालीन संदेशों को नियंत्रित कर सकते हैं।",
+        "pass_prompt_officer": "स्वास्थ्य अधिकारी पासकोड (Passcode) दर्ज करें:",
+        "pass_warn_officer": "कंसोल लॉक है। इसे अनलॉक करने के लिए पासकोड (9999) का उपयोग करें।",
         "sec_controls": "सिस्टम सतर्कता एवं गोपनीयता नियंत्रण",
         "epsilon_label": "गोपनीयता सुरक्षा स्तर (कम / मध्यम / उच्च)",
         "epsilon_help": "प्रेषित डेटा में जोड़ा जाने वाला शोर (noise) स्तर। अधिक शोर अधिक गोपनीयता सुनिश्चित करता है।",
@@ -1532,22 +1532,22 @@ def get_default_presentation_notifications():
         {
             "timestamp": "2026-08-24 18:30:00 IST",
             "status": "🔴 Waterborne Risk Cluster Confirmed",
-            "message": "OFFICIAL STATE MEDICAL BOARD ADVISORY\nSTATUS: 🔴 Waterborne Risk Cluster Confirmed\nLIKELIHOOD: 95.0%\nCORROBORATION: Elevated Coliform & Turbidity in Municipal Water post-rainfall detected across urban zones.",
+            "message": "OFFICIAL HEALTH EMERGENCY ADVISORY\nSTATUS: 🔴 Waterborne Risk Cluster Confirmed\nLIKELIHOOD: 95.0%\nCORROBORATION: Elevated Coliform & Turbidity in Municipal Water post-rainfall detected across urban zones.",
             "confidence": "95.0%",
             "hash": "SHA256:7f8a9b2c3d4e5f60...",
-            "dispatch": "Dispatched to mobile health registry & field units (Medical Board)"
+            "dispatch": "Dispatched to mobile health registry (2 state officers)"
         },
         {
             "timestamp": "2026-08-24 14:15:00 IST",
             "status": "🟡 Sentinel Respiratory Surge Advisory",
-            "message": "OFFICIAL STATE MEDICAL BOARD ADVISORY\nSTATUS: 🟡 Sentinel Respiratory Surge Advisory\nLIKELIHOOD: 68.0%\nCORROBORATION: Seasonal temperature drop and relative humidity surge detected across clinic outpatient wards.",
+            "message": "OFFICIAL HEALTH EMERGENCY ADVISORY\nSTATUS: 🟡 Sentinel Respiratory Surge Advisory\nLIKELIHOOD: 68.0%\nCORROBORATION: Seasonal temperature drop and relative humidity surge detected across clinic outpatient wards.",
             "confidence": "68.0%",
             "hash": "SHA256:3a4b5c6d7e8f9012...",
-            "dispatch": "Dispatched to mobile health registry & field units (Medical Board)"
+            "dispatch": "Dispatched to mobile health registry (2 state officers)"
         }
     ]
 
-# --- Initialize Notifications & Active Medical Board Alert ---
+# --- Initialize Notifications & Active Officer Alert ---
 if "notifications" not in st.session_state:
     st.session_state.notifications = get_default_presentation_notifications()
 
@@ -1558,19 +1558,8 @@ if "active_officer_alert" not in st.session_state:
 st.sidebar.title(t["sidebar_title"])
 st.sidebar.markdown(t["sidebar_desc"])
 
-# --- Theme Selector ---
-theme_mode_choice = st.sidebar.radio(
-    "Interface Theme:",
-    ["Dark Mode (Cyber)", "Light Mode (Clinical)"],
-    index=1 if is_light_theme else 0,
-    horizontal=True,
-    key="theme_mode_selector_radio"
-)
-if theme_mode_choice != st.session_state.app_theme_mode:
-    st.session_state.app_theme_mode = theme_mode_choice
-    st.rerun()
 
-# --- Medical Board Broadcast Glowing Popup ---
+# --- Officer Broadcast Glowing Popup ---
 if st.session_state.get("active_officer_alert"):
     alert = st.session_state.active_officer_alert
     clean_msg = alert.get("message", alert.get("status", "")).strip()
@@ -1581,7 +1570,7 @@ if st.session_state.get("active_officer_alert"):
         <div class='sidebar-glow-box'>
             <div class='sidebar-glow-header'>
                 <span style='font-size: 0.72rem; font-weight: 800; color: #FCA5A5; letter-spacing: 0.8px; text-transform: uppercase; display: flex; align-items: center; gap: 6px;'>
-                    STATE MEDICAL BOARD ADVISORY
+                    STATE OFFICER ADVISORY
                 </span>
                 <span class='live-pulse-dot' style='width: 9px; height: 9px; background: #EF4444;'></span>
             </div>
@@ -1595,7 +1584,7 @@ if st.session_state.get("active_officer_alert"):
         """,
         unsafe_allow_html=True
     )
-    if st.sidebar.button("Dismiss Board Bulletin", key="dismiss_sidebar_glow_btn", use_container_width=True):
+    if st.sidebar.button("Dismiss Alert Bulletin", key="dismiss_sidebar_glow_btn", use_container_width=True):
         st.session_state.active_officer_alert = None
         st.rerun()
 
@@ -1727,7 +1716,7 @@ with col_head2:
                 <div style='background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-left: 4px solid #EF4444; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
                     <div style='display: flex; align-items: center; justify-content: space-between;'>
                         <div>
-                            <div style='font-size: 0.75rem; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; text-transform: uppercase;'>State Medical Board Console</div>
+                            <div style='font-size: 0.75rem; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; text-transform: uppercase;'>Health Officer Console</div>
                             <div style='font-size: 0.95rem; font-weight: 700; color: #F8FAFC;'>Statutory Surveillance & Dispatch</div>
                         </div>
                         <span style='background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid #EF4444; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
@@ -2584,10 +2573,7 @@ if active_nav_idx == 0:
             """, unsafe_allow_html=True
         )
 
-    # Safety Advice Container (Unified HTML Card Rendering)
-    adv_border_accent = alert_border
-    
-    # Format safety_advice markdown strings into clean HTML
+    # Safety Advice Container
     formatted_advice_html = (
         safety_advice
         .replace("\n\n* ", "<br><br>• ")
@@ -2598,23 +2584,14 @@ if active_nav_idx == 0:
     )
     formatted_advice_html = re.sub(r'\*\*(.*?)\*\*', r'<strong style="color:var(--text-primary);font-weight:700;">\1</strong>', formatted_advice_html)
     
-    action_plan_card_html = f"""
-    <div class='glass-card' style='border-left: 5px solid {adv_border_accent} !important; padding: 22px 26px; margin-bottom: 22px;'>
-        <div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;'>
-            <div style='display: flex; align-items: center; gap: 10px;'>
-                
-                <h4 style='margin: 0; font-size: 1.18rem; font-weight: 800; letter-spacing: -0.3px; color: var(--heading-color) !important;'>Public Health & Safety Action Plan</h4>
-            </div>
-            <span class='status-badge' style='background: {alert_bg}; color: {alert_border}; border: 1px solid {alert_border}; font-size: 0.8rem;'>
-                {alert_icon} ADVISORY LEVEL: {display_risk.upper()}
-            </span>
+    st.markdown(
+        f"""
+        <div class='glass-card' style='border-top: 4px solid {alert_border};'>
+            <h4 style='margin: 0 0 10px 0;'>Public Safety Advisory</h4>
+            <div style='font-size: 1.05rem; line-height: 1.6;'>{formatted_advice_html}</div>
         </div>
-        <div style='color: var(--text-secondary) !important; font-size: 1.02rem; line-height: 1.7; font-weight: 500; background: var(--inner-card-bg); padding: 18px 22px; border-radius: 12px; border: 1px solid var(--card-border);'>
-            {formatted_advice_html}
-        </div>
-    </div>
-    """
-    st.markdown(action_plan_card_html, unsafe_allow_html=True)
+        """, unsafe_allow_html=True
+    )
 
     
     # Visual Trends Chart & Gauge
@@ -2972,7 +2949,6 @@ elif active_nav_idx == 1:
             st.markdown(
                 f"""
                 <div class="auth-card-clinic{shake_cls}">
-                    
                     <span class="auth-badge-clinic" style="display: block; text-align: center; font-weight: 700; margin-bottom: 10px;">Restricted Health Reporter Portal</span>
                     <h2 style="margin: 0 0 8px 0; text-align: center; font-size: 1.45rem; font-weight: 700;">{t["clinic_title"]}</h2>
                     <p style="opacity: 0.95; font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px; text-align: center;">
@@ -3489,8 +3465,7 @@ elif active_nav_idx == 2:
             st.markdown(
                 f"""
                 <div class="auth-card-officer{shake_cls}">
-                    
-                    <span class="auth-badge-officer" style="display: block; text-align: center; font-weight: 700; margin-bottom: 10px;">Restricted State Medical Board Clearance</span>
+                    <span class="auth-badge-officer" style="display: block; text-align: center; font-weight: 700; margin-bottom: 10px;">Restricted State Level 3 Clearance</span>
                     <h2 style="margin: 0 0 8px 0; text-align: center; font-size: 1.45rem; font-weight: 700;">{t["officer_title"]}</h2>
                     <p style="opacity: 0.95; font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px; text-align: center;">
                         {t["pass_warn_officer"]}
@@ -3502,15 +3477,15 @@ elif active_nav_idx == 2:
             
             with st.form("officer_auth_form", clear_on_submit=False):
                 officer_auth = st.text_input(
-                    "Medical Board Master Key (PIN)",
+                    "Officer Master Key (PIN)",
                     type="password",
-                    placeholder="•••• Enter Medical Board Key (Hint: 9999)",
+                    placeholder="•••• Enter Officer Key (Hint: 9999)",
                     key="passcode_officer_input",
                     label_visibility="collapsed"
                 )
                 col_btn_off1, col_btn_off2 = st.columns([1.2, 1])
                 with col_btn_off1:
-                    submit_officer = st.form_submit_button("Access Board Console", type="primary", use_container_width=True)
+                    submit_officer = st.form_submit_button("Access Console", type="primary", use_container_width=True)
                 with col_btn_off2:
                     autofill_officer = st.form_submit_button("Master Key (9999)", use_container_width=True)
                 
@@ -3520,11 +3495,11 @@ elif active_nav_idx == 2:
                         st.session_state.officer_auth_success = True
                         st.session_state.officer_auth_denied = False
                         st.session_state.active_nav_index = 2
-                        st.toast("State Medical Board Console Unlocked. Welcome, Board Member.")
+                        st.toast("Health Officer Console Unlocked! Welcome, Officer.")
                         st.rerun()
                     else:
                         st.session_state.officer_auth_denied = True
-                        st.toast("Invalid Medical Board PIN. Access Denied!")
+                        st.toast("Invalid Officer PIN. Access Denied!")
                         st.rerun()
                         
             st.markdown(
@@ -3538,7 +3513,7 @@ elif active_nav_idx == 2:
         st.markdown(f"### {t['officer_title']}")
         st.markdown(t['officer_desc'])
 
-        # Google Sheet Sync — Board-Only Database Configuration
+        # Google Sheet Sync — Officer-Only Database Configuration
         st.markdown("---")
         st.markdown(
             """
@@ -3546,7 +3521,7 @@ elif active_nav_idx == 2:
                 <h4 style='margin: 0 0 8px 0; color: #F8FAFC;'>Shared Database Configuration</h4>
                 <p style='font-size: 0.9rem; color: #CBD5E1; margin-bottom: 15px; line-height: 1.5;'>
                     Connect to a Google Sheet to enable real-time shared data across all clinic nodes. 
-                    Only State Medical Board members can configure this setting.
+                    Only Health Officers can configure this setting.
                 </p>
             </div>
             """, unsafe_allow_html=True
@@ -3689,7 +3664,7 @@ elif active_nav_idx == 2:
         bc_emails = ", ".join(st.session_state.reg_emails)
         st.text_input(t["alert_reg_label"], value=bc_emails, disabled=True)
         
-        alert_body = f"OFFICIAL STATE MEDICAL BOARD ADVISORY\nSTATUS: {agg_results['status']}\nLIKELIHOOD: {agg_results['confidence']}%\nCORROBORATION: {agg_results['description']}"
+        alert_body = f"OFFICIAL HEALTH EMERGENCY ADVISORY\nSTATUS: {agg_results['status']}\nLIKELIHOOD: {agg_results['confidence']}%\nCORROBORATION: {agg_results['description']}"
         alert_text = st.text_area(t["alert_draft_label"], value=alert_body, height=130, key="officer_alert_draft_box")
         
         is_broadcast_disabled = (agg_results["risk_class"] == "safe" and alert_text.strip() == alert_body.strip())
@@ -3717,12 +3692,12 @@ elif active_nav_idx == 2:
                 "message": clean_draft,
                 "confidence": f"{agg_results['confidence']}%",
                 "hash": f"SHA256:{base64.b64encode(clean_draft.encode()).decode()[:16]}...",
-                "dispatch": "Dispatched to mobile health registry & field units (Medical Board)"
+                "dispatch": "Dispatched to mobile health registry (2 state officers)"
             }
             st.session_state.notifications.append(new_notif)
             st.session_state.alert_dispatched_popup = new_notif
             st.session_state.active_officer_alert = new_notif
-            st.toast(f"State Medical Board Advisory Dispatched: {custom_title}")
+            st.toast(f"Official Advisory Dispatched: {custom_title}")
             st.toast("SHA256 cryptographic seal recorded in Ledger.")
             st.rerun()
 
@@ -3735,7 +3710,7 @@ elif active_nav_idx == 2:
                         <div style='display: flex; align-items: flex-start; gap: 14px; width: 100%;'>
                             
                             <div style='flex: 1;'>
-                                <strong style='color: #10B981; font-size: 1.15rem;'>State Medical Board Advisory Dispatched!</strong><br>
+                                <strong style='color: #10B981; font-size: 1.15rem;'>Official Emergency Advisory Dispatched!</strong><br>
                                 <div style='font-size: 1.05rem; font-weight: 700; color: #EF4444; margin: 4px 0;'>
                                     {p['status']}
                                 </div>
@@ -3865,3 +3840,4 @@ elif active_nav_idx == 3:
                 t["audit_col_payload"]: f"{m['transmitted_val']} (Anonymized)"
             })
     st.dataframe(pd.DataFrame(audit_records), use_container_width=True, hide_index=True)
+    
