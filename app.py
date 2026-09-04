@@ -52,36 +52,24 @@ st.markdown("""
 
     footer {visibility: hidden;}
 
-    /* Premium Obsidian Glassmorphism Cards */
+    /* Premium Obsidian Glassmorphism Cards with High Contrast */
     .glass-card {
-        background: rgba(15, 23, 42, 0.65);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #0F172A !important;
+        border: 1px solid rgba(56, 189, 248, 0.25) !important;
         border-radius: 16px;
         padding: 24px;
         margin-bottom: 20px;
-        color: var(--text-color);
-        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        color: #F8FAFC !important;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
     }
     .glass-card:hover {
         transform: translateY(-3px);
-        border-color: rgba(0, 242, 254, 0.45);
-        box-shadow: 0 16px 40px -10px rgba(0, 242, 254, 0.2), inset 0 1px 0 rgba(0, 242, 254, 0.2);
+        border-color: rgba(0, 242, 254, 0.6) !important;
+        box-shadow: 0 16px 40px -10px rgba(0, 242, 254, 0.25);
     }
-
-    /* Light Theme Adaptation */
-    @media (prefers-color-scheme: light) {
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(226, 232, 240, 0.9);
-            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06);
-        }
-        .glass-card:hover {
-            box-shadow: 0 16px 40px -10px rgba(14, 165, 233, 0.15);
-            border-color: rgba(14, 165, 233, 0.4);
-        }
+    .glass-card p, .glass-card span, .glass-card div {
+        color: #F1F5F9;
     }
 
     /* KPI Metrics Styling */
@@ -89,14 +77,13 @@ st.markdown("""
         font-family: var(--font-mono) !important;
         font-size: 2.2rem;
         font-weight: 800;
-        color: var(--primary-color);
+        color: #00F2FE !important;
         line-height: 1.1;
         letter-spacing: -0.5px;
     }
     .metric-label {
-        font-size: 0.82rem;
-        color: var(--text-color);
-        opacity: 0.75;
+        font-size: 0.84rem;
+        color: #94A3B8 !important;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.8px;
@@ -129,40 +116,39 @@ st.markdown("""
         letter-spacing: 0.3px;
     }
     .status-safe {
-        background: rgba(16, 185, 129, 0.12);
-        color: #10B981;
-        border: 1px solid rgba(16, 185, 129, 0.35);
-        box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+        background: rgba(6, 78, 59, 0.45) !important;
+        color: #34D399 !important;
+        border: 1px solid #10B981 !important;
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
     }
     .status-warning {
-        background: rgba(245, 158, 11, 0.12);
-        color: #F59E0B;
-        border: 1px solid rgba(245, 158, 11, 0.35);
-        box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
+        background: rgba(120, 53, 15, 0.45) !important;
+        color: #FBBF24 !important;
+        border: 1px solid #F59E0B !important;
+        box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
     }
     .status-danger {
-        background: rgba(239, 68, 68, 0.14);
-        color: #EF4444;
-        border: 1px solid rgba(239, 68, 68, 0.4);
-        box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);
+        background: rgba(127, 29, 29, 0.45) !important;
+        color: #F87171 !important;
+        border: 1px solid #EF4444 !important;
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
     }
     
-    /* Headers with Elegant Gradient Contrast */
+    /* Headers with High Contrast */
     h1, h2, h3, h4 {
-        color: var(--text-color) !important;
+        color: #F8FAFC !important;
         font-weight: 800 !important;
         letter-spacing: -0.4px !important;
     }
 
     /* Command Center Hero Banner */
     .custom-hero-banner {
-        background: linear-gradient(135deg, rgba(11, 19, 43, 0.95) 0%, rgba(20, 31, 56, 0.95) 100%) !important;
+        background: linear-gradient(135deg, #0B132B 0%, #172A46 100%) !important;
         padding: 22px 28px;
         border-radius: 18px;
-        border: 1px solid rgba(0, 242, 254, 0.2);
-        box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(0, 242, 254, 0.35) !important;
+        box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.7);
         margin-bottom: 12px;
-        backdrop-filter: blur(24px);
     }
     .custom-hero-banner h1 {
         background: linear-gradient(135deg, #00F2FE 0%, #38BDF8 60%, #FFFFFF 100%) !important;
@@ -174,8 +160,8 @@ st.markdown("""
         letter-spacing: -0.6px !important;
     }
     .custom-hero-banner p {
-        color: rgba(255, 255, 255, 0.85) !important;
-        margin: 4px 0 0 0 !important;
+        color: #CBD5E1 !important;
+        margin: 6px 0 0 0 !important;
         font-size: 0.95rem !important;
         font-weight: 500 !important;
     }
@@ -186,54 +172,99 @@ st.markdown("""
         align-items: center;
         gap: 16px;
         flex-wrap: wrap;
-        background: rgba(15, 23, 42, 0.45);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: #0F172A !important;
+        border: 1px solid #334155 !important;
         border-radius: 12px;
-        padding: 8px 16px;
+        padding: 10px 18px;
         margin-bottom: 16px;
-        font-size: 0.82rem;
-        color: var(--text-color);
-        opacity: 0.9;
+        font-size: 0.84rem;
+        color: #F1F5F9 !important;
     }
     .ticker-item {
         display: inline-flex;
         align-items: center;
         gap: 6px;
         font-weight: 600;
+        color: #F1F5F9 !important;
     }
 
-    /* Segmented Modern Navigation Tabs */
+    /* Segmented Modern Navigation Tabs & Stateful Portal Selector */
+    div[data-testid="stRadio"] > div[role="radiogroup"] {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        background: #0F172A !important;
+        padding: 6px;
+        border-radius: 14px;
+        border: 1px solid #334155 !important;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
+        margin-bottom: 18px;
+    }
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label {
+        flex: 1;
+        min-width: 180px;
+        background: transparent;
+        padding: 10px 18px;
+        border-radius: 10px;
+        color: #94A3B8 !important;
+        font-weight: 600;
+        font-size: 0.92rem;
+        border: 1px solid transparent;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
+        color: #00F2FE !important;
+        background: rgba(0, 242, 254, 0.1) !important;
+        border-color: rgba(0, 242, 254, 0.3) !important;
+    }
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label > div:first-child {
+        display: none !important;
+    }
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
+        background: linear-gradient(135deg, rgba(0, 242, 254, 0.25) 0%, rgba(56, 189, 248, 0.18) 100%) !important;
+        color: #00F2FE !important;
+        font-weight: 700 !important;
+        border: 1px solid rgba(0, 242, 254, 0.55) !important;
+        box-shadow: 0 4px 18px rgba(0, 242, 254, 0.25) !important;
+    }
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) p {
+        color: #00F2FE !important;
+        font-weight: 700 !important;
+    }
+
     .stTabs [data-baseweb="tab-list"] {
         gap: 6px;
-        background: rgba(15, 23, 42, 0.6);
+        background: #0F172A !important;
         padding: 6px;
         border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        border: 1px solid #334155 !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
     }
     .stTabs [data-baseweb="tab"] {
         padding: 10px 22px;
         background: transparent;
         border-radius: 8px;
-        color: var(--text-color);
-        opacity: 0.75;
+        color: #94A3B8 !important;
         font-weight: 600;
         font-size: 0.92rem;
         border: none;
         transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .stTabs [data-baseweb="tab"]:hover {
-        opacity: 1.0;
-        color: #00F2FE;
-        background: rgba(0, 242, 254, 0.08);
+        color: #00F2FE !important;
+        background: rgba(0, 242, 254, 0.12) !important;
     }
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, rgba(0, 242, 254, 0.2) 0%, rgba(56, 189, 248, 0.15) 100%) !important;
+        background: linear-gradient(135deg, rgba(0, 242, 254, 0.25) 0%, rgba(56, 189, 248, 0.18) 100%) !important;
         color: #00F2FE !important;
         font-weight: 700 !important;
-        opacity: 1.0 !important;
-        border: 1px solid rgba(0, 242, 254, 0.4) !important;
-        box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2) !important;
+        border: 1px solid rgba(0, 242, 254, 0.5) !important;
+        box-shadow: 0 4px 15px rgba(0, 242, 254, 0.25) !important;
     }
 
     /* High-Impact Cyber Action Buttons */
@@ -243,15 +274,15 @@ st.markdown("""
         font-weight: 800 !important;
         font-size: 0.9rem !important;
         border-radius: 10px !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
         padding: 8px 22px !important;
-        box-shadow: 0 4px 18px rgba(0, 242, 254, 0.35) !important;
+        box-shadow: 0 4px 18px rgba(0, 242, 254, 0.4) !important;
         transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
         letter-spacing: 0.3px !important;
     }
     div.stButton > button:hover {
         transform: translateY(-2px) scale(1.02) !important;
-        box-shadow: 0 8px 25px rgba(0, 242, 254, 0.5) !important;
+        box-shadow: 0 8px 25px rgba(0, 242, 254, 0.6) !important;
         color: #070B14 !important;
         background: linear-gradient(135deg, #38BDF8 0%, #00F2FE 100%) !important;
     }
@@ -259,22 +290,30 @@ st.markdown("""
         transform: translateY(0) scale(0.98) !important;
     }
 
-    /* Modern Alert Banners */
+    /* Modern High-Contrast Alert Banners */
     .alert-banner-warning {
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%);
-        border: 1px solid rgba(245, 158, 11, 0.45);
+        background: linear-gradient(135deg, rgba(120, 53, 15, 0.6) 0%, #1E1B18 100%) !important;
+        border: 1px solid #F59E0B !important;
         border-radius: 14px;
         padding: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
+        color: #FEF3C7 !important;
+    }
+    .alert-banner-warning p, .alert-banner-warning span {
+        color: #FDE68A !important;
     }
     .alert-banner-danger {
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(185, 28, 28, 0.12) 100%);
-        border: 1px solid rgba(239, 68, 68, 0.5);
+        background: linear-gradient(135deg, rgba(127, 29, 29, 0.65) 0%, #201416 100%) !important;
+        border: 1px solid #EF4444 !important;
         border-radius: 14px;
         padding: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 8px 30px rgba(239, 68, 68, 0.3);
+        box-shadow: 0 8px 30px rgba(239, 68, 68, 0.35);
+        color: #FEE2E2 !important;
+    }
+    .alert-banner-danger p, .alert-banner-danger span {
+        color: #FECACA !important;
     }
 
     /* Interactive Feedback Animations */
@@ -287,9 +326,9 @@ st.markdown("""
         75% { transform: translateX(-3px); }
     }
     .denial-msg {
-        background: rgba(239, 68, 68, 0.15);
-        border: 1px solid #EF4444;
-        color: #F87171;
+        background: rgba(127, 29, 29, 0.55) !important;
+        border: 1px solid #EF4444 !important;
+        color: #FCA5A5 !important;
         padding: 10px 16px;
         border-radius: 10px;
         font-size: 0.9rem;
@@ -302,13 +341,17 @@ st.markdown("""
         gap: 8px;
     }
     .green-popup {
-        background: rgba(16, 185, 129, 0.12);
-        border: 1px solid #10B981;
-        box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
+        background: rgba(6, 78, 59, 0.55) !important;
+        border: 1px solid #10B981 !important;
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
         border-radius: 12px;
         padding: 16px 20px;
         margin: 15px 0;
+        color: #ECFDF5 !important;
         animation: green-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .green-popup span, .green-popup div, .green-popup p {
+        color: #ECFDF5 !important;
     }
     @keyframes green-pop {
         0% { transform: scale(0.94); opacity: 0; }
@@ -317,9 +360,9 @@ st.markdown("""
     
     /* Grassroots & Node Card Visuals */
     .grassroots-badge {
-        background: rgba(15, 23, 42, 0.7);
-        border: 1px solid rgba(0, 242, 254, 0.35);
-        color: #00F2FE;
+        background: #0B132B !important;
+        border: 1px solid #00F2FE !important;
+        color: #00F2FE !important;
         padding: 4px 12px;
         border-radius: 20px;
         font-size: 0.76rem;
@@ -329,29 +372,31 @@ st.markdown("""
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        backdrop-filter: blur(10px);
     }
     .node-visual-card {
-        background: rgba(15, 23, 42, 0.65);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #0F172A !important;
+        border: 1px solid rgba(56, 189, 248, 0.25) !important;
         border-radius: 16px;
         overflow: hidden;
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
         margin-bottom: 16px;
+        color: #F8FAFC !important;
     }
     .node-visual-card:hover {
         transform: translateY(-4px);
-        border-color: rgba(0, 242, 254, 0.4);
-        box-shadow: 0 14px 35px -10px rgba(0, 242, 254, 0.2);
+        border-color: rgba(0, 242, 254, 0.55) !important;
+        box-shadow: 0 14px 35px -10px rgba(0, 242, 254, 0.3);
     }
     .node-card-body {
         padding: 16px 18px;
     }
+    .node-card-body span, .node-card-body div, .node-card-body p {
+        color: #F1F5F9 !important;
+    }
     .pipeline-step-badge {
-        background: rgba(0, 242, 254, 0.12);
-        border: 1px solid rgba(0, 242, 254, 0.3);
-        color: #00F2FE;
+        background: rgba(0, 242, 254, 0.18) !important;
+        border: 1px solid #00F2FE !important;
+        color: #00F2FE !important;
         border-radius: 6px;
         padding: 3px 8px;
         font-size: 0.75rem;
@@ -359,18 +404,193 @@ st.markdown("""
         font-family: var(--font-mono);
     }
     .hygiene-card {
-        background: rgba(15, 23, 42, 0.55);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #0F172A !important;
+        border: 1px solid #334155 !important;
         border-radius: 12px;
         padding: 16px;
         margin-bottom: 12px;
         display: flex;
         align-items: flex-start;
         gap: 14px;
+        color: #F8FAFC !important;
         transition: border-color 0.2s ease;
     }
     .hygiene-card:hover {
-        border-color: rgba(0, 242, 254, 0.3);
+        border-color: #00F2FE !important;
+    }
+    .hygiene-card span, .hygiene-card strong, .hygiene-card em {
+        color: #E2E8F0 !important;
+    }
+
+    /* Premium Cyber Authentication Terminal Box */
+    .auth-card-clinic {
+        background: radial-gradient(circle at 50% 0%, #162B4D 0%, #0B132B 75%) !important;
+        border: 1px solid #00F2FE !important;
+        border-radius: 20px;
+        padding: 32px 28px 24px 28px;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 242, 254, 0.2);
+        margin-bottom: 12px;
+        color: #F8FAFC !important;
+    }
+    .auth-card-clinic p, .auth-card-clinic span {
+        color: #E2E8F0 !important;
+    }
+    .auth-card-officer {
+        background: radial-gradient(circle at 50% 0%, #3B141C 0%, #0B132B 75%) !important;
+        border: 1px solid #EF4444 !important;
+        border-radius: 20px;
+        padding: 32px 28px 24px 28px;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(239, 68, 68, 0.25);
+        margin-bottom: 12px;
+        color: #F8FAFC !important;
+    }
+    .auth-card-officer p, .auth-card-officer span {
+        color: #E2E8F0 !important;
+    }
+    .auth-icon-halo {
+        width: 78px;
+        height: 78px;
+        margin: 0 auto 16px auto;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.4rem;
+        background: #0F172A !important;
+        border: 2px solid #00F2FE !important;
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.45);
+        animation: pulse-halo 2.5s infinite ease-in-out;
+    }
+    .auth-icon-halo-officer {
+        width: 78px;
+        height: 78px;
+        margin: 0 auto 16px auto;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.4rem;
+        background: #0F172A !important;
+        border: 2px solid #EF4444 !important;
+        box-shadow: 0 0 25px rgba(239, 68, 68, 0.45);
+        animation: pulse-halo-red 2.5s infinite ease-in-out;
+    }
+    @keyframes pulse-halo {
+        0%, 100% { box-shadow: 0 0 20px rgba(0, 242, 254, 0.35); transform: scale(1); }
+        50% { box-shadow: 0 0 35px rgba(0, 242, 254, 0.65); transform: scale(1.04); }
+    }
+    @keyframes pulse-halo-red {
+        0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); transform: scale(1); }
+        50% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.7); transform: scale(1.04); }
+    }
+    .auth-badge-clinic {
+        background: rgba(0, 242, 254, 0.18) !important;
+        border: 1px solid #00F2FE !important;
+        color: #00F2FE !important;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        padding: 4px 14px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+    .auth-badge-officer {
+        background: rgba(239, 68, 68, 0.22) !important;
+        border: 1px solid #EF4444 !important;
+        color: #FCA5A5 !important;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        padding: 4px 14px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+    .auth-footer-shield {
+        font-size: 0.8rem;
+        color: #94A3B8 !important;
+        text-align: center;
+        margin-top: 14px;
+        letter-spacing: 0.2px;
+    }
+
+    /* Portal Banners */
+    .portal-banner {
+        background: #0F172A !important;
+        border: 1px solid rgba(0, 242, 254, 0.4) !important;
+        border-left: 5px solid #00F2FE !important;
+        border-radius: 14px;
+        padding: 16px 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        color: #F8FAFC !important;
+    }
+    .portal-banner p, .portal-banner span, .portal-banner div {
+        color: #F1F5F9 !important;
+    }
+    .officer-banner {
+        background: #0F172A !important;
+        border: 1px solid rgba(239, 68, 68, 0.45) !important;
+        border-left: 5px solid #EF4444 !important;
+        border-radius: 14px;
+        padding: 16px 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        color: #F8FAFC !important;
+    }
+    .officer-banner p, .officer-banner span, .officer-banner div {
+        color: #F1F5F9 !important;
+    }
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+    .status-chip-safe {
+        background: rgba(6, 78, 59, 0.45) !important;
+        border: 1px solid #10B981 !important;
+        color: #34D399 !important;
+    }
+    .status-chip-warn {
+        background: rgba(120, 53, 15, 0.45) !important;
+        border: 1px solid #F59E0B !important;
+        color: #FBBF24 !important;
+    }
+    .status-chip-danger {
+        background: rgba(127, 29, 29, 0.45) !important;
+        border: 1px solid #EF4444 !important;
+        color: #F87171 !important;
+    }
+    .status-chip-cyan {
+        background: rgba(0, 242, 254, 0.15) !important;
+        border: 1px solid #00F2FE !important;
+        color: #00F2FE !important;
+    }
+    .channel-box {
+        background: #0F172A !important;
+        border: 1px solid rgba(56, 189, 248, 0.25) !important;
+        border-radius: 14px;
+        padding: 18px;
+        margin-top: 10px;
+        margin-bottom: 15px;
+        color: #F8FAFC !important;
+    }
+    .preview-pill {
+        background: #0F172A !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px;
+        padding: 14px;
+        color: #F8FAFC !important;
     }
 </style>
 
@@ -397,7 +617,7 @@ I18N = {
         "sidebar_title": "🛡️ Health Safety Grid",
         "sidebar_desc": "Helping communities track health symptoms without sharing personal data.",
         "zero_central_policy": "🔒 **Privacy Guarantee:** No names, phone numbers, or clinic files ever leave local centers. The central dashboard only analyzes masked numbers to locate outbreaks.",
-        "app_title": "🛡️ SurakshaNet 3.0",
+        "app_title": "SurakshaNet 3.0",
         "app_sub": "Community Early-Warning Dashboard (Privacy Protected)",
         "inject_outbreak": "🕹️ Select Simulation Scenario",
         "inject_location": "📍 Outbreak Location / Epicenter",
@@ -553,7 +773,7 @@ I18N = {
         "sidebar_title": "🛡️ ସ୍ୱାସ୍ଥ୍ୟ ସୁରକ୍ଷା ଗ୍ରୀଡ୍",
         "sidebar_desc": "ବ୍ୟକ୍ତିଗତ ତଥ୍ୟ ପ୍ରକାଶ ନକରି ସ୍ଥାନୀୟ ରୋଗ ଲକ୍ଷଣ ଟ୍ରାକ୍ କରିବାର ସହଜ ମାଧ୍ୟମ।",
         "zero_central_policy": "🔒 **ଗୋପନୀୟତା ଗ୍ୟାରେଣ୍ଟି:** କୌଣସି ନାମ କିମ୍ବା ଫୋନ୍ ନମ୍ବର କ୍ଲିନିକ୍ ବାହାରକୁ ଯାଏ ନାହିଁ। କେନ୍ଦ୍ରୀୟ ରାଡାର କେବଳ ସାଧାରଣ ସୂଚକାଙ୍କ ଯାଞ୍ଚ କରିଥାଏ।",
-        "app_title": "🛡️ ସୁରକ୍ଷା-ନେଟ୍ ୩.୦",
+        "app_title": "ସୁରକ୍ଷା-ନେଟ୍ ୩.୦",
         "app_sub": "ସହଜ ମହାମାରୀ ସତର୍କତା ବ୍ୟବସ୍ଥା (ଗୋପନୀୟତା ସୁରକ୍ଷିତ)",
         "inject_outbreak": "🕹️ ସିନାରିଓ ଚୟନ କରନ୍ତୁ",
         "inject_location": "📍 ପ୍ରକୋପ କେନ୍ଦ୍ର / ସ୍ଥାନ",
@@ -709,7 +929,7 @@ I18N = {
         "sidebar_title": "🛡️ स्वास्थ्य सुरक्षा ग्रिड",
         "sidebar_desc": "व्यक्तिगत पहचान उजागर किए बिना बीमारी के लक्षणों को ट्रैक करने का सरल मंच।",
         "zero_central_policy": "🔒 **गोपनीयता सुरक्षा:** कोई नाम, फोन नंबर या व्यक्तिगत जानकारी केंद्रों से बाहर नहीं जाती। केंद्रीय सर्वर केवल गुप्त सांख्यिकी का उपयोग करता है।",
-        "app_title": "🛡️ सुरक्षा-नेट 3.0",
+        "app_title": "सुरक्षा-नेट 3.0",
         "app_sub": "सामुदायिक स्वास्थ्य चेतावनी ग्रिड (गोपनीयता सुरक्षित)",
         "inject_outbreak": "🕹️ सिमुलेशन परिदृश्य चुनें",
         "inject_location": "📍 प्रकोप का मुख्य केंद्र / स्थान",
@@ -1091,22 +1311,6 @@ with col_head2:
         )
         st.session_state.current_epicenter = epicenter
 
-# --- Top Telemetry Ticker Strip ---
-st.markdown("""
-<div class="telemetry-ticker">
-    <div class="ticker-item"><span class="live-pulse-dot"></span> <strong style="color:#10B981; letter-spacing:0.5px;">GRID ONLINE</strong></div>
-    <span style="opacity:0.25;">|</span>
-    <div class="ticker-item"><span style="color:#00F2FE;">🏥</span> <strong>5/5</strong> Grassroots Health Nodes</div>
-    <span style="opacity:0.25;">|</span>
-    <div class="ticker-item"><span style="color:#A855F7;">🔒</span> Local Differential Privacy (&epsilon;=0.8)</div>
-    <span style="opacity:0.25;">|</span>
-    <div class="ticker-item"><span style="color:#38BDF8;">🛡️</span> Zero-Central-PII Enforced</div>
-    <span style="opacity:0.25;">|</span>
-    <div class="ticker-item"><span style="color:#F59E0B;">📡</span> Telemetry Sync: Live</div>
-</div>
-""", unsafe_allow_html=True)
-
-
 # --- Node Parameter Schema ---
 NODES = {
     "node_campus": {
@@ -1442,18 +1646,14 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
             # Compute Adaptive vs. Reference Baseline
             mean, std, baseline_type = compute_adaptive_baseline(node_id, metric_id, ref_mean, ref_std, raw_sheet_logs, is_dynamic_mode)
             
-            # 1. Normal Baseline: Standard routine daily fluctuations around historical mean
+            # 1. Default Baseline Initialization: Standard routine daily fluctuations around historical mean
             np.random.seed((hash(f"{node_id}_{metric_id}_{scenario}") + 17) % 10000)
-            val = max(0.0, mean + np.random.uniform(-0.3, 0.6) * std)
-            
-            # In Normal Baseline, provide a realistic mix: mostly Green with 1 Yellow Watch
-            if scenario == "🟢 Normal Baseline (No Active Outbreaks)":
-                if node_id == "node_soa" and metric_id == "respiratory":
-                    val = mean + 1.9 * std # 🟡 Mild seasonal elevation (~1.9σ Watch)
-                else:
-                    val = max(0.0, mean + np.random.uniform(-0.4, 0.5) * std) # 🟢 Normal Safe
+            val = max(0.0, mean + np.random.uniform(-0.3, 0.3) * std)
             
             # 2. Location-Based Outbreak Surges (Varying Red, Yellow, Green Distribution)
+            if scenario == "🟢 Normal Baseline (No Active Outbreaks)":
+                pass # Already set to safe baseline
+            
             elif scenario == "🌊 Gastrointestinal Outbreak Cluster (Waterborne)":
                 # Epicenter: Kalinga Campus North & Water Treatment Station -> 🔴 RED Outbreak
                 if (is_kalinga_epicenter or is_all_regions) and node_id == "node_campus":
@@ -1470,9 +1670,6 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                 elif node_id == "node_weather":
                     if metric_id == "rainfall": val = 24.0 # 🟡 YELLOW (Heavy Precipitation Trigger)
                     elif metric_id == "temp": val = 32.8
-                # Unaffected Clean Zone: Utkal University (East) -> 🟢 GREEN Safe
-                elif node_id == "node_utkal":
-                    val = max(0.0, mean + np.random.uniform(-0.2, 0.4) * std) # 🟢 GREEN Safe Baseline
                     
             elif scenario == "🫁 Cold-Snap Acute Respiratory Surge":
                 # Epicenter: Capital Hospital Central OPD & Kalinga Clinic -> 🔴 RED Outbreak
@@ -1489,9 +1686,6 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                 elif node_id == "node_weather":
                     if metric_id == "temp": val = 16.5 # 🟡 Cold Snap Meteorological Anomaly
                     elif metric_id == "humidity": val = 93.0
-                # Completely Clean Water Quality: Water Station -> 🟢 GREEN Safe
-                elif node_id == "node_water":
-                    val = max(0.0, mean + np.random.uniform(-0.1, 0.3) * std) # 🟢 GREEN Safe Baseline
                     
             elif scenario == "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)":
                 # Compound Multi-Pathogen Outbreak: Varied Red, Yellow, Green
@@ -1508,8 +1702,6 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                     elif metric_id == "respiratory": val = 9.2 # 🟡 YELLOW
                 elif node_id == "node_weather":
                     if metric_id == "rainfall": val = 24.0 # 🟡 YELLOW
-                elif node_id == "node_utkal":
-                    val = max(0.0, mean + np.random.uniform(-0.2, 0.4) * std) # 🟢 GREEN Safe
                     
             elif scenario == "⚠️ False Alarm (Single-Source Data Typo)":
                 # Only 1 single isolated center enters extreme outlier: 🔴 RED
@@ -1521,15 +1713,10 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                     if metric_id == "fever": val = 148.0
                 elif node_id == "node_hospital" and is_hospital_epicenter:
                     if metric_id == "fever_high": val = 180.0
-                else:
-                    # All other 5 centers are 🟢 GREEN Safe Baseline
-                    val = max(0.0, mean + np.random.uniform(-0.3, 0.4) * std)
                     
             elif scenario == "🔬 Small Cohort Threat (k-Anonymity Guard Demo)":
                 if node_id in ["node_campus", "node_soa", "node_utkal"] and metric_id == "gastrointestinal":
                     val = 3.0 # Suppressed locally
-                else:
-                    val = max(0.0, mean + np.random.uniform(-0.3, 0.4) * std)
             
             if metric_id in manual_sums and manual_sums[metric_id] > 0:
                 val += manual_sums[metric_id]
@@ -1613,7 +1800,15 @@ def run_federated_aggregation(node_data, threshold, scenario_name="", epicenter_
     is_false_alarm = False
     false_alarm_prob = 0.0
     
-    if scenario_name == "🔬 Small Cohort Threat (k-Anonymity Guard Demo)":
+    if scenario_name == "🟢 Normal Baseline (No Active Outbreaks)":
+        outbreak_prob = 0.0
+        confidence = 0.0
+        status = "Baseline Normal (All Systems Safe)"
+        desc = "All local health centers, municipal wastewater monitors, and weather stations are reporting normal baseline activity within expected historical limits. Outbreak probability is 0.0%."
+        risk_class = "safe"
+        is_false_alarm = False
+        false_alarm_prob = 0.0
+    elif scenario_name == "🔬 Small Cohort Threat (k-Anonymity Guard Demo)":
         outbreak_prob = 0.0
         confidence = 0.0
         status = "Baseline Normal (Privacy Guard Active)"
@@ -1635,7 +1830,7 @@ def run_federated_aggregation(node_data, threshold, scenario_name="", epicenter_
         outbreak_prob = 0.0
         confidence = 0.0
         status = "Baseline Normal (All Systems Safe)"
-        desc = "All local health centers, municipal wastewater monitors, and weather stations are reporting normal baseline activity. Outbreak probability is 0.0%."
+        desc = "All local health centers, municipal wastewater monitors, and weather stations are reporting normal baseline activity within expected historical limits. Outbreak probability is 0.0%."
         risk_class = "safe"
         is_false_alarm = False
         false_alarm_prob = 0.0
@@ -1701,7 +1896,12 @@ def run_federated_aggregation(node_data, threshold, scenario_name="", epicenter_
         target_signals = [s for s in contributing_signals if s.get("node_id") == loc_node_id]
         target_lai = node_lais.get(loc_node_id, 0.0)
         
-        if is_false_alarm:
+        if scenario_name == "🟢 Normal Baseline (No Active Outbreaks)":
+            local_prob = 0.0
+            local_risk = "safe"
+            local_status = f"Normal Baseline Safe ({target_node['short_name']})"
+            local_desc = f"Patient symptom activity at {target_node['short_name']} ({target_node['zone']}) is currently within normal historical limits (Z = {target_lai}σ)."
+        elif is_false_alarm:
             local_prob = outbreak_prob
             local_risk = "warning"
             local_status = f"Suspected Local Anomaly / Data Typo at {target_node['short_name']}"
@@ -1755,18 +1955,38 @@ def run_federated_aggregation(node_data, threshold, scenario_name="", epicenter_
 node_data = generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mode=is_dynamic_baseline)
 agg_results = run_federated_aggregation(node_data, false_alarm_threshold, scenario, epicenter)
 
-# --- Navigation Tabs ---
-tab_public, tab_clinic, tab_officer, tab_audit = st.tabs([
+# --- Stateful Navigation Portals ---
+tab_options = [
     t["tab_public"],
     t["tab_clinic"],
     t["tab_officer"],
     t["tab_audit"]
-])
+]
+
+if "active_nav_index" not in st.session_state or st.session_state.active_nav_index not in [0, 1, 2, 3]:
+    st.session_state.active_nav_index = 0
+
+def _on_nav_change():
+    selected_val = st.session_state.portal_navigation_bar
+    if selected_val in tab_options:
+        st.session_state.active_nav_index = tab_options.index(selected_val)
+
+st.radio(
+    "Navigation Portal Selector",
+    options=tab_options,
+    index=st.session_state.active_nav_index,
+    horizontal=True,
+    key="portal_navigation_bar",
+    on_change=_on_nav_change,
+    label_visibility="collapsed"
+)
+
+active_nav_idx = st.session_state.active_nav_index
 
 # ==============================================================================
 # TAB 1: PUBLIC HEALTH RADAR (PRIMARY - GENERAL PUBLIC)
 # ==============================================================================
-with tab_public:
+if active_nav_idx == 0:
     # Surveillance View Scope Control
     is_specific_loc = ("All Monitored" not in epicenter and "Cross-City" not in epicenter and agg_results.get("local_metrics") is not None)
     
@@ -1851,7 +2071,7 @@ with tab_public:
     # Determine dynamic class for animations
     if display_risk == "safe":
         alert_class = ""
-        alert_style = f"background-color: {alert_bg}; border: 2px solid {alert_border}; border-radius: 8px; padding: 18px; margin-bottom: 20px;"
+        alert_style = "background: linear-gradient(135deg, rgba(6, 78, 59, 0.7) 0%, #0B132B 100%) !important; border: 1px solid #10B981 !important; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);"
     elif is_false_alarm or display_risk == "warning":
         alert_class = "class='alert-banner-warning'"
         alert_style = f"background-color: {alert_bg};"
@@ -1861,18 +2081,18 @@ with tab_public:
         
     # Banner Metric Badges
     if is_false_alarm:
-        badge_html = f"<div style='display:flex;gap:14px;text-align:right;flex-wrap:wrap;justify-content:flex-end;'><div style='background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.3);'><span style='font-size:0.75rem;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;color:{alert_border};'>{t['threat_prob']}</span><div style='font-size:1.9rem;font-weight:800;color:{alert_border};line-height:1.1;'>{display_outbreak_p}%</div></div><div style='background:rgba(245,158,11,0.12);padding:8px 14px;border-radius:8px;border:2px solid #F59E0B;'><span style='font-size:0.75rem;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;color:#F59E0B;'>⚠️ Probability Outbreak is False</span><div style='font-size:1.9rem;font-weight:800;color:#F59E0B;line-height:1.1;'>{false_p}%</div></div></div>"
+        badge_html = f"<div style='display:flex;gap:14px;text-align:right;flex-wrap:wrap;justify-content:flex-end;'><div style='background:#0F172A;padding:10px 16px;border-radius:10px;border:1px solid #F59E0B;box-shadow:0 4px 15px rgba(0,0,0,0.5);'><span style='font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#FDE68A;'>{t['threat_prob']}</span><div style='font-size:1.9rem;font-weight:800;color:#F59E0B;line-height:1.1;'>{display_outbreak_p}%</div></div><div style='background:rgba(245,158,11,0.22);padding:10px 16px;border-radius:10px;border:2px solid #F59E0B;box-shadow:0 4px 15px rgba(245,158,11,0.3);'><span style='font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#FEF3C7;'>⚠️ False Alarm Prob</span><div style='font-size:1.9rem;font-weight:800;color:#FBBF24;line-height:1.1;'>{false_p}%</div></div></div>"
     else:
-        badge_html = f"<div style='text-align:right;min-width:150px;'><span style='font-size:0.8rem;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;color:{alert_border};'>{t['threat_prob']}</span><div style='font-size:2.2rem;font-weight:800;color:{alert_border};line-height:1.1;'>{display_outbreak_p}%</div></div>"
+        badge_html = f"<div style='text-align:right;min-width:150px;background:#0F172A;padding:10px 18px;border-radius:10px;border:1px solid {alert_border};box-shadow:0 4px 15px rgba(0,0,0,0.5);'><span style='font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#CBD5E1;'>{t['threat_prob']}</span><div style='font-size:2.2rem;font-weight:800;color:{alert_border};line-height:1.1;'>{display_outbreak_p}%</div></div>"
 
     # Outbreak Warning Status (Filled high-visibility alert banner)
     alert_banner_html = (
         f"<div {alert_class} style='{alert_style}'>"
         f"<div style='display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;'>"
         f"<div style='flex:1;min-width:300px;'>"
-        f"<h3 style='margin:0;font-size:1.45rem;color:{alert_border} !important;'>{alert_icon} {display_status}</h3>"
-        f"<p style='color:var(--text-color);opacity:0.9;margin:6px 0 0 0;font-size:1.02rem;'>{display_desc}</p>"
-        f"<div style='margin-top:10px;'><span style='background:rgba(255,255,255,0.08);border:1px solid rgba(128,128,128,0.3);border-radius:20px;padding:4px 12px;font-size:0.85rem;font-weight:600;'>{location_scope_label}</span></div>"
+        f"<h3 style='margin:0;font-size:1.45rem;color:{alert_border} !important;font-weight:800;'>{alert_icon} {display_status}</h3>"
+        f"<p style='color:#F8FAFC !important;opacity:0.95;margin:8px 0 0 0;font-size:1.02rem;line-height:1.5;'>{display_desc}</p>"
+        f"<div style='margin-top:12px;'><span style='background:#0F172A;border:1px solid #334155;color:#38BDF8;border-radius:20px;padding:5px 14px;font-size:0.85rem;font-weight:600;'>{location_scope_label}</span></div>"
         f"</div>"
         f"{badge_html}"
         f"</div>"
@@ -1884,26 +2104,26 @@ with tab_public:
     if is_false_alarm:
         st.markdown(
             f"""
-            <div class='glass-card' style='border-left: 5px solid #F59E0B; background: rgba(245, 158, 11, 0.08); margin-bottom: 20px;'>
-                <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 8px;'>
-                    <span style='font-size: 1.3rem;'>🔍</span>
-                    <h4 style='margin: 0; color: #F59E0B;'>False Alarm vs. Outbreak Signal Verification</h4>
+            <div class='glass-card' style='border-left: 5px solid #F59E0B !important; background: #0F172A !important; margin-bottom: 20px;'>
+                <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 12px;'>
+                    <span style='font-size: 1.4rem;'>🔍</span>
+                    <h4 style='margin: 0; color: #F59E0B !important;'>False Alarm vs. Outbreak Signal Verification</h4>
                 </div>
-                <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 10px;'>
-                    <div style='background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid rgba(128,128,128,0.2);'>
-                        <div style='font-size: 0.8rem; opacity: 0.8;'>Simulation Outbreak Probability</div>
-                        <div style='font-size: 1.4rem; font-weight: 700; color: var(--text-color);'>{display_outbreak_p}%</div>
-                        <div style='font-size: 0.78rem; opacity: 0.7;'>Calculated from single-site anomaly</div>
+                <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 10px;'>
+                    <div style='background: #1E293B; padding: 14px; border-radius: 8px; border: 1px solid #334155;'>
+                        <div style='font-size: 0.82rem; color: #94A3B8; font-weight: 600;'>Simulation Outbreak Probability</div>
+                        <div style='font-size: 1.5rem; font-weight: 800; color: #F8FAFC; margin: 4px 0;'>{display_outbreak_p}%</div>
+                        <div style='font-size: 0.78rem; color: #CBD5E1;'>Calculated from single-site anomaly</div>
                     </div>
-                    <div style='background: rgba(245,158,11,0.12); padding: 12px; border-radius: 6px; border: 1px solid #F59E0B;'>
-                        <div style='font-size: 0.8rem; color: #F59E0B; font-weight: 600;'>Probability this Outbreak % is FALSE</div>
-                        <div style='font-size: 1.4rem; font-weight: 800; color: #F59E0B;'>{false_p}%</div>
-                        <div style='font-size: 0.78rem; opacity: 0.85;'>Likely single-source typo / glitch</div>
+                    <div style='background: rgba(245,158,11,0.18); padding: 14px; border-radius: 8px; border: 1px solid #F59E0B;'>
+                        <div style='font-size: 0.82rem; color: #FDE68A; font-weight: 600;'>Probability this Outbreak % is FALSE</div>
+                        <div style='font-size: 1.5rem; font-weight: 800; color: #FBBF24; margin: 4px 0;'>{false_p}%</div>
+                        <div style='font-size: 0.78rem; color: #FEF3C7;'>Likely single-source typo / glitch</div>
                     </div>
-                    <div style='background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid rgba(128,128,128,0.2);'>
-                        <div style='font-size: 0.8rem; opacity: 0.8;'>Cross-Clinic Corroboration</div>
-                        <div style='font-size: 1.4rem; font-weight: 700; color: #EF4444;'>0 / 4 Centers</div>
-                        <div style='font-size: 0.78rem; opacity: 0.7;'>0 neighboring nodes confirm surge</div>
+                    <div style='background: #1E293B; padding: 14px; border-radius: 8px; border: 1px solid #334155;'>
+                        <div style='font-size: 0.82rem; color: #94A3B8; font-weight: 600;'>Cross-Clinic Corroboration</div>
+                        <div style='font-size: 1.5rem; font-weight: 800; color: #EF4444; margin: 4px 0;'>0 / 4 Centers</div>
+                        <div style='font-size: 0.78rem; color: #CBD5E1;'>0 neighboring nodes confirm surge</div>
                     </div>
                 </div>
             </div>
@@ -1912,11 +2132,11 @@ with tab_public:
 
     # Safety Advice Container (Enhanced High-Contrast Design)
     adv_border_accent = alert_border
-    adv_card_bg = "rgba(15, 23, 42, 0.75)"
+    adv_card_bg = "#0F172A"
     
     st.markdown(
         f"""
-        <div class='glass-card' style='border-left: 5px solid {adv_border_accent}; background: {adv_card_bg}; border-top: 1px solid rgba(255,255,255,0.12); padding: 22px 26px; margin-bottom: 22px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.5);'>
+        <div class='glass-card' style='border-left: 5px solid {adv_border_accent} !important; background: {adv_card_bg} !important; border: 1px solid #334155 !important; padding: 22px 26px; margin-bottom: 22px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.6);'>
             <div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;'>
                 <div style='display: flex; align-items: center; gap: 10px;'>
                     <span style='font-size: 1.35rem;'>💡</span>
@@ -1926,7 +2146,7 @@ with tab_public:
                     {alert_icon} ADVISORY LEVEL: {display_risk.upper()}
                 </span>
             </div>
-            <div style='color: #F8FAFC !important; font-size: 1.05rem; line-height: 1.65; font-weight: 500; background: rgba(0,0,0,0.25); padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);'>
+            <div style='color: #F8FAFC !important; font-size: 1.02rem; line-height: 1.65; font-weight: 500; background: #1E293B; padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(56,189,248,0.2);'>
         """, unsafe_allow_html=True
     )
     st.markdown(safety_advice)
@@ -1940,16 +2160,18 @@ with tab_public:
         st.markdown(symptom_header)
         sigs = display_signals
         
-        if not sigs or all(s["z_score"] <= 0 for s in sigs):
-            st.info(f"🟢 No abnormal symptom rise detected at {loc_info['short_name'] if is_local_focus else 'any reporting center'} (All within normal baseline).")
+        # Only plot symptoms with genuine abnormal deviation (Z > 1.2)
+        abnormal_sigs = [s for s in (sigs or []) if s["z_score"] > 1.2]
+        
+        if not abnormal_sigs or scenario == "🟢 Normal Baseline (No Active Outbreaks)" or display_risk == "safe":
+            st.info(f"🟢 No abnormal symptom rise detected at {loc_info['short_name'] if is_local_focus else 'any reporting center'} (All health facilities reporting within normal historical baseline limits).")
         else:
             sig_names = []
             sig_scores = []
-            for s in sigs:
-                if s["z_score"] > 0:
-                    prefix = f"{s['short_name']}: " if not is_local_focus else ""
-                    sig_names.append(f"{prefix}{s['metric_label']}")
-                    sig_scores.append(s["z_score"])
+            for s in abnormal_sigs:
+                prefix = f"{s['short_name']}: " if not is_local_focus else ""
+                sig_names.append(f"{prefix}{s['metric_label']}")
+                sig_scores.append(s["z_score"])
                     
             fig_pub = px.bar(
                 x=sig_scores,
@@ -1969,7 +2191,7 @@ with tab_public:
             st.plotly_chart(fig_pub, use_container_width=True)
             
     with col_pub2:
-        st.markdown(f"<p style='text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-color);'>{t['threat_prob']} (%) - {loc_info['short_name'] if is_local_focus else 'Regional Grid'}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: #F8FAFC;'>{t['threat_prob']} (%) - {loc_info['short_name'] if is_local_focus else 'Regional Grid'}</p>", unsafe_allow_html=True)
         fig_gauge_pub = go.Figure(go.Indicator(
             mode = "gauge+number",
             value = display_outbreak_p,
@@ -1977,13 +2199,13 @@ with tab_public:
             gauge = {
                 'axis': {'range': [0, 100], 'tickwidth': 1},
                 'bar': {'color': alert_border},
-                'bgcolor': "var(--secondary-background-color)",
+                'bgcolor': "#0F172A",
                 'borderwidth': 2,
-                'bordercolor': "rgba(128,128,128,0.2)",
+                'bordercolor': "#334155",
                 'steps': [
-                    {'range': [0, 35], 'color': 'rgba(16, 185, 129, 0.1)'},
-                    {'range': [35, 70], 'color': 'rgba(245, 158, 11, 0.1)'},
-                    {'range': [70, 100], 'color': 'rgba(239, 68, 68, 0.1)'}
+                    {'range': [0, 35], 'color': 'rgba(16, 185, 129, 0.2)'},
+                    {'range': [35, 70], 'color': 'rgba(245, 158, 11, 0.2)'},
+                    {'range': [70, 100], 'color': 'rgba(239, 68, 68, 0.2)'}
                 ]
             }
         ))
@@ -1997,8 +2219,8 @@ with tab_public:
         if is_false_alarm:
             st.markdown(
                 f"""
-                <div style='text-align: center; background: rgba(245, 158, 11, 0.12); padding: 8px 12px; border-radius: 6px; border: 1px solid #F59E0B; margin-top: -10px;'>
-                    <strong style='color: #F59E0B; font-size: 0.9rem;'>⚠️ Consensus Guard: {false_p}% chance this outbreak signal is a False Alarm</strong>
+                <div style='text-align: center; background: rgba(245, 158, 11, 0.18); padding: 10px 14px; border-radius: 8px; border: 1px solid #F59E0B; margin-top: -10px;'>
+                    <strong style='color: #FBBF24; font-size: 0.9rem;'>⚠️ Consensus Guard: {false_p}% chance this outbreak signal is a False Alarm</strong>
                 </div>
                 """, unsafe_allow_html=True
             )
@@ -2152,11 +2374,11 @@ with tab_public:
         max_z_u = max([m["z_score"] for m in utkal_metrics.values()]) if utkal_metrics else 0.0
         badge_u = "🟢 Normal" if max_z_u <= 1.5 else ("🟡 Warning" if max_z_u <= 3.0 else "🚨 Outbreak")
         st.markdown(f"""
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(128,128,128,0.2); border-radius: 10px; padding: 12px; margin-top: -10px;">
-            <strong style="color:var(--text-color); font-size:0.95rem;">Kanpur PHC Clinic</strong><br>
-            <span style="font-size:0.75rem; opacity:0.8;">Odisha Health Mission</span><br>
-            <div style="margin-top:6px;"><span class="grassroots-badge">{badge_u}</span> <span style="font-size:0.75rem; font-weight:bold;">Z: {max_z_u}σ</span></div>
-            <div style="font-size:0.75rem; opacity:0.75; margin-top:4px;">Daily Paper Register & IVR</div>
+        <div style="background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-top: -10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+            <strong style="color:#F8FAFC; font-size:0.95rem; font-weight:700;">Kanpur PHC Clinic</strong><br>
+            <span style="font-size:0.78rem; color:#94A3B8;">Odisha Health Mission</span><br>
+            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_u}</span> <span style="font-size:0.78rem; font-weight:bold; color:#F8FAFC; margin-left:4px;">Z: {max_z_u}σ</span></div>
+            <div style="font-size:0.78rem; color:#CBD5E1; margin-top:6px;">Daily Paper Register & IVR</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2170,11 +2392,11 @@ with tab_public:
         turb_val = water_metrics.get("turbidity", {}).get("transmitted_val", 1.0)
         colif_val = water_metrics.get("coliform", {}).get("transmitted_val", 1.2)
         st.markdown(f"""
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(128,128,128,0.2); border-radius: 10px; padding: 12px; margin-top: -10px;">
-            <strong style="color:var(--text-color); font-size:0.95rem;">Municipal Water Testing</strong><br>
-            <span style="font-size:0.75rem; opacity:0.8;">Reservoir & Supply Standpost</span><br>
-            <div style="margin-top:6px;"><span class="grassroots-badge">{badge_w}</span> <span style="font-size:0.75rem; font-weight:bold;">NTU: {turb_val}</span></div>
-            <div style="font-size:0.75rem; opacity:0.75; margin-top:4px;">Coliform: {colif_val} MPN/100ml</div>
+        <div style="background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-top: -10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+            <strong style="color:#F8FAFC; font-size:0.95rem; font-weight:700;">Municipal Water Testing</strong><br>
+            <span style="font-size:0.78rem; color:#94A3B8;">Reservoir & Supply Standpost</span><br>
+            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_w}</span> <span style="font-size:0.78rem; font-weight:bold; color:#00F2FE; margin-left:4px;">NTU: {turb_val}</span></div>
+            <div style="font-size:0.78rem; color:#CBD5E1; margin-top:6px;">Coliform: {colif_val} MPN/100ml</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2188,11 +2410,11 @@ with tab_public:
         diarrhea_h = hosp_metrics.get("diarrheal", {}).get("transmitted_val", 12.0)
         ili_h = hosp_metrics.get("ili", {}).get("transmitted_val", 15.0)
         st.markdown(f"""
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(128,128,128,0.2); border-radius: 10px; padding: 12px; margin-top: -10px;">
-            <strong style="color:var(--text-color); font-size:0.95rem;">Capital Civil Hospital</strong><br>
-            <span style="font-size:0.75rem; opacity:0.8;">Urban OPD & Fever Clinic</span><br>
-            <div style="margin-top:6px;"><span class="grassroots-badge">{badge_h}</span> <span style="font-size:0.75rem; font-weight:bold;">Z: {max_z_h}σ</span></div>
-            <div style="font-size:0.75rem; opacity:0.75; margin-top:4px;">OPD Diarrheal: {diarrhea_h} | ILI: {ili_h}</div>
+        <div style="background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-top: -10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+            <strong style="color:#F8FAFC; font-size:0.95rem; font-weight:700;">Capital Civil Hospital</strong><br>
+            <span style="font-size:0.78rem; color:#94A3B8;">Urban OPD & Fever Clinic</span><br>
+            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_h}</span> <span style="font-size:0.78rem; font-weight:bold; color:#F8FAFC; margin-left:4px;">Z: {max_z_h}σ</span></div>
+            <div style="font-size:0.78rem; color:#CBD5E1; margin-top:6px;">OPD Diarrheal: {diarrhea_h} | ILI: {ili_h}</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2205,11 +2427,11 @@ with tab_public:
         badge_c = "🟢 Normal" if max_z_c <= 1.5 else ("🟡 Warning" if max_z_c <= 3.0 else "🚨 Outbreak")
         fever_c = campus_metrics.get("fever", {}).get("transmitted_val", 8.0)
         st.markdown(f"""
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(128,128,128,0.2); border-radius: 10px; padding: 12px; margin-top: -10px;">
-            <strong style="color:var(--text-color); font-size:0.95rem;">Campus Health Center</strong><br>
-            <span style="font-size:0.75rem; opacity:0.8;">Student & Staff Infirmary</span><br>
-            <div style="margin-top:6px;"><span class="grassroots-badge">{badge_c}</span> <span style="font-size:0.75rem; font-weight:bold;">Z: {max_z_c}σ</span></div>
-            <div style="font-size:0.75rem; opacity:0.75; margin-top:4px;">Febrile triage: {fever_c} cases</div>
+        <div style="background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-top: -10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+            <strong style="color:#F8FAFC; font-size:0.95rem; font-weight:700;">Campus Health Center</strong><br>
+            <span style="font-size:0.78rem; color:#94A3B8;">Student & Staff Infirmary</span><br>
+            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_c}</span> <span style="font-size:0.78rem; font-weight:bold; color:#F8FAFC; margin-left:4px;">Z: {max_z_c}σ</span></div>
+            <div style="font-size:0.78rem; color:#CBD5E1; margin-top:6px;">Febrile triage: {fever_c} cases</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -2222,8 +2444,8 @@ with tab_public:
         <div class="hygiene-card">
             <span style="font-size:1.8rem;">💧</span>
             <div>
-                <strong style="color:#38BDF8;">Drinking Water Safety</strong><br>
-                <span style="font-size:0.82rem; opacity:0.9;">
+                <strong style="color:#38BDF8; font-size:1.02rem;">Drinking Water Safety</strong><br>
+                <span style="font-size:0.86rem; color:#CBD5E1; line-height:1.5; display:inline-block; margin-top:4px;">
                 • <strong>Boil water for 10 minutes</strong> before drinking.<br>
                 • <em>ଓଡ଼ିଆ: ପାଣିକୁ ୧୦ ମିନିଟ୍ ଫୁଟାଇ ପିଅନ୍ତୁ।</em><br>
                 • <em>हिंदी: पीने का पानी 10 मिनट तक उबालें।</em>
@@ -2236,8 +2458,8 @@ with tab_public:
         <div class="hygiene-card">
             <span style="font-size:1.8rem;">🥤</span>
             <div>
-                <strong style="color:#10B981;">ORS & Hydration Protocol</strong><br>
-                <span style="font-size:0.82rem; opacity:0.9;">
+                <strong style="color:#10B981; font-size:1.02rem;">ORS & Hydration Protocol</strong><br>
+                <span style="font-size:0.86rem; color:#CBD5E1; line-height:1.5; display:inline-block; margin-top:4px;">
                 • Mix 1 ORS sachet in 1L clean water.<br>
                 • <em>ଓଡ଼ିଆ: ଓଆରଏସ୍ (ORS) ଦ୍ରବଣ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
                 • <em>हिंदी: ओआरएस (ORS) घोल का तुरंत सेवन करें।</em>
@@ -2250,8 +2472,8 @@ with tab_public:
         <div class="hygiene-card">
             <span style="font-size:1.8rem;">😷</span>
             <div>
-                <strong style="color:#F59E0B;">Respiratory Care</strong><br>
-                <span style="font-size:0.82rem; opacity:0.9;">
+                <strong style="color:#F59E0B; font-size:1.02rem;">Respiratory Care</strong><br>
+                <span style="font-size:0.86rem; color:#CBD5E1; line-height:1.5; display:inline-block; margin-top:4px;">
                 • Wear 3-layer mask in crowded areas.<br>
                 • <em>ଓଡ଼ିଆ: ଭିଡ଼ ସ୍ଥାନରେ ମାସ୍କ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
                 • <em>हिंदी: भीड़भाड़ वाली जगहों पर मास्क पहनें।</em>
@@ -2265,7 +2487,7 @@ with tab_public:
 # ==============================================================================
 # TAB 2: CLINIC REPORTER PORTAL (SECONDARY - CLINIC STAFF)
 # ==============================================================================
-with tab_clinic:
+elif active_nav_idx == 1:
     # Initialize authentication state for Tab 2
     if "clinic_auth_success" not in st.session_state:
         st.session_state.clinic_auth_success = False
@@ -2273,38 +2495,63 @@ with tab_clinic:
         st.session_state.clinic_auth_denied = False
         
     if not st.session_state.clinic_auth_success:
-        col_lock1, col_lock2, col_lock3 = st.columns([1, 1.2, 1])
+        col_lock1, col_lock2, col_lock3 = st.columns([1, 1.4, 1])
         with col_lock2:
-            card_class = "lock-card denial-shake" if st.session_state.clinic_auth_denied else "lock-card"
+            shake_cls = " denial-shake" if st.session_state.clinic_auth_denied else ""
             denial_html = """
-                <div class="denial-msg">
-                    <span>⛔</span> <span>Incorrect Passcode. Access Denied (Hint: 1234)</span>
+                <div class="denial-msg" style="margin-top: 14px;">
+                    <span>⛔</span> <span>Invalid Passcode. Access Denied (Authorized Hint: 1234)</span>
                 </div>
             """ if st.session_state.clinic_auth_denied else ""
+            
             st.markdown(
                 f"""
-                <div class="{card_class}">
-                    <div class="lock-icon">🛡️</div>
-                    <h3 style="margin-top:0; color: #00F2FE !important; font-size: 1.4rem;">{t["clinic_title"]}</h3>
-                    <p style="color: var(--text-color); opacity: 0.85; font-size: 0.95rem; line-height: 1.4; margin-bottom: 18px;">{t["pass_warn_clinic"]}</p>
+                <div class="auth-card-clinic{shake_cls}" style="background: #0F172A; border: 1px solid #334155; padding: 25px; border-radius: 16px;">
+                    <div class="auth-icon-halo" style="font-size: 2.5rem; text-align: center;">🛡️</div>
+                    <span class="auth-badge-clinic" style="display: block; text-align: center; color: #00F2FE; font-weight: 700; margin-bottom: 10px;">🔒 Restricted Health Reporter Portal</span>
+                    <h2 style="margin: 0 0 8px 0; text-align: center; color: #FFFFFF; font-size: 1.45rem; font-weight: 700;">{t["clinic_title"]}</h2>
+                    <p style="color: #E2E8F0 !important; opacity: 0.95; font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px; text-align: center;">
+                        {t["pass_warn_clinic"]}
+                    </p>
                     {denial_html}
                 </div>
                 """, unsafe_allow_html=True
             )
-            clinic_auth = st.text_input(t["pass_prompt_clinic"], type="password", key="passcode_clinic_key", label_visibility="collapsed")
-            if clinic_auth:
-                if clinic_auth == "1234":
-                    st.session_state.clinic_auth_success = True
-                    st.session_state.clinic_auth_denied = False
-                    st.toast("✅ Clinic Portal Unlocked! Welcome, Health Reporter.", icon="🔓")
-                    st.rerun()
-                else:
-                    if not st.session_state.clinic_auth_denied:
+            
+            with st.form("clinic_auth_form", clear_on_submit=False):
+                clinic_auth = st.text_input(
+                    "Clinic Reporter Passcode (PIN)",
+                    type="password",
+                    placeholder="•••• Enter 4-digit Passcode (Hint: 1234)",
+                    key="passcode_clinic_input",
+                    label_visibility="collapsed"
+                )
+                col_btn_auth1, col_btn_auth2 = st.columns([1.2, 1])
+                with col_btn_auth1:
+                    submit_clinic = st.form_submit_button("🔓 Unlock Terminal", type="primary", use_container_width=True)
+                with col_btn_auth2:
+                    autofill_clinic = st.form_submit_button("⚡ Quick PIN (1234)", use_container_width=True)
+                
+                if submit_clinic or autofill_clinic:
+                    attempt_pin = "1234" if autofill_clinic else clinic_auth.strip()
+                    if attempt_pin == "1234":
+                        st.session_state.clinic_auth_success = True
+                        st.session_state.clinic_auth_denied = False
+                        st.session_state.active_nav_index = 1
+                        st.toast("✅ Clinic Portal Unlocked! Welcome, Health Reporter.", icon="🔓")
+                        st.rerun()
+                    else:
                         st.session_state.clinic_auth_denied = True
                         st.toast("⛔ Incorrect PIN. Access Denied!", icon="🔒")
                         st.rerun()
-            elif st.session_state.clinic_auth_denied and not clinic_auth:
-                st.session_state.clinic_auth_denied = False
+                        
+            st.markdown(
+                """
+                <div class="auth-footer-shield">
+                    🔒 <strong>Zero-Central-PII Guarantee:</strong> Edge Differential Privacy is locally enforced prior to data transmission.
+                </div>
+                """, unsafe_allow_html=True
+            )
     else:
         st.markdown(f"### {t['clinic_title']}")
         st.markdown(t['clinic_desc'])
@@ -2492,12 +2739,14 @@ with tab_clinic:
             with prev_col1:
                 st.markdown(
                     f"""
-                    <div style='background-color: var(--secondary-background-color); color: var(--text-color); border: 1px solid rgba(128,128,128,0.2); border-left:4px solid #38BDF8; padding:12px; border-radius:6px;'>
-                        <strong style='color:#38BDF8;'>{local_card_title}</strong><br>
-                        • {item_header_text}: {symptom_labels[selected_symptom]}<br>
-                        • Original {val_header_text}: <strong>{raw_case_count}</strong><br>
-                        • Site: {location_input}<br>
-                        • Date/Time: <strong>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
+                    <div style='background: #0F172A; color: #F8FAFC; border: 1px solid #334155; border-left: 4px solid #38BDF8; padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);'>
+                        <strong style='color:#38BDF8; font-size: 1.05rem;'>{local_card_title}</strong><br>
+                        <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: #CBD5E1;'>
+                            • {item_header_text}: <strong style='color: #F8FAFC;'>{symptom_labels[selected_symptom]}</strong><br>
+                            • Original {val_header_text}: <strong style='color: #00F2FE;'>{raw_case_count}</strong><br>
+                            • Site: <strong style='color: #F8FAFC;'>{location_input}</strong><br>
+                            • Date/Time: <strong style='color: #94A3B8;'>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
+                        </div>
                     </div>
                     """, unsafe_allow_html=True
                 )
@@ -2505,11 +2754,13 @@ with tab_clinic:
                 suppress_alert = "<span style='color:#EF4444; font-weight:bold;'>⚠️ Masked (Under threshold)</span>" if sim_suppressed else "<span style='color:#10B981; font-weight:bold;'>✅ Secure Upload Allowed</span>"
                 st.markdown(
                     f"""
-                    <div style='background-color: var(--secondary-background-color); color: var(--text-color); border: 1px solid rgba(128,128,128,0.2); border-left:4px solid #00F2FE; padding:12px; border-radius:6px;'>
-                        <strong style='color:#00F2FE;'>{transmitted_card_title}</strong><br>
-                        • Uploaded Value: <strong>{sim_transmitted_tally}</strong> ({suppress_alert})<br>
-                        • Uploaded Site: <strong>{sim_transmitted_location}</strong><br>
-                        • Date/Time: <strong>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
+                    <div style='background: #0F172A; color: #F8FAFC; border: 1px solid #334155; border-left: 4px solid #00F2FE; padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);'>
+                        <strong style='color:#00F2FE; font-size: 1.05rem;'>{transmitted_card_title}</strong><br>
+                        <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: #CBD5E1;'>
+                            • Uploaded Value: <strong style='color: #00F2FE;'>{sim_transmitted_tally}</strong> ({suppress_alert})<br>
+                            • Uploaded Site: <strong style='color: #F8FAFC;'>{sim_transmitted_location}</strong><br>
+                            • Date/Time: <strong style='color: #94A3B8;'>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
+                        </div>
                     </div>
                     """, unsafe_allow_html=True
                 )
@@ -2539,10 +2790,10 @@ with tab_clinic:
             with ivr_col_ctrl:
                 st.markdown(
                     """
-                    <div style="background-color: var(--secondary-background-color); color: var(--text-color); padding: 16px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.2); margin-bottom: 12px;">
-                        <h3 style="color: var(--primary-color); margin: 0;">📞 1800-SURAKSHA</h3>
-                        <span class="grassroots-badge" style="margin: 4px 0 8px 0;">Grassroots Feature Phone Gateway</span>
-                        <p style="opacity: 0.85; font-size: 0.85rem; margin: 4px 0 0 0;">
+                    <div style="background: #0F172A; color: #F8FAFC; padding: 18px; border-radius: 14px; border: 1px solid #334155; border-left: 4px solid #00F2FE; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                        <h3 style="color: #00F2FE; margin: 0; font-size: 1.25rem;">📞 1800-SURAKSHA</h3>
+                        <div style="margin: 6px 0 8px 0;"><span class="grassroots-badge">Grassroots Feature Phone Gateway</span></div>
+                        <p style="color: #CBD5E1; font-size: 0.88rem; margin: 4px 0 0 0; line-height: 1.45;">
                             Community health workers (ASHA/Anganwadi) in remote villages dial without internet. Automated vernacular voice prompts (Odia, Hindi, English) guide symptom tallies using phone keypads.
                         </p>
                     </div>
@@ -2590,9 +2841,9 @@ with tab_clinic:
                 render_app_image("assets/paper_opd_register.jpg", caption="📷 Actual Handwritten Daily OPD Register Sheet (Kanpur PHC, Odisha Health Mission)")
             with ocr_col_ctrl:
                 st.markdown("""
-                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(128,128,128,0.2); border-radius:10px; padding:14px; margin-bottom:12px;">
-                    <strong style="color:#00F2FE;">Zero-Burden Paper Ingestion for PHCs</strong><br>
-                    <span style="font-size:0.85rem; opacity:0.85;">
+                <div style="background: #0F172A; border: 1px solid #334155; border-left: 4px solid #00F2FE; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                    <strong style="color:#00F2FE; font-size: 1.05rem;">Zero-Burden Paper Ingestion for PHCs</strong><br>
+                    <span style="font-size:0.86rem; color: #CBD5E1; line-height: 1.45; display: inline-block; margin-top: 4px;">
                     Rural clinic staff write by hand in physical register books. Nurses don't need to type data—they simply take a smartphone photo of today's sheet, and local Edge OCR extracts symptom counts automatically!
                     </span>
                 </div>
@@ -2607,9 +2858,9 @@ with tab_clinic:
                 if sim_sample_ocr or uploaded_file is not None or st.session_state.get("ocr_scanned_done"):
                     st.session_state.ocr_scanned_done = True
                     st.markdown("""
-                    <div style="background:rgba(16,185,129,0.12); border:1px solid #10B981; border-radius:8px; padding:12px; margin: 10px 0;">
-                        <strong style="color:#10B981;">✅ Handwritten OCR Extraction Successful!</strong><br>
-                        <span style="font-size:0.85rem;">
+                    <div style="background: rgba(6, 78, 59, 0.45); border: 1px solid #10B981; border-radius: 10px; padding: 14px; margin: 10px 0; color: #ECFDF5; box-shadow: 0 4px 15px rgba(16,185,129,0.25);">
+                        <strong style="color:#34D399; font-size: 1.02rem;">✅ Handwritten OCR Extraction Successful!</strong><br>
+                        <span style="font-size:0.86rem; line-height: 1.6; color: #D1FAE5; display: inline-block; margin-top: 4px;">
                         • <strong>Date Detected:</strong> 26/10/2023<br>
                         • <strong>Fever Tallies (ଜ୍ୱର):</strong> 4 cases (Rakesh, Ganesh, Bishnu, Arjun)<br>
                         • <strong>Diarrheal Tallies (ଝାଡ଼ା):</strong> 3 cases (Sita, Kamala)<br>
@@ -2710,13 +2961,15 @@ with tab_clinic:
                         clean_notes = clean_notes[clean_notes.find("]")+1:].strip()
                     st.markdown(
                         f"""
-                        <div style='background: rgba(255,255,255,0.03); border: 1px solid rgba(128,128,128,0.15); border-left: 4px solid var(--primary-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;'>
+                        <div style='background: #0F172A; border: 1px solid #334155; border-left: 4px solid #00F2FE; padding: 14px 16px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); color: #F8FAFC;'>
                             <div style='display: flex; justify-content: space-between; align-items: center;'>
-                                <strong style='font-size: 1.05rem;'>{symptom_labels.get(log["symptom"], log["symptom"])}</strong>
-                                <span style='font-size: 0.78rem; opacity: 0.7; background: rgba(128,128,128,0.15); padding: 2px 8px; border-radius: 4px;'>🕒 {time_badge}</span>
+                                <strong style='font-size: 1.05rem; color: #F8FAFC;'>{symptom_labels.get(log["symptom"], log["symptom"])}</strong>
+                                <span style='font-size: 0.78rem; color: #94A3B8; background: #1E293B; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px;'>🕒 {time_badge}</span>
                             </div>
-                            <span style='font-size: 0.85rem; opacity: 0.85;'>📍 Location: {log["location"]} | {val_header_text}: <strong>{log["raw_val"]}</strong></span><br>
-                            <span style='font-size: 0.8rem; opacity: 0.7;'>📝 Notes: {clean_notes if clean_notes else 'None'}</span>
+                            <div style='margin-top: 5px;'>
+                                <span style='font-size: 0.88rem; color: #CBD5E1;'>📍 Location: <strong style='color: #F8FAFC;'>{log["location"]}</strong> | {val_header_text}: <strong style='color: #00F2FE;'>{log["raw_val"]}</strong></span><br>
+                                <span style='font-size: 0.82rem; color: #94A3B8;'>📝 Notes: {clean_notes if clean_notes else 'None'}</span>
+                            </div>
                         </div>
                         """, unsafe_allow_html=True
                     )
@@ -2725,9 +2978,9 @@ with tab_clinic:
                     status_badge = f"<span style='color:{badge_color}; font-weight:bold;'>{'✅ Safe Upload' if not log_suppressed else '❌ Suppressed'}</span>"
                     st.markdown(
                         f"""
-                        <div style='text-align: left; padding: 12px 5px;'>
-                            <span style='font-size:0.85rem;'>{status_badge}</span><br>
-                            <span style='font-size:0.85rem; opacity:0.8;'>Shared: {0.0 if log_suppressed else log_dp}</span>
+                        <div style='text-align: left; padding: 12px 5px; color: #F8FAFC;'>
+                            <span style='font-size:0.88rem;'>{status_badge}</span><br>
+                            <span style='font-size:0.85rem; color: #94A3B8;'>Shared: <strong style='color: #F8FAFC;'>{0.0 if log_suppressed else log_dp}</strong></span>
                         </div>
                         """, unsafe_allow_html=True
                     )
@@ -2751,7 +3004,7 @@ with tab_clinic:
 # ==============================================================================
 # TAB 3: HEALTH OFFICER CONSOLE (TERTIARY - HEALTH OFFICERS)
 # ==============================================================================
-with tab_officer:
+elif active_nav_idx == 2:
     # Initialize authentication state for Tab 3
     if "officer_auth_success" not in st.session_state:
         st.session_state.officer_auth_success = False
@@ -2759,38 +3012,63 @@ with tab_officer:
         st.session_state.officer_auth_denied = False
         
     if not st.session_state.officer_auth_success:
-        col_lock1, col_lock2, col_lock3 = st.columns([1, 1.2, 1])
+        col_lock1, col_lock2, col_lock3 = st.columns([1, 1.4, 1])
         with col_lock2:
-            card_class = "lock-card denial-shake" if st.session_state.officer_auth_denied else "lock-card"
+            shake_cls = " denial-shake" if st.session_state.officer_auth_denied else ""
             denial_html = """
-                <div class="denial-msg">
-                    <span>⛔</span> <span>Unauthorized Passcode. Access Denied (Hint: 9999)</span>
+                <div class="denial-msg" style="margin-top: 14px;">
+                    <span>⛔</span> <span>Unauthorized Passcode. Access Denied (Authorized Hint: 9999)</span>
                 </div>
             """ if st.session_state.officer_auth_denied else ""
+            
             st.markdown(
                 f"""
-                <div class="{card_class}">
-                    <div class="lock-icon">🔑</div>
-                    <h3 style="margin-top:0; color: #00F2FE !important; font-size: 1.4rem;">{t["officer_title"]}</h3>
-                    <p style="color: var(--text-color); opacity: 0.85; font-size: 0.95rem; line-height: 1.4; margin-bottom: 18px;">{t["pass_warn_officer"]}</p>
+                <div class="auth-card-officer{shake_cls}" style="background: #0F172A; border: 1px solid #334155; padding: 25px; border-radius: 16px;">
+                    <div class="auth-icon-halo-officer" style="font-size: 2.5rem; text-align: center;">🔑</div>
+                    <span class="auth-badge-officer" style="display: block; text-align: center; color: #EF4444; font-weight: 700; margin-bottom: 10px;">🚨 Restricted State Level 3 Clearance</span>
+                    <h2 style="margin: 0 0 8px 0; text-align: center; color: #FFFFFF; font-size: 1.45rem; font-weight: 700;">{t["officer_title"]}</h2>
+                    <p style="color: #E2E8F0 !important; opacity: 0.95; font-size: 0.92rem; line-height: 1.5; margin-bottom: 15px; text-align: center;">
+                        {t["pass_warn_officer"]}
+                    </p>
                     {denial_html}
                 </div>
                 """, unsafe_allow_html=True
             )
-            officer_auth = st.text_input(t["pass_prompt_officer"], type="password", key="passcode_officer_key", label_visibility="collapsed")
-            if officer_auth:
-                if officer_auth == "9999":
-                    st.session_state.officer_auth_success = True
-                    st.session_state.officer_auth_denied = False
-                    st.toast("✅ Health Officer Console Unlocked! Welcome, Officer.", icon="🔑")
-                    st.rerun()
-                else:
-                    if not st.session_state.officer_auth_denied:
+            
+            with st.form("officer_auth_form", clear_on_submit=False):
+                officer_auth = st.text_input(
+                    "Officer Master Key (PIN)",
+                    type="password",
+                    placeholder="•••• Enter Officer Key (Hint: 9999)",
+                    key="passcode_officer_input",
+                    label_visibility="collapsed"
+                )
+                col_btn_off1, col_btn_off2 = st.columns([1.2, 1])
+                with col_btn_off1:
+                    submit_officer = st.form_submit_button("🛡️ Access Console", type="primary", use_container_width=True)
+                with col_btn_off2:
+                    autofill_officer = st.form_submit_button("⚡ Master Key (9999)", use_container_width=True)
+                
+                if submit_officer or autofill_officer:
+                    attempt_pin = "9999" if autofill_officer else officer_auth.strip()
+                    if attempt_pin == "9999":
+                        st.session_state.officer_auth_success = True
+                        st.session_state.officer_auth_denied = False
+                        st.session_state.active_nav_index = 2
+                        st.toast("✅ Health Officer Console Unlocked! Welcome, Officer.", icon="🔑")
+                        st.rerun()
+                    else:
                         st.session_state.officer_auth_denied = True
                         st.toast("⛔ Invalid Officer PIN. Access Denied!", icon="🚨")
                         st.rerun()
-            elif st.session_state.officer_auth_denied and not officer_auth:
-                st.session_state.officer_auth_denied = False
+                        
+            st.markdown(
+                """
+                <div class="auth-footer-shield">
+                    ⚖️ <strong>DPDP Act 2023 Statutory Compliance:</strong> Cryptographically sealed dispatch ledger & emergency alert broadcasting.
+                </div>
+                """, unsafe_allow_html=True
+            )
     else:
         st.markdown(f"### {t['officer_title']}")
         st.markdown(t['officer_desc'])
@@ -2800,8 +3078,8 @@ with tab_officer:
         st.markdown(
             """
             <div class='glass-card' style='border-top: 3px solid #00F2FE;'>
-                <h4 style='margin: 0 0 8px 0;'>🔗 Shared Database Configuration</h4>
-                <p style='font-size: 0.9rem; opacity: 0.8; margin-bottom: 15px;'>
+                <h4 style='margin: 0 0 8px 0; color: #F8FAFC;'>🔗 Shared Database Configuration</h4>
+                <p style='font-size: 0.9rem; color: #CBD5E1; margin-bottom: 15px; line-height: 1.5;'>
                     Connect to a Google Sheet to enable real-time shared data across all clinic nodes. 
                     Only Health Officers can configure this setting.
                 </p>
@@ -2930,7 +3208,7 @@ with tab_officer:
             """
             <div class='glass-card' style='border-left: 4px solid #10B981; margin-bottom: 15px;'>
                 <h5 style='margin: 0 0 6px 0; color: #10B981;'>🔄 Self-Calibrating Epidemic Baseline Engine</h5>
-                <p style='font-size: 0.88rem; opacity: 0.85; margin: 0; line-height: 1.4;'>
+                <p style='font-size: 0.88rem; color: #CBD5E1; margin: 0; line-height: 1.5;'>
                     SurakshaNet continuously recalculates facility baselines over a <strong>rolling 14-day window</strong>. 
                     As seasonal background illnesses naturally rise and fall (e.g., winter rhinovirus vs monsoon gastroenteritis), the baseline updates smoothly (μ, σ) while an <strong>Outlier Exclusion Guard (&gt; 3.5σ)</strong> prevents true epidemic surges from inflating the baseline.
                 </p>
@@ -2986,7 +3264,7 @@ with tab_officer:
             p = st.session_state.alert_dispatched_popup
             st.markdown(
                 f"""
-                <div class='green-popup' style='border-left: 6px solid #10B981;'>
+                <div class='green-popup' style='border-left: 6px solid #10B981; background: #0F172A; border: 1px solid #10B981; box-shadow: 0 10px 30px rgba(0,0,0,0.6);'>
                     <div style='display: flex; align-items: center; justify-content: space-between;'>
                         <div style='display: flex; align-items: flex-start; gap: 14px; width: 100%;'>
                             <span style='font-size: 2.2rem;'>📡</span>
@@ -2995,12 +3273,12 @@ with tab_officer:
                                 <div style='font-size: 1.05rem; font-weight: 700; color: #EF4444; margin: 4px 0;'>
                                     {p['status']}
                                 </div>
-                                <div style='background: rgba(0,0,0,0.2); border: 1px solid rgba(16,185,129,0.3); border-left: 3px solid #10B981; padding: 10px 14px; border-radius: 6px; font-size: 0.9rem; font-family: sans-serif; white-space: pre-wrap; margin: 8px 0;'>
+                                <div style='background: #1E293B; border: 1px solid rgba(16,185,129,0.3); border-left: 3px solid #10B981; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-family: sans-serif; white-space: pre-wrap; margin: 8px 0; color: #F8FAFC;'>
 {p.get('message', p['status'])}
                                 </div>
-                                <span style='font-size: 0.82rem; opacity: 0.85;'>
+                                <span style='font-size: 0.82rem; color: #CBD5E1;'>
                                     <strong>Certified Timestamp:</strong> {p['timestamp']} | <strong>Confidence:</strong> {p['confidence']}<br>
-                                    <strong>Cryptographic Audit Seal:</strong> <code style='color: var(--primary-color); font-size:0.8rem;'>{p['hash']}</code>
+                                    <strong>Cryptographic Audit Seal:</strong> <code style='color: #00F2FE; font-size:0.8rem;'>{p['hash']}</code>
                                 </span>
                             </div>
                         </div>
@@ -3021,15 +3299,15 @@ with tab_officer:
                 msg_content = n.get("message", "").strip()
                 st.markdown(
                     f"""
-                    <div style='background-color: var(--secondary-background-color); padding: 12px 14px; border-radius: 8px; border: 1px solid rgba(128,128,128,0.2); border-left: 4px solid #EF4444; margin-bottom: 12px;'>
+                    <div style='background: #0F172A; padding: 14px 16px; border-radius: 10px; border: 1px solid #334155; border-left: 4px solid #EF4444; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); color: #F8FAFC;'>
                         <div style='display: flex; justify-content: space-between; align-items: center;'>
                             <strong style='color:#EF4444; font-size: 1.05rem;'>{n['status']}</strong>
-                            <span style='font-size: 0.8rem; opacity: 0.8;'>🕒 {n['timestamp']}</span>
+                            <span style='font-size: 0.8rem; color: #94A3B8; background: #1E293B; border: 1px solid #334155; padding: 2px 8px; border-radius: 6px;'>🕒 {n['timestamp']}</span>
                         </div>
-                        {f"<div style='background: rgba(0,0,0,0.18); padding: 8px 12px; border-radius: 6px; font-size: 0.88rem; line-height: 1.4; white-space: pre-wrap; margin: 8px 0; border-left: 3px solid var(--primary-color);'>{msg_content}</div>" if msg_content else ""}
-                        <div style='display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; margin-top: 6px;'>
-                            <span style='color: #10B981;'>{n.get('dispatch', '✅ Dispatched to mobile health registry')}</span>
-                            <span style='font-family: monospace; color: var(--primary-color);'>{n['hash']}</span>
+                        {f"<div style='background: #1E293B; padding: 10px 14px; border-radius: 6px; font-size: 0.88rem; line-height: 1.45; white-space: pre-wrap; margin: 8px 0; border-left: 3px solid #00F2FE; color: #F8FAFC;'>{msg_content}</div>" if msg_content else ""}
+                        <div style='display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; margin-top: 8px;'>
+                            <span style='color: #10B981; font-weight: 600;'>{n.get('dispatch', '✅ Dispatched to mobile health registry')}</span>
+                            <span style='font-family: var(--font-mono); color: #00F2FE;'>{n['hash']}</span>
                         </div>
                     </div>
                     """, unsafe_allow_html=True
@@ -3038,7 +3316,7 @@ with tab_officer:
 # ==============================================================================
 # TAB 4: PRIVACY AUDIT LEDGER (VERIFICATION - ALL)
 # ==============================================================================
-with tab_audit:
+elif active_nav_idx == 3:
     st.markdown(f"### {t['audit_title']}")
     st.markdown(t['audit_desc'])
     
@@ -3051,7 +3329,7 @@ with tab_audit:
             <div class='glass-card' style='text-align: center;'>
                 <div class='metric-label'>{t['privacy_compliance']}</div>
                 <div class='metric-value' style='color:#10B981;'>Verified Secure</div>
-                <div style='font-size:0.8rem; opacity:0.8; margin-top:5px;'>Fully compliant with Data Protection Acts</div>
+                <div style='font-size:0.82rem; color:#CBD5E1; margin-top:6px;'>Fully compliant with Data Protection Acts</div>
             </div>
             """, unsafe_allow_html=True
         )
@@ -3061,7 +3339,7 @@ with tab_audit:
             <div class='glass-card' style='text-align: center;'>
                 <div class='metric-label'>{t['dp_noise_distortion']}</div>
                 <div class='metric-value'>Level: {epsilon}</div>
-                <div style='font-size:0.8rem; opacity:0.8; margin-top:5px;'>Differential Privacy Budget (ε)</div>
+                <div style='font-size:0.82rem; color:#CBD5E1; margin-top:6px;'>Differential Privacy Budget (ε)</div>
             </div>
             """, unsafe_allow_html=True
         )
@@ -3071,7 +3349,7 @@ with tab_audit:
             <div class='glass-card' style='text-align: center;'>
                 <div class='metric-label'>{t['k_anon_suppression']}</div>
                 <div class='metric-value' style='color:{"#EF4444" if tot_suppressed > 0 else "#10B981"};'>{tot_suppressed} Categories</div>
-                <div style='font-size:0.8rem; opacity:0.8; margin-top:5px;'>Low counts (under size {k_anonymity}) suppressed</div>
+                <div style='font-size:0.82rem; color:#CBD5E1; margin-top:6px;'>Low counts (under size {k_anonymity}) suppressed</div>
             </div>
             """, unsafe_allow_html=True
         )
@@ -3083,12 +3361,12 @@ with tab_audit:
         st.markdown(f"""
         <div class="glass-card" style="border-left: 4px solid #00F2FE;">
             <strong style="color: #00F2FE; font-size: 1.05rem;">🔒 On-Device Differential Privacy (Laplace Mechanism)</strong>
-            <p style="font-size: 0.88rem; opacity: 0.85; margin: 6px 0 10px 0;">
+            <p style="font-size: 0.88rem; color: #CBD5E1; margin: 6px 0 10px 0; line-height: 1.5;">
                 Noise is injected at the edge device before any number reaches the network. An observer cannot mathematically distinguish whether a specific patient reported or not:
             </p>
-            <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(0,242,254,0.3); border-radius: 8px; padding: 10px 14px; text-align: center;">
+            <div style="background: #1E293B; border: 1px solid rgba(0,242,254,0.3); border-radius: 8px; padding: 12px 16px; text-align: center;">
                 <code style="font-size: 1.15rem; color: #00F2FE; font-weight: bold;">Y = X + Lap(&Delta;f / &epsilon;)</code><br>
-                <span style="font-size: 0.78rem; opacity: 0.75;">Current Budget &epsilon; = {epsilon} | Sensitivity &Delta;f = 1.0 | Noise Mean &mu; = 0</span>
+                <span style="font-size: 0.8rem; color: #94A3B8; display: inline-block; margin-top: 4px;">Current Budget &epsilon; = {epsilon} | Sensitivity &Delta;f = 1.0 | Noise Mean &mu; = 0</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -3096,10 +3374,10 @@ with tab_audit:
         st.markdown(f"""
         <div class="glass-card" style="border-left: 4px solid #10B981;">
             <strong style="color: #10B981; font-size: 1.05rem;">⚖️ 100% DPDP Act 2023 & HIPAA Compliant</strong>
-            <p style="font-size: 0.88rem; opacity: 0.85; margin: 6px 0 10px 0;">
+            <p style="font-size: 0.88rem; color: #CBD5E1; margin: 6px 0 10px 0; line-height: 1.5;">
                 Certified compliance with India's <strong>Digital Personal Data Protection (DPDP) Act 2023</strong>:
             </p>
-            <div style="font-size: 0.82rem; opacity: 0.9; line-height: 1.5;">
+            <div style="font-size: 0.85rem; color: #E2E8F0; line-height: 1.6;">
                 • <strong>Zero Central PII:</strong> No patient names, Aadhaar, or phone numbers stored.<br>
                 • <strong>k-Anonymity Guard (k={k_anonymity}):</strong> Prevents re-identification of small village/hostel cohorts.<br>
                 • <strong>Tamper-Evident Ledger:</strong> Every data transmission logged with mathematical noise parameters.
