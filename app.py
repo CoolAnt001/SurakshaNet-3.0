@@ -1665,11 +1665,23 @@ with col_head2:
         with col_sel2:
             cur_epi = st.session_state.current_epicenter
             epi_idx = epicenter_list.index(cur_epi) if cur_epi in epicenter_list else 0
+            
+            def on_epicenter_change():
+                chosen_epi = st.session_state.get("outbreak_epicenter_choice")
+                if chosen_epi:
+                    st.session_state.current_epicenter = chosen_epi
+                    if "All Monitored" not in chosen_epi and "Cross-City" not in chosen_epi:
+                        st.session_state.radar_view_scope = "🎯 Focus on Selected Location"
+                    else:
+                        st.session_state.radar_view_scope = "🌐 Regional City Grid View"
+                    st.session_state.last_scoped_epicenter = chosen_epi
+
             epicenter = st.selectbox(
                 t.get("inject_location", "📍 Outbreak Location / Epicenter"),
                 epicenter_list,
                 index=epi_idx,
-                key="outbreak_epicenter_choice"
+                key="outbreak_epicenter_choice",
+                on_change=on_epicenter_change
             )
             st.session_state.current_epicenter = epicenter
     else:
@@ -2407,6 +2419,13 @@ if active_nav_idx == 0:
     # Surveillance View Scope Control
     is_specific_loc = ("All Monitored" not in epicenter and "Cross-City" not in epicenter and agg_results.get("local_metrics") is not None)
     
+    # Auto-sync scope when epicenter changes to/from a specific location
+    if "last_scoped_epicenter" not in st.session_state or st.session_state.last_scoped_epicenter != epicenter:
+        st.session_state.last_scoped_epicenter = epicenter
+        st.session_state.radar_view_scope = "🎯 Focus on Selected Location" if is_specific_loc else "🌐 Regional City Grid View"
+    elif "radar_view_scope" not in st.session_state:
+        st.session_state.radar_view_scope = "🎯 Focus on Selected Location" if is_specific_loc else "🌐 Regional City Grid View"
+
     col_scope1, col_scope2 = st.columns([1.7, 1.3])
     with col_scope1:
         st.markdown(f"### {t['radar_title']}")
@@ -2416,7 +2435,6 @@ if active_nav_idx == 0:
         view_scope = st.radio(
             "🔭 Surveillance Data Scope:",
             ["🎯 Focus on Selected Location", "🌐 Regional City Grid View"],
-            index=0 if is_specific_loc else 1,
             horizontal=True,
             key="radar_view_scope"
         )
