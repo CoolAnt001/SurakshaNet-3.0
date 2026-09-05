@@ -951,7 +951,7 @@ I18N = {
         # Tabs
         "tab_public": "📢 1. Public Health Radar",
         "tab_clinic": "🏥 2. Clinic / Environment Reporter Portal (Passcode)",
-        "tab_officer": "🚨 3. Health Officer Console (Passcode)",
+        "tab_officer": "🚨 3. Medical Board Console (Passcode)",
         "tab_audit": "🔒 4. Privacy Audit Log",
         
         # Tab 1 Public Health Radar
@@ -1012,10 +1012,10 @@ I18N = {
         "col_trans_val": "Safe Shared Count",
         "col_trans_z": "Anomaly Deviation Strength",
         
-        # Tab 3 Health Officer Console
-        "officer_title": "🚨 Public Health Officer Command Console",
-        "officer_desc": "Authorized Health Officers can configure global sensitivity and issue emergency broadcasts.",
-        "pass_prompt_officer": "🔑 Enter Officer Passcode:",
+        # Tab 3 Medical Board Console
+        "officer_title": "🚨 Medical Board Command Console",
+        "officer_desc": "Authorized Medical Board members can configure global sensitivity and issue emergency broadcasts.",
+        "pass_prompt_officer": "🔑 Enter Medical Board Passcode:",
         "pass_warn_officer": "🔒 Console Locked. Please enter the passcode (9999) to unlock controls and alert dispatch.",
         "sec_controls": "⚙️ Surveillance Parameter Tuning",
         "epsilon_label": "Privacy Protection Level (Low / Medium / High)",
@@ -1107,7 +1107,7 @@ I18N = {
         # Tabs
         "tab_public": "📢 ୧. ସାଧାରଣ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା",
         "tab_clinic": "🏥 ୨. କ୍ଲିନିକ୍ / ପରିବେଶ ତଥ୍ୟ ପୋର୍ଟାଲ୍ (Passcode)",
-        "tab_officer": "🚨 ୩. ସ୍ୱାସ୍ଥ୍ୟ ଅଧିକାରୀ କନସୋଲ୍ (Passcode)",
+        "tab_officer": "🚨 ୩. ମେଡିକାଲ୍ ବୋର୍ଡ କନସୋଲ୍ (Passcode)",
         "tab_audit": "🔒 ୪. ଗୋପନୀୟତା ଯାଞ୍ଚ ଲଗ୍",
         
         # Tab 1 Public Health Radar
@@ -1168,11 +1168,11 @@ I18N = {
         "col_trans_val": "ପ୍ରେରିତ ସଂଖ୍ୟା",
         "col_trans_z": "ଅସ୍ୱାଭାବିକ ମାତ୍ରା",
         
-        # Tab 3 Health Officer Console
-        "officer_title": "🚨 ସ୍ୱାସ୍ଥ୍ୟ ଅଧିକାରୀ କନସୋଲ୍",
-        "officer_desc": "ସ୍ୱାସ୍ଥ୍ୟ ଅଧିକାରୀମାନେ ଏଠାରେ ସିଷ୍ଟମ୍ ସମ୍ବେଦନଶୀଳତା ଏବଂ ଜରୁରୀକାଳୀନ ସୂଚନା ନିୟନ୍ତ୍ରଣ କରିପାରିବେ।",
-        "pass_prompt_officer": "🔑 ଅଧିକାରୀ ପାସକୋଡ୍ (Passcode) ଦିଅନ୍ତୁ:",
-        "pass_warn_officer": "🔒 ଅଧିକାରୀ କନସୋଲ୍ ଲକ୍ ଅଛି। ନିୟନ୍ତ୍ରଣ କରିବା ପାଇଁ ପାସକୋଡ୍ (9999) ବ୍ୟବହାର କରନ୍ତୁ।",
+        # Tab 3 Medical Board Console
+        "officer_title": "🚨 ମେଡିକାଲ୍ ବୋର୍ଡ କନସୋଲ୍",
+        "officer_desc": "ମେଡିକାଲ୍ ବୋର୍ଡ ସଦସ୍ୟମାନେ ଏଠାରେ ସିଷ୍ଟମ୍ ସମ୍ବେଦନଶୀଳତା ଏବଂ ଜରୁରୀକାଳୀନ ସୂଚନା ନିୟନ୍ତ୍ରଣ କରିପାରିବେ।",
+        "pass_prompt_officer": "🔑 ବୋର୍ଡ ପାସକୋଡ୍ (Passcode) ଦିଅନ୍ତୁ:",
+        "pass_warn_officer": "🔒 ମେଡିକାଲ୍ ବୋର୍ଡ କନସୋଲ୍ ଲକ୍ ଅଛି। ନିୟନ୍ତ୍ରଣ କରିବା ପାଇଁ ପାସକୋଡ୍ (9999) ବ୍ୟବହାର କରନ୍ତୁ।",
         "sec_controls": "⚙️ ସତର୍କତା ଏବଂ ଗୋପନୀୟତା ସୀମା ନିୟନ୍ତ୍ରଣ",
         "epsilon_label": "ଗୋପନୀୟତା ସୁରକ୍ଷା ସ୍ତର (କମ୍ / ମଧ୍ୟମ / ଉଚ୍ଚ)",
         "epsilon_help": "ତଥ୍ୟ ପ୍ରେରଣରେ ଯୋଗ କରାଯାଉଥିବା ନଏଜ୍ ସୀମା। ଅଧିକ ନଏଜ୍ ଅଧିକ ଗୋପନୀୟତା ଦେଇଥାଏ।",
@@ -1263,7 +1263,7 @@ I18N = {
         # Tabs
         "tab_public": "📢 1. सार्वजनिक स्वास्थ्य सूचना",
         "tab_clinic": "🏥 2. क्लिनिक / पर्यावरण रिपोर्टर पोर्टल (Passcode)",
-        "tab_officer": "🚨 3. स्वास्थ्य अधिकारी कंसोल (Passcode)",
+        "tab_officer": "🚨 3. मेडिकल बोर्ड कंसोल (Passcode)",
         "tab_audit": "🔒 4. गोपनीयता ऑडिट लॉग",
         
         # Tab 1 Public Health Radar
@@ -1324,11 +1324,11 @@ I18N = {
         "col_trans_val": "प्रेषित मान",
         "col_trans_z": "विचलन तीव्रता",
         
-        # Tab 3 Health Officer Console
-        "officer_title": "🚨 स्वास्थ्य अधिकारी नियंत्रण कंसोल",
-        "officer_desc": "अधिकृत स्वास्थ्य अधिकारी सिस्टम संवेदनशीलता और आपातकालीन संदेशों को नियंत्रित कर सकते हैं।",
-        "pass_prompt_officer": "🔑 स्वास्थ्य अधिकारी पासकोड (Passcode) दर्ज करें:",
-        "pass_warn_officer": "🔒 कंसोल लॉक है। इसे अनलॉक करने के लिए पासकोड (9999) का उपयोग करें।",
+        # Tab 3 Medical Board Console
+        "officer_title": "🚨 मेडिकल बोर्ड नियंत्रण कंसोल",
+        "officer_desc": "अधिकृत मेडिकल बोर्ड सदस्य सिस्टम संवेदनशीलता और आपातकालीन संदेशों को नियंत्रित कर सकते हैं।",
+        "pass_prompt_officer": "🔑 मेडिकल बोर्ड पासकोड (Passcode) दर्ज करें:",
+        "pass_warn_officer": "🔒 मेडिकल बोर्ड कंसोल लॉक है। इसे अनलॉक करने के लिए पासकोड (9999) का उपयोग करें।",
         "sec_controls": "⚙️ सिस्टम सतर्कता एवं गोपनीयता नियंत्रण",
         "epsilon_label": "गोपनीयता सुरक्षा स्तर (कम / मध्यम / उच्च)",
         "epsilon_help": "प्रेषित डेटा में जोड़ा जाने वाला शोर (noise) स्तर। अधिक शोर अधिक गोपनीयता सुनिश्चित करता है।",
@@ -1644,7 +1644,7 @@ if "current_scenario" not in st.session_state or st.session_state.current_scenar
 if "current_epicenter" not in st.session_state or st.session_state.current_epicenter not in epicenter_list:
     st.session_state.current_epicenter = epicenter_list[0]
 
-# Hide simulation controls on Tab 2 (Clinic Reporter) and Tab 3 (Officer Console)
+# Hide simulation controls on Tab 2 (Clinic Reporter) and Tab 3 (Medical Board Console)
 show_sim_selectors = (st.session_state.active_nav_index not in [1, 2])
 
 with col_head2:
@@ -1710,7 +1710,7 @@ with col_head2:
                 <div style='background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-left: 4px solid #EF4444; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
                     <div style='display: flex; align-items: center; justify-content: space-between;'>
                         <div>
-                            <div style='font-size: 0.75rem; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; text-transform: uppercase;'>🏛️ Health Officer Console</div>
+                            <div style='font-size: 0.75rem; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; text-transform: uppercase;'>🏛️ Medical Board Console</div>
                             <div style='font-size: 0.95rem; font-weight: 700; color: #F8FAFC;'>Statutory Surveillance & Dispatch</div>
                         </div>
                         <span style='background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid #EF4444; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
@@ -3454,7 +3454,7 @@ elif active_nav_idx == 1:
                     st.rerun()
 
 # ==============================================================================
-# TAB 3: HEALTH OFFICER CONSOLE (TERTIARY - HEALTH OFFICERS)
+# TAB 3: MEDICAL BOARD CONSOLE (TERTIARY - MEDICAL BOARD)
 # ==============================================================================
 elif active_nav_idx == 2:
     # Initialize authentication state for Tab 3
@@ -3507,7 +3507,7 @@ elif active_nav_idx == 2:
                         st.session_state.officer_auth_success = True
                         st.session_state.officer_auth_denied = False
                         st.session_state.active_nav_index = 2
-                        st.toast("✅ Health Officer Console Unlocked! Welcome, Officer.", icon="🔑")
+                        st.toast("✅ Medical Board Console Unlocked! Welcome, Board Member.", icon="🔑")
                         st.rerun()
                     else:
                         st.session_state.officer_auth_denied = True
@@ -3533,7 +3533,7 @@ elif active_nav_idx == 2:
                 <h4 style='margin: 0 0 8px 0; color: #F8FAFC;'>🔗 Shared Database Configuration</h4>
                 <p style='font-size: 0.9rem; color: #CBD5E1; margin-bottom: 15px; line-height: 1.5;'>
                     Connect to a Google Sheet to enable real-time shared data across all clinic nodes. 
-                    Only Health Officers can configure this setting.
+                    Only Medical Board members can configure this setting.
                 </p>
             </div>
             """, unsafe_allow_html=True
