@@ -10,8 +10,36 @@ import requests
 import threading
 from datetime import datetime, timezone, timedelta
 import re
+import io
+from PIL import Image
+
+# Plotly theme dictionaries
+PLOTLY_DARK = {
+    "plot": "#1f1f1f",
+    "paper": "#1f1f1f",
+    "gauge_bg": "rgba(0,0,0,0)",
+    "border": "rgba(255,255,255,0.2)"
+}
+PLOTLY_LIGHT = {
+    "plot": "#ffffff",
+    "paper": "#ffffff",
+    "gauge_bg": "rgba(255,255,255,0)",
+    "border": "rgba(0,0,0,0.2)"
+}
+
+try:
+    import easyocr
+except ImportError:
+    easyocr = None
 
 # Indian Standard Time (IST) offset (+05:30)
+IST = timezone(timedelta(hours=5, minutes=30))
+
+@st.cache_resource
+def load_ocr_model():
+    if easyocr is None:
+        return None
+    return easyocr.Reader(['en'], gpu=False)
 IST = timezone(timedelta(hours=5, minutes=30))
 
 # --- Page Setup ---
@@ -25,6 +53,8 @@ st.set_page_config(
 # Set your Google Apps Script Web App URL here for universal cross-device persistence
 DEFAULT_GSHEET_URL = "https://script.google.com/macros/s/AKfycbzt_VXGXKrFKQltXEeXvqPjV0zHjSih0AMjQOcBwc-YwvhvmTJYe8om0NiFMbPPccZU/exec"
 
+
+
 # --- Custom CSS Styling (Adaptive Dual-Theme: Dark & Light Mode Glassmorphism) ---
 st.markdown("""
 <style>
@@ -34,47 +64,47 @@ st.markdown("""
     :root {
         --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
         --font-mono: 'JetBrains Mono', monospace;
-        --neon-cyan: #00F2FE;
-        --neon-blue: #38BDF8;
+        --neon-cyan: #FF9933;
+        --neon-blue: #138808;
         --neon-emerald: #10B981;
         --neon-amber: #F59E0B;
         --neon-crimson: #EF4444;
         --neon-purple: #A855F7;
 
         /* Core Unified Theme Tokens */
-        --card-bg: #0F172A;
-        --inner-card-bg: #1E293B;
-        --card-border: rgba(56, 189, 248, 0.25);
-        --card-border-hover: rgba(0, 242, 254, 0.6);
+        --card-bg: #292524;
+        --inner-card-bg: #1C1917;
+        --card-border: rgba(19, 136, 8, 0.25);
+        --card-border-hover: rgba(255, 153, 51, 0.6);
         --text-primary: #F8FAFC;
         --text-secondary: #CBD5E1;
         --text-muted: #94A3B8;
-        --heading-color: #FFFFFF;
-        --nav-bar-bg: #0F172A;
-        --nav-border: #334155;
+        --heading-color: var(--text-primary);
+        --nav-bar-bg: #292524;
+        --nav-border: #44403C;
         --nav-text: #94A3B8;
-        --nav-active-bg: linear-gradient(135deg, rgba(0, 242, 254, 0.25) 0%, rgba(56, 189, 248, 0.18) 100%);
-        --nav-active-text: #00F2FE;
-        --nav-active-border: rgba(0, 242, 254, 0.55);
-        --nav-active-shadow: 0 4px 18px rgba(0, 242, 254, 0.25);
-        --hero-bg: linear-gradient(135deg, #0B132B 0%, #172A46 100%);
-        --hero-border: rgba(0, 242, 254, 0.35);
-        --hero-title-grad: linear-gradient(135deg, #00F2FE 0%, #38BDF8 60%, #FFFFFF 100%);
+        --nav-active-bg: linear-gradient(135deg, rgba(255, 153, 51, 0.25) 0%, rgba(19, 136, 8, 0.18) 100%);
+        --nav-active-text: #FF9933;
+        --nav-active-border: rgba(255, 153, 51, 0.55);
+        --nav-active-shadow: 0 4px 18px rgba(255, 153, 51, 0.25);
+        --hero-bg: linear-gradient(135deg, #1C1917 0%, #292524 100%);
+        --hero-border: rgba(255, 153, 51, 0.35);
+        --hero-title-grad: linear-gradient(135deg, #FF9933 0%, #138808 60%, #FFFFFF 100%);
         --hero-sub: #CBD5E1;
-        --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
-        --input-bg: #0F172A;
-        --input-border: #334155;
+        --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
+        --input-bg: #1C1917;
+        --input-border: var(--nav-border);
         --input-text: #F8FAFC;
-        --btn-bg: linear-gradient(135deg, #00F2FE 0%, #0284C7 100%);
-        --btn-hover-bg: linear-gradient(135deg, #38BDF8 0%, #00F2FE 100%);
+        --btn-bg: linear-gradient(135deg, #FF9933 0%, #D97706 100%);
+        --btn-hover-bg: linear-gradient(135deg, #138808 0%, #FF9933 100%);
         --btn-text: #070B14;
-        --auth-clinic-bg: radial-gradient(circle at 50% 0%, #162B4D 0%, #0B132B 75%);
-        --auth-officer-bg: radial-gradient(circle at 50% 0%, #3B141C 0%, #0B132B 75%);
-        --auth-border-clinic: #00F2FE;
+        --auth-clinic-bg: radial-gradient(circle at 50% 0%, #292524 0%, #1C1917 75%);
+        --auth-officer-bg: radial-gradient(circle at 50% 0%, #292524 0%, #1C1917 75%);
+        --auth-border-clinic: #FF9933;
         --auth-border-officer: #EF4444;
-        --grassroots-badge-bg: #0B132B;
-        --grassroots-badge-border: #00F2FE;
-        --grassroots-badge-text: #00F2FE;
+        --grassroots-badge-bg: #1C1917;
+        --grassroots-badge-border: #FF9933;
+        --grassroots-badge-text: #FF9933;
     }
 
     html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select {
@@ -86,6 +116,9 @@ st.markdown("""
     }
 
     footer {visibility: hidden;}
+
+    
+
 
     /* Form Controls & Inputs - Touch & Mobile Keyboard Friendly */
     div[data-baseweb="select"] {
@@ -173,7 +206,7 @@ st.markdown("""
     .glass-card:hover {
         transform: translateY(-3px);
         border-color: var(--card-border-hover) !important;
-        box-shadow: 0 12px 35px rgba(2, 132, 199, 0.2);
+        box-shadow: 0 12px 35px rgba(19, 136, 8, 0.2);
     }
     .glass-card p, .glass-card span, .glass-card div {
         color: var(--text-secondary);
@@ -187,12 +220,12 @@ st.markdown("""
         font-family: var(--font-mono) !important;
         font-size: 2.2rem;
         font-weight: 800;
-        color: #00F2FE !important;
+        color: var(--neon-cyan) !important;
         line-height: 1.1;
         letter-spacing: -0.5px;
     }
     @media (prefers-color-scheme: light) {
-        .metric-value { color: #0284C7 !important; }
+        .metric-value { color: #D97706 !important; }
     }
     .metric-label {
         font-size: 0.84rem;
@@ -307,8 +340,8 @@ st.markdown("""
     }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
         color: var(--nav-active-text) !important;
-        background: rgba(2, 132, 199, 0.08) !important;
-        border-color: rgba(2, 132, 199, 0.25) !important;
+        background: rgba(19, 136, 8, 0.08) !important;
+        border-color: rgba(19, 136, 8, 0.25) !important;
     }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label > div:first-child {
         display: none !important;
@@ -362,13 +395,13 @@ st.markdown("""
         border-radius: 10px !important;
         border: 1px solid rgba(255, 255, 255, 0.25) !important;
         padding: 8px 22px !important;
-        box-shadow: 0 4px 18px rgba(2, 132, 199, 0.35) !important;
+        box-shadow: 0 4px 18px rgba(19, 136, 8, 0.35) !important;
         transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
         letter-spacing: 0.3px !important;
     }
     div.stButton > button:hover {
         transform: translateY(-2px) scale(1.02) !important;
-        box-shadow: 0 8px 25px rgba(2, 132, 199, 0.5) !important;
+        box-shadow: 0 8px 25px rgba(19, 136, 8, 0.5) !important;
         background: var(--btn-hover-bg) !important;
     }
     div.stButton > button:active {
@@ -471,7 +504,7 @@ st.markdown("""
     .node-visual-card:hover {
         transform: translateY(-4px);
         border-color: var(--card-border-hover) !important;
-        box-shadow: 0 14px 35px -10px rgba(2, 132, 199, 0.3);
+        box-shadow: 0 14px 35px -10px rgba(19, 136, 8, 0.3);
     }
     .node-card-body {
         padding: 16px 18px;
@@ -495,9 +528,9 @@ st.markdown("""
         color: var(--text-secondary);
     }
     .pipeline-step-badge {
-        background: rgba(2, 132, 199, 0.12) !important;
-        border: 1px solid #0284C7 !important;
-        color: #0284C7 !important;
+        background: rgba(19, 136, 8, 0.12) !important;
+        border: 1px solid #D97706 !important;
+        color: #D97706 !important;
         border-radius: 6px;
         padding: 3px 8px;
         font-size: 0.75rem;
@@ -562,8 +595,8 @@ st.markdown("""
         justify-content: center;
         font-size: 2.4rem;
         background: var(--card-bg) !important;
-        border: 2px solid #00F2FE !important;
-        box-shadow: 0 0 25px rgba(0, 242, 254, 0.35);
+        border: 2px solid #FF9933 !important;
+        box-shadow: 0 0 25px rgba(255, 153, 51, 0.35);
         animation: pulse-halo 2.5s infinite ease-in-out;
     }
     .auth-icon-halo-officer {
@@ -581,17 +614,17 @@ st.markdown("""
         animation: pulse-halo-red 2.5s infinite ease-in-out;
     }
     @keyframes pulse-halo {
-        0%, 100% { box-shadow: 0 0 15px rgba(0, 242, 254, 0.35); transform: scale(1); }
-        50% { box-shadow: 0 0 30px rgba(0, 242, 254, 0.55); transform: scale(1.04); }
+        0%, 100% { box-shadow: 0 0 15px rgba(255, 153, 51, 0.35); transform: scale(1); }
+        50% { box-shadow: 0 0 30px rgba(255, 153, 51, 0.55); transform: scale(1.04); }
     }
     @keyframes pulse-halo-red {
         0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.35); transform: scale(1); }
         50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.6); transform: scale(1.04); }
     }
     .auth-badge-clinic {
-        background: rgba(2, 132, 199, 0.12) !important;
-        border: 1px solid #0284C7 !important;
-        color: #0284C7 !important;
+        background: rgba(19, 136, 8, 0.12) !important;
+        border: 1px solid #D97706 !important;
+        color: #D97706 !important;
         font-size: 0.76rem;
         font-weight: 700;
         letter-spacing: 0.8px;
@@ -632,7 +665,7 @@ st.markdown("""
         margin: 12px 0 16px 0;
         box-shadow: 0 0 20px rgba(239, 68, 68, 0.45);
         animation: sidebar-glow-pulse 2.2s infinite ease-in-out;
-        color: #F8FAFC !important;
+        color: var(--text-primary) !important;
         position: relative;
     }
     @keyframes sidebar-glow-pulse {
@@ -677,14 +710,14 @@ st.markdown("""
         align-items: center;
         justify-content: space-between;
         font-size: 0.72rem;
-        color: #94A3B8;
+        color: var(--text-secondary);
     }
 
     /* Portal Banners */
     .portal-banner {
         background: var(--card-bg) !important;
         border: 1px solid var(--card-border) !important;
-        border-left: 5px solid #0284C7 !important;
+        border-left: 5px solid #D97706 !important;
         border-radius: 14px;
         padding: 16px 20px;
         margin-bottom: 18px;
@@ -733,9 +766,9 @@ st.markdown("""
         color: #DC2626 !important;
     }
     .status-chip-cyan {
-        background: rgba(2, 132, 199, 0.15) !important;
-        border: 1px solid #0284C7 !important;
-        color: #0284C7 !important;
+        background: rgba(19, 136, 8, 0.15) !important;
+        border: 1px solid #D97706 !important;
+        color: #D97706 !important;
     }
     .channel-box {
         background: var(--card-bg) !important;
@@ -753,6 +786,10 @@ st.markdown("""
         padding: 14px;
         color: var(--text-primary) !important;
     }
+
+
+    
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -1560,13 +1597,37 @@ if st.session_state.get("active_officer_alert"):
             <div class='sidebar-glow-msg'>{clean_msg}</div>
             <div class='sidebar-glow-meta'>
                 <span>🕒 {alert.get('timestamp', 'Live')}</span>
-                <span style='color: #00F2FE; font-family: monospace; font-size: 0.7rem;'>{alert.get('hash', '')[:14]}...</span>
+                <span style='color: var(--neon-cyan); font-family: monospace; font-size: 0.7rem;'>{alert.get('hash', '')[:14]}...</span>
             </div>
         </div>
+        <style>
+        /* Force override Streamlit's emotion cache CSS */
+        button[kind="primary"], 
+        div.stButton button[kind="primary"],
+        [data-testid="stSidebar"] button[kind="primary"] {{
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+            background-color: #EF4444 !important;
+            border-color: #DC2626 !important;
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35) !important;
+        }}
+        
+        button[kind="primary"]:hover,
+        div.stButton button[kind="primary"]:hover,
+        [data-testid="stSidebar"] button[kind="primary"]:hover {{
+            background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%) !important;
+            background-color: #DC2626 !important;
+            border-color: #B91C1C !important;
+        }}
+        
+        button[kind="primary"] * {{
+            color: white !important;
+        }}
+        </style>
         """,
         unsafe_allow_html=True
     )
-    if st.sidebar.button("✕ Dismiss Alert Bulletin", key="dismiss_sidebar_glow_btn", use_container_width=True):
+    if st.sidebar.button("✕ DISMISS ALERT BULLETIN", key="dismiss_sidebar_glow_btn", use_container_width=True, type="primary"):
         st.session_state.active_officer_alert = None
         st.rerun()
 
@@ -1589,30 +1650,31 @@ if "active_nav_index" not in st.session_state or st.session_state.active_nav_ind
     st.session_state.active_nav_index = 0
 
 # --- Top Navigation / Main Header ---
-hero_b64 = ""
+hero_light_b64 = ""
 import os, base64
-if os.path.exists("assets/surakshanet_hero.jpg"):
+
+if os.path.exists("assets/LOGO_dark.jpg"):
     try:
-        with open("assets/surakshanet_hero.jpg", "rb") as f:
-            hero_b64 = base64.b64encode(f.read()).decode()
+        with open("assets/LOGO_dark.jpg", "rb") as f:
+            hero_light_b64 = base64.b64encode(f.read()).decode()
     except Exception:
-        hero_b64 = ""
+        pass
 
 col_head1, col_head2 = st.columns([1.5, 1.5])
 with col_head1:
-    if hero_b64:
-        img_badge = f'<img src="data:image/jpeg;base64,{hero_b64}" style="width:68px; height:68px; min-width:68px; border-radius:16px; border:2px solid #00F2FE; box-shadow:0 0 20px rgba(0,242,254,0.4); object-fit:cover;" />'
+    if hero_light_b64:
+        img_badge = f'<img src="data:image/jpeg;base64,{hero_light_b64}" style="width:68px; height:68px; min-width:68px; border-radius:16px; border:2px solid #FF9933; box-shadow:0 0 20px rgba(255, 153, 51,0.4); object-fit:cover;" />'
     else:
-        img_badge = '<div style="width:64px; height:64px; min-width:64px; border-radius:16px; background:linear-gradient(135deg, rgba(0,242,254,0.2) 0%, rgba(3,105,161,0.4) 100%); border:1.5px solid #00F2FE; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(0,242,254,0.35); font-size:2rem;">🛡️</div>'
+        img_badge = '<div style="width:64px; height:64px; min-width:64px; border-radius:16px; background:linear-gradient(135deg, rgba(255, 153, 51,0.2) 0%, rgba(19, 136, 8,0.4) 100%); border:1.5px solid #FF9933; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(255, 153, 51,0.35); font-size:2rem;">🛡️</div>'
 
     header_html = (
         f'<div class="custom-hero-banner" style="display: flex; align-items: center; gap: 20px;">'
         f'{img_badge}'
         f'<div>'
-        f'<div style="font-size: 0.78rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #38BDF8; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;">'
+        f'<div style="font-size: 0.78rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--neon-blue); margin-bottom: 5px; display: flex; align-items: center; gap: 8px;">'
         f'<span>⚡ TEAM CODEKRAFT</span>'
         f'<span style="opacity: 0.35; color: #FFFFFF;">•</span>'
-        f'<span style="color: #94A3B8;">ODISHA HEALTH SURVEILLANCE GRID</span>'
+        f'<span style="color: #737373;">ODISHA HEALTH SURVEILLANCE GRID</span>'
         f'</div>'
         f'<h1 style="margin: 0; font-size: 2.15rem; line-height: 1.1; letter-spacing: -0.5px;">{t["app_title"]}</h1>'
         f'<p style="margin: 4px 0 0 0; opacity: 0.85; font-size: 0.95rem; color: #E2E8F0;">{t["app_sub"]}</p>'
@@ -1691,13 +1753,13 @@ with col_head2:
         if st.session_state.active_nav_index == 1:
             st.markdown(
                 """
-                <div style='background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.3); border-left: 4px solid #38BDF8; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
+                <div style='background: rgba(28, 25, 23, 0.7); border: 1px solid rgba(19, 136, 8, 0.3); border-left: 4px solid #138808; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
                     <div style='display: flex; align-items: center; justify-content: space-between;'>
                         <div>
-                            <div style='font-size: 0.75rem; font-weight: 700; color: #38BDF8; letter-spacing: 0.5px; text-transform: uppercase;'>🏥 Clinic Ingestion Node</div>
-                            <div style='font-size: 0.95rem; font-weight: 700; color: #F8FAFC;'>Grassroots Telemetry Terminal</div>
+                            <div style='font-size: 0.75rem; font-weight: 700; color: var(--neon-blue); letter-spacing: 0.5px; text-transform: uppercase;'>🏥 Clinic Ingestion Node</div>
+                            <div style='font-size: 0.95rem; font-weight: 700; color: var(--text-primary);'>Grassroots Telemetry Terminal</div>
                         </div>
-                        <span style='background: rgba(56, 189, 248, 0.15); color: #38BDF8; border: 1px solid #38BDF8; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
+                        <span style='background: rgba(19, 136, 8, 0.15); color: var(--neon-blue); border: 1px solid #138808; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
                             🔒 DPDP ACT SECURE
                         </span>
                     </div>
@@ -1707,11 +1769,11 @@ with col_head2:
         elif st.session_state.active_nav_index == 2:
             st.markdown(
                 """
-                <div style='background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-left: 4px solid #EF4444; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
+                <div style='background: rgba(28, 25, 23, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-left: 4px solid #EF4444; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
                     <div style='display: flex; align-items: center; justify-content: space-between;'>
                         <div>
                             <div style='font-size: 0.75rem; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; text-transform: uppercase;'>🏛️ Medical Board Console</div>
-                            <div style='font-size: 0.95rem; font-weight: 700; color: #F8FAFC;'>Statutory Surveillance & Dispatch</div>
+                            <div style='font-size: 0.95rem; font-weight: 700; color: var(--text-primary);'>Statutory Surveillance & Dispatch</div>
                         </div>
                         <span style='background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid #EF4444; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
                             🛡️ MASTER KEY AUTH
@@ -2513,7 +2575,7 @@ if active_nav_idx == 0:
     # Determine dynamic class for animations
     if display_risk == "safe":
         alert_class = ""
-        alert_style = "background: linear-gradient(135deg, rgba(6, 78, 59, 0.7) 0%, #0B132B 100%) !important; border: 1px solid #10B981 !important; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);"
+        alert_style = "background: linear-gradient(135deg, rgba(6, 78, 59, 0.7) 0%, #F1F5F9 100%) !important; border: 1px solid #10B981 !important; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);"
     elif is_false_alarm or display_risk == "warning":
         alert_class = "class='alert-banner-warning'"
         alert_style = f"background-color: {alert_bg};"
@@ -2616,7 +2678,7 @@ if active_nav_idx == 0:
         abnormal_sigs = [s for s in (sigs or []) if s["z_score"] > 1.2]
         
         if not abnormal_sigs or scenario == "🟢 Normal Baseline (No Active Outbreaks)" or display_risk == "safe":
-            st.info(f"🟢 No abnormal symptom rise detected at {loc_info['short_name'] if is_local_focus else 'any reporting center'} (All health facilities reporting within normal historical baseline limits).")
+            st.success(f"🟢 No abnormal symptom rise detected at {loc_info['short_name'] if is_local_focus else 'any reporting center'} (All health facilities reporting within normal historical baseline limits).")
         else:
             sig_names = []
             sig_scores = []
@@ -2631,11 +2693,11 @@ if active_nav_idx == 0:
                 orientation='h',
                 labels={'x': 'Relative Level of Rise (Z-Score Deviation)', 'y': 'Symptoms / Metrics'},
                 color=sig_scores,
-                color_continuous_scale=['#38BDF8', '#EF4444']
+                color_continuous_scale=['#138808', '#EF4444']
             )
             fig_pub.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor=plot_theme["plot"] ,
+                paper_bgcolor=plot_theme["paper"],
                 height=250,
                 coloraxis_showscale=False,
                 margin=dict(t=10, b=10, l=10, r=10)
@@ -2643,7 +2705,14 @@ if active_nav_idx == 0:
             st.plotly_chart(fig_pub, use_container_width=True)
             
     with col_pub2:
-        st.markdown(f"<p style='text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: #F8FAFC;'>{t['threat_prob']} (%) - {loc_info['short_name'] if is_local_focus else 'Regional Grid'}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);'>{t['threat_prob']} (%) - {loc_info['short_name'] if is_local_focus else 'Regional Grid'}</p>", unsafe_allow_html=True)
+        # Determine theme for Plotly
+        try:
+            current_theme = st.context.theme.type
+        except Exception:
+            current_theme = "light"
+        plot_theme = PLOTLY_DARK if current_theme == "dark" else PLOTLY_LIGHT
+
         fig_gauge_pub = go.Figure(go.Indicator(
             mode = "gauge+number",
             value = display_outbreak_p,
@@ -2651,9 +2720,9 @@ if active_nav_idx == 0:
             gauge = {
                 'axis': {'range': [0, 100], 'tickwidth': 1},
                 'bar': {'color': alert_border},
-                'bgcolor': "#0F172A",
+                'bgcolor': plot_theme["gauge_bg"],
                 'borderwidth': 2,
-                'bordercolor': "#334155",
+                'bordercolor': plot_theme["border"],
                 'steps': [
                     {'range': [0, 35], 'color': 'rgba(16, 185, 129, 0.2)'},
                     {'range': [35, 70], 'color': 'rgba(245, 158, 11, 0.2)'},
@@ -2847,7 +2916,7 @@ if active_nav_idx == 0:
         <div class="node-telemetry-box">
             <strong style="font-size:0.95rem; font-weight:700;">Municipal Water Testing</strong><br>
             <span style="font-size:0.78rem; opacity: 0.85;">Reservoir & Supply Standpost</span><br>
-            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_w}</span> <span style="font-size:0.78rem; font-weight:bold; color:#0284C7; margin-left:4px;">NTU: {turb_val}</span></div>
+            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_w}</span> <span style="font-size:0.78rem; font-weight:bold; color:#D97706; margin-left:4px;">NTU: {turb_val}</span></div>
             <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">Coliform: {colif_val} MPN/100ml</div>
         </div>
         """, unsafe_allow_html=True)
@@ -2896,8 +2965,8 @@ if active_nav_idx == 0:
         <div class="hygiene-card">
             <span style="font-size:1.8rem;">💧</span>
             <div>
-                <strong style="color:#38BDF8; font-size:1.02rem;">Drinking Water Safety</strong><br>
-                <span style="font-size:0.86rem; color:#CBD5E1; line-height:1.5; display:inline-block; margin-top:4px;">
+                <strong style="color: var(--neon-blue); font-size:1.02rem;">Drinking Water Safety</strong><br>
+                <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
                 • <strong>Boil water for 10 minutes</strong> before drinking.<br>
                 • <em>ଓଡ଼ିଆ: ପାଣିକୁ ୧୦ ମିନିଟ୍ ଫୁଟାଇ ପିଅନ୍ତୁ।</em><br>
                 • <em>हिंदी: पीने का पानी 10 मिनट तक उबालें।</em>
@@ -2911,7 +2980,7 @@ if active_nav_idx == 0:
             <span style="font-size:1.8rem;">🥤</span>
             <div>
                 <strong style="color:#10B981; font-size:1.02rem;">ORS & Hydration Protocol</strong><br>
-                <span style="font-size:0.86rem; color:#CBD5E1; line-height:1.5; display:inline-block; margin-top:4px;">
+                <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
                 • Mix 1 ORS sachet in 1L clean water.<br>
                 • <em>ଓଡ଼ିଆ: ଓଆରଏସ୍ (ORS) ଦ୍ରବଣ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
                 • <em>हिंदी: ओआरएस (ORS) घोल का तुरंत सेवन करें।</em>
@@ -2925,7 +2994,7 @@ if active_nav_idx == 0:
             <span style="font-size:1.8rem;">😷</span>
             <div>
                 <strong style="color:#F59E0B; font-size:1.02rem;">Respiratory Care</strong><br>
-                <span style="font-size:0.86rem; color:#CBD5E1; line-height:1.5; display:inline-block; margin-top:4px;">
+                <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
                 • Wear 3-layer mask in crowded areas.<br>
                 • <em>ଓଡ଼ିଆ: ଭିଡ଼ ସ୍ଥାନରେ ମାସ୍କ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
                 • <em>हिंदी: भीड़भाड़ वाली जगहों पर मास्क पहनें।</em>
@@ -3074,8 +3143,8 @@ elif active_nav_idx == 1:
             transports.append(m["transmitted_val"])
             
         fig_comp = go.Figure(data=[
-            go.Bar(name=t['bar_raw'], x=labels, y=raws, marker_color='#38BDF8'),
-            go.Bar(name=t['bar_trans'], x=labels, y=transports, marker_color='#00F2FE')
+            go.Bar(name=t['bar_raw'], x=labels, y=raws, marker_color='#138808'),
+            go.Bar(name=t['bar_trans'], x=labels, y=transports, marker_color='#FF9933')
         ])
         fig_comp.update_layout(
             barmode='group',
@@ -3191,13 +3260,13 @@ elif active_nav_idx == 1:
             with prev_col1:
                 st.markdown(
                     f"""
-                    <div style='background: #0F172A; color: #F8FAFC; border: 1px solid #334155; border-left: 4px solid #38BDF8; padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);'>
-                        <strong style='color:#38BDF8; font-size: 1.05rem;'>{local_card_title}</strong><br>
-                        <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: #CBD5E1;'>
-                            • {item_header_text}: <strong style='color: #F8FAFC;'>{symptom_labels[selected_symptom]}</strong><br>
-                            • Original {val_header_text}: <strong style='color: #00F2FE;'>{raw_case_count}</strong><br>
-                            • Site: <strong style='color: #F8FAFC;'>{location_input}</strong><br>
-                            • Date/Time: <strong style='color: #94A3B8;'>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
+                    <div style='background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--nav-border); border-left: 4px solid #138808; padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);'>
+                        <strong style='color: var(--neon-blue); font-size: 1.05rem;'>{local_card_title}</strong><br>
+                        <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);'>
+                            • {item_header_text}: <strong style='color: var(--text-primary);'>{symptom_labels[selected_symptom]}</strong><br>
+                            • Original {val_header_text}: <strong style='color: var(--neon-cyan);'>{raw_case_count}</strong><br>
+                            • Site: <strong style='color: var(--text-primary);'>{location_input}</strong><br>
+                            • Date/Time: <strong style='color: #737373;'>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
                         </div>
                     </div>
                     """, unsafe_allow_html=True
@@ -3206,12 +3275,12 @@ elif active_nav_idx == 1:
                 suppress_alert = "<span style='color:#EF4444; font-weight:bold;'>⚠️ Masked (Under threshold)</span>" if sim_suppressed else "<span style='color:#10B981; font-weight:bold;'>✅ Secure Upload Allowed</span>"
                 st.markdown(
                     f"""
-                    <div style='background: #0F172A; color: #F8FAFC; border: 1px solid #334155; border-left: 4px solid #00F2FE; padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);'>
-                        <strong style='color:#00F2FE; font-size: 1.05rem;'>{transmitted_card_title}</strong><br>
-                        <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: #CBD5E1;'>
-                            • Uploaded Value: <strong style='color: #00F2FE;'>{sim_transmitted_tally}</strong> ({suppress_alert})<br>
-                            • Uploaded Site: <strong style='color: #F8FAFC;'>{sim_transmitted_location}</strong><br>
-                            • Date/Time: <strong style='color: #94A3B8;'>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
+                    <div style='background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--nav-border); border-left: 4px solid var(--neon-cyan); padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);'>
+                        <strong style='color: var(--neon-cyan); font-size: 1.05rem;'>{transmitted_card_title}</strong><br>
+                        <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);'>
+                            • Uploaded Value: <strong style='color: var(--neon-cyan);'>{sim_transmitted_tally}</strong> ({suppress_alert})<br>
+                            • Uploaded Site: <strong style='color: var(--text-primary);'>{sim_transmitted_location}</strong><br>
+                            • Date/Time: <strong style='color: #737373;'>{datetime.now(IST).strftime("%d %b, %H:%M IST")}</strong>
                         </div>
                     </div>
                     """, unsafe_allow_html=True
@@ -3242,10 +3311,10 @@ elif active_nav_idx == 1:
             with ivr_col_ctrl:
                 st.markdown(
                     """
-                    <div style="background: #0F172A; color: #F8FAFC; padding: 18px; border-radius: 14px; border: 1px solid #334155; border-left: 4px solid #00F2FE; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-                        <h3 style="color: #00F2FE; margin: 0; font-size: 1.25rem;">📞 1800-SURAKSHA</h3>
+                    <div style="background: var(--card-bg); color: var(--text-primary); padding: 18px; border-radius: 14px; border: 1px solid var(--nav-border); border-left: 4px solid var(--neon-cyan); margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                        <h3 style="color: var(--neon-cyan); margin: 0; font-size: 1.25rem;">📞 1800-SURAKSHA</h3>
                         <div style="margin: 6px 0 8px 0;"><span class="grassroots-badge">Grassroots Feature Phone Gateway</span></div>
-                        <p style="color: #CBD5E1; font-size: 0.88rem; margin: 4px 0 0 0; line-height: 1.45;">
+                        <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 4px 0 0 0; line-height: 1.45;">
                             Community health workers (ASHA/Anganwadi) in remote villages dial without internet. Automated vernacular voice prompts (Odia, Hindi, English) guide symptom tallies using phone keypads.
                         </p>
                     </div>
@@ -3287,63 +3356,63 @@ elif active_nav_idx == 1:
                         st.rerun()
                     
         elif t["opt3"] in ingest_method:
-            st.markdown("#### 📋 Edge OCR Scanner: Paper Daily OPD Register")
-            ocr_col_img, ocr_col_ctrl = st.columns([1.3, 1.2])
-            with ocr_col_img:
-                render_app_image("assets/paper_opd_register.jpg", caption="📷 Actual Handwritten Daily OPD Register Sheet (Kanpur PHC, Odisha Health Mission)")
-            with ocr_col_ctrl:
-                st.markdown("""
-                <div style="background: #0F172A; border: 1px solid #334155; border-left: 4px solid #00F2FE; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-                    <strong style="color:#00F2FE; font-size: 1.05rem;">Zero-Burden Paper Ingestion for PHCs</strong><br>
-                    <span style="font-size:0.86rem; color: #CBD5E1; line-height: 1.45; display: inline-block; margin-top: 4px;">
-                    Rural clinic staff write by hand in physical register books. Nurses don't need to type data—they simply take a smartphone photo of today's sheet, and local Edge OCR extracts symptom counts automatically!
-                    </span>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                col_btn_ocr1, col_btn_ocr2 = st.columns(2)
-                with col_btn_ocr1:
-                    sim_sample_ocr = st.button("⚡ Load & Scan Sample Sheet", type="primary", use_container_width=True, help="1-Click demo: scans the handwritten register photo on the left")
-                with col_btn_ocr2:
-                    uploaded_file = st.file_uploader("Upload custom photo", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
-                    
-                if sim_sample_ocr or uploaded_file is not None or st.session_state.get("ocr_scanned_done"):
-                    st.session_state.ocr_scanned_done = True
+            st.markdown("#### 📋 Edge OCR Scanner: Deep Learning OCR")
+            if easyocr is None:
+                st.error("easyocr library is not installed. Please install it to use this feature.")
+            else:
+                ocr_col_img, ocr_col_ctrl = st.columns([1.3, 1.2])
+                with ocr_col_img:
+                    render_app_image("assets/paper_opd_register.jpg", caption="📷 Handwritten Daily OPD Register")
+                with ocr_col_ctrl:
                     st.markdown("""
-                    <div style="background: rgba(6, 78, 59, 0.45); border: 1px solid #10B981; border-radius: 10px; padding: 14px; margin: 10px 0; color: #ECFDF5; box-shadow: 0 4px 15px rgba(16,185,129,0.25);">
-                        <strong style="color:#34D399; font-size: 1.02rem;">✅ Handwritten OCR Extraction Successful!</strong><br>
-                        <span style="font-size:0.86rem; line-height: 1.6; color: #D1FAE5; display: inline-block; margin-top: 4px;">
-                        • <strong>Date Detected:</strong> 26/10/2023<br>
-                        • <strong>Fever Tallies (ଜ୍ୱର):</strong> 4 cases (Rakesh, Ganesh, Bishnu, Arjun)<br>
-                        • <strong>Diarrheal Tallies (ଝାଡ଼ା):</strong> 3 cases (Sita, Kamala)<br>
-                        • <strong>Cough / Cold Tallies (କାଶ):</strong> 4 cases (Laxmi, Arjun, Kamala)<br>
-                        🔒 <em>Zero-Central-PII: Patient names & IDs remain strictly on the local device.</em>
+                    <div style="background: var(--card-bg); border: 1px solid var(--nav-border); border-left: 4px solid var(--neon-cyan); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                        <strong style="color: var(--neon-cyan); font-size: 1.05rem;">Zero-Burden Paper Ingestion for PHCs</strong><br>
+                        <span style="font-size:0.86rem; color: var(--text-secondary); line-height: 1.45; display: inline-block; margin-top: 4px;">
+                        Upload a photo of a physical register or medical report. Local Edge OCR will extract symptom counts automatically using an Artificial Neural Network!
                         </span>
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    ocr_symptom_pick = st.selectbox("Select Extracted Cohort to Sync:", ["Diarrheal / Gastro (3 cases)", "Fever (4 cases)", "Respiratory / Cough (4 cases)"])
-                    ocr_val_map = {"Diarrheal / Gastro (3 cases)": (symptom_options[0], 3.0), "Fever (4 cases)": ("fever" if "fever" in symptom_options else symptom_options[0], 4.0), "Respiratory / Cough (4 cases)": ("respiratory" if "respiratory" in symptom_options else symptom_options[0], 4.0)}
+                    uploaded_file = st.file_uploader("Upload custom photo (PNG, JPG, JPEG)", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
                     
-                    if st.button("🚀 Upload Extracted OCR Tallies to Health Grid", use_container_width=True, type="primary"):
-                        chosen_sym, chosen_count = ocr_val_map[ocr_symptom_pick]
-                        new_log = {
-                            "symptom": chosen_sym,
-                            "location": "Kanpur PHC Ward A",
-                            "raw_val": float(chosen_count),
-                            "timestamp": datetime.now(IST).strftime("%d %b, %H:%M IST"),
-                            "details": "Extracted via Edge Paper Register OCR"
-                        }
-                        if st.session_state.gsheet_url:
-                            add_gsheet_log(st.session_state.gsheet_url, selected_node_id, new_log)
-                        else:
-                            st.session_state.local_logs[selected_node_id].append(new_log)
-                        st.session_state.ocr_scanned_done = False
-                        st.toast("📋 Paper Register OCR tally securely uploaded!", icon="🛡️")
-                        st.success(t["log_success"])
-                        st.rerun()
+                    if uploaded_file is not None:
+                        st.image(uploaded_file, caption="Uploaded Document", use_column_width=True)
+                        if st.button("🔍 Run AI Extraction", type="primary", use_container_width=True):
+                            with st.spinner("Initializing Deep Learning ANN and parsing text..."):
+                                reader = load_ocr_model()
+                                image_bytes = uploaded_file.getvalue()
+                                image = Image.open(io.BytesIO(image_bytes))
+                                img_np = np.array(image)
+                                results = reader.readtext(img_np, detail=0)
+                                extracted_text = " ".join(results)
+                                
+                            st.markdown("### 📄 Extracted Raw Text:")
+                            st.text_area("OCR Output", extracted_text, height=150)
+                            
+                            found_symptoms = []
+                            text_lower = extracted_text.lower()
+                            for sym_id, sym_info in NODES[selected_node_id]["metrics"].items():
+                                if sym_info["label"].lower() in text_lower or sym_id.lower() in text_lower:
+                                    found_symptoms.append(sym_id)
+                            
+                            if found_symptoms:
+                                st.success(f"✅ AI identified potential symptoms: {', '.join([NODES[selected_node_id]['metrics'][s]['label'] for s in found_symptoms])}")
+                                for s_id in found_symptoms:
+                                    new_log = {
+                                        "symptom": s_id,
+                                        "location": "Edge OCR Scanner",
+                                        "raw_val": 1.0,
+                                        "timestamp": datetime.now(IST).strftime("%d %b, %H:%M IST"),
+                                        "details": f"AI Extracted from Document: {uploaded_file.name}"
+                                    }
+                                    if st.session_state.gsheet_url:
+                                        add_gsheet_log(st.session_state.gsheet_url, selected_node_id, new_log)
+                                    else:
+                                        st.session_state.local_logs[selected_node_id].append(new_log)
+                                st.toast("✅ Extracted symptoms logged to database!", icon="🚀")
+                            else:
+                                st.warning("No known symptoms matched the extracted text. You may log it manually.")
 
-                    
         elif t["opt4"] in ingest_method:
             st.markdown("#### Database Synchronizer Daemon")
             st.code("# Secure Connector pushes anonymized averages directly.\nresult = db.query('SELECT COUNT(*) FROM patient_logs')\nupload_safely(result)", language="python")
@@ -3388,7 +3457,7 @@ elif active_nav_idx == 1:
                 })
                 
         if not active_node_logs:
-            st.info(t["log_info"])
+            st.success(t["log_info"])
         else:
             for idx, log in enumerate(active_node_logs):
                 is_count_log = NODES[selected_node_id]["metrics"][log["symptom"]]["is_count"]
@@ -3413,14 +3482,14 @@ elif active_nav_idx == 1:
                         clean_notes = clean_notes[clean_notes.find("]")+1:].strip()
                     st.markdown(
                         f"""
-                        <div style='background: #0F172A; border: 1px solid #334155; border-left: 4px solid #00F2FE; padding: 14px 16px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); color: #F8FAFC;'>
+                        <div style='background: var(--card-bg); border: 1px solid var(--nav-border); border-left: 4px solid var(--neon-cyan); padding: 14px 16px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); color: var(--text-primary);'>
                             <div style='display: flex; justify-content: space-between; align-items: center;'>
-                                <strong style='font-size: 1.05rem; color: #F8FAFC;'>{symptom_labels.get(log["symptom"], log["symptom"])}</strong>
-                                <span style='font-size: 0.78rem; color: #94A3B8; background: #1E293B; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px;'>🕒 {time_badge}</span>
+                                <strong style='font-size: 1.05rem; color: var(--text-primary);'>{symptom_labels.get(log["symptom"], log["symptom"])}</strong>
+                                <span style='font-size: 0.78rem; color: #737373; background: #171717; border: 1px solid var(--nav-border); padding: 3px 8px; border-radius: 6px;'>🕒 {time_badge}</span>
                             </div>
                             <div style='margin-top: 5px;'>
-                                <span style='font-size: 0.88rem; color: #CBD5E1;'>📍 Location: <strong style='color: #F8FAFC;'>{log["location"]}</strong> | {val_header_text}: <strong style='color: #00F2FE;'>{log["raw_val"]}</strong></span><br>
-                                <span style='font-size: 0.82rem; color: #94A3B8;'>📝 Notes: {clean_notes if clean_notes else 'None'}</span>
+                                <span style='font-size: 0.88rem; color: var(--text-secondary);'>📍 Location: <strong style='color: var(--text-primary);'>{log["location"]}</strong> | {val_header_text}: <strong style='color: var(--neon-cyan);'>{log["raw_val"]}</strong></span><br>
+                                <span style='font-size: 0.82rem; color: #737373;'>📝 Notes: {clean_notes if clean_notes else 'None'}</span>
                             </div>
                         </div>
                         """, unsafe_allow_html=True
@@ -3430,9 +3499,9 @@ elif active_nav_idx == 1:
                     status_badge = f"<span style='color:{badge_color}; font-weight:bold;'>{'✅ Safe Upload' if not log_suppressed else '❌ Suppressed'}</span>"
                     st.markdown(
                         f"""
-                        <div style='text-align: left; padding: 12px 5px; color: #F8FAFC;'>
+                        <div style='text-align: left; padding: 12px 5px; color: var(--text-primary);'>
                             <span style='font-size:0.88rem;'>{status_badge}</span><br>
-                            <span style='font-size:0.85rem; color: #94A3B8;'>Shared: <strong style='color: #F8FAFC;'>{0.0 if log_suppressed else log_dp}</strong></span>
+                            <span style='font-size:0.85rem; color: #737373;'>Shared: <strong style='color: var(--text-primary);'>{0.0 if log_suppressed else log_dp}</strong></span>
                         </div>
                         """, unsafe_allow_html=True
                     )
@@ -3529,9 +3598,9 @@ elif active_nav_idx == 2:
         st.markdown("---")
         st.markdown(
             """
-            <div class='glass-card' style='border-top: 3px solid #00F2FE;'>
-                <h4 style='margin: 0 0 8px 0; color: #F8FAFC;'>🔗 Shared Database Configuration</h4>
-                <p style='font-size: 0.9rem; color: #CBD5E1; margin-bottom: 15px; line-height: 1.5;'>
+            <div class='glass-card' style='border-top: 3px solid #FF9933;'>
+                <h4 style='margin: 0 0 8px 0; color: var(--text-primary);'>🔗 Shared Database Configuration</h4>
+                <p style='font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 15px; line-height: 1.5;'>
                     Connect to a Google Sheet to enable real-time shared data across all clinic nodes. 
                     Only Medical Board members can configure this setting.
                 </p>
@@ -3660,7 +3729,7 @@ elif active_nav_idx == 2:
             """
             <div class='glass-card' style='border-left: 4px solid #10B981; margin-bottom: 15px;'>
                 <h5 style='margin: 0 0 6px 0; color: #10B981;'>🔄 Self-Calibrating Epidemic Baseline Engine</h5>
-                <p style='font-size: 0.88rem; color: #CBD5E1; margin: 0; line-height: 1.5;'>
+                <p style='font-size: 0.88rem; color: var(--text-secondary); margin: 0; line-height: 1.5;'>
                     SurakshaNet continuously recalculates facility baselines over a <strong>rolling 14-day window</strong>. 
                     As seasonal background illnesses naturally rise and fall (e.g., winter rhinovirus vs monsoon gastroenteritis), the baseline updates smoothly (μ, σ) while an <strong>Outlier Exclusion Guard (&gt; 3.5σ)</strong> prevents true epidemic surges from inflating the baseline.
                 </p>
@@ -3717,7 +3786,7 @@ elif active_nav_idx == 2:
             p = st.session_state.alert_dispatched_popup
             st.markdown(
                 f"""
-                <div class='green-popup' style='border-left: 6px solid #10B981; background: #0F172A; border: 1px solid #10B981; box-shadow: 0 10px 30px rgba(0,0,0,0.6);'>
+                <div class='green-popup' style='border-left: 6px solid #10B981; background: var(--card-bg); border: 1px solid #10B981; box-shadow: 0 10px 30px rgba(0,0,0,0.6);'>
                     <div style='display: flex; align-items: center; justify-content: space-between;'>
                         <div style='display: flex; align-items: flex-start; gap: 14px; width: 100%;'>
                             <span style='font-size: 2.2rem;'>📡</span>
@@ -3726,12 +3795,12 @@ elif active_nav_idx == 2:
                                 <div style='font-size: 1.05rem; font-weight: 700; color: #EF4444; margin: 4px 0;'>
                                     {p['status']}
                                 </div>
-                                <div style='background: #1E293B; border: 1px solid rgba(16,185,129,0.3); border-left: 3px solid #10B981; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-family: sans-serif; white-space: pre-wrap; margin: 8px 0; color: #F8FAFC;'>
+                                <div style='background: #171717; border: 1px solid rgba(16,185,129,0.3); border-left: 3px solid #10B981; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; font-family: sans-serif; white-space: pre-wrap; margin: 8px 0; color: var(--text-primary);'>
 {p.get('message', p['status'])}
                                 </div>
-                                <span style='font-size: 0.82rem; color: #CBD5E1;'>
+                                <span style='font-size: 0.82rem; color: var(--text-secondary);'>
                                     <strong>Certified Timestamp:</strong> {p['timestamp']} | <strong>Confidence:</strong> {p['confidence']}<br>
-                                    <strong>Cryptographic Audit Seal:</strong> <code style='color: #00F2FE; font-size:0.8rem;'>{p['hash']}</code>
+                                    <strong>Cryptographic Audit Seal:</strong> <code style='color: var(--neon-cyan); font-size:0.8rem;'>{p['hash']}</code>
                                 </span>
                             </div>
                         </div>
@@ -3746,21 +3815,21 @@ elif active_nav_idx == 2:
             
         st.markdown(f"#### {t['log_title']}")
         if not st.session_state.notifications:
-            st.info("No advisories dispatched in this session.")
+            st.success("No advisories dispatched in this session.")
         else:
             for n in reversed(st.session_state.notifications):
                 msg_content = n.get("message", "").strip()
                 st.markdown(
                     f"""
-                    <div style='background: #0F172A; padding: 14px 16px; border-radius: 10px; border: 1px solid #334155; border-left: 4px solid #EF4444; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); color: #F8FAFC;'>
+                    <div style='background: var(--card-bg); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--nav-border); border-left: 4px solid #EF4444; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); color: var(--text-primary);'>
                         <div style='display: flex; justify-content: space-between; align-items: center;'>
                             <strong style='color:#EF4444; font-size: 1.05rem;'>{n['status']}</strong>
-                            <span style='font-size: 0.8rem; color: #94A3B8; background: #1E293B; border: 1px solid #334155; padding: 2px 8px; border-radius: 6px;'>🕒 {n['timestamp']}</span>
+                            <span style='font-size: 0.8rem; color: #737373; background: #171717; border: 1px solid var(--nav-border); padding: 2px 8px; border-radius: 6px;'>🕒 {n['timestamp']}</span>
                         </div>
-                        {f"<div style='background: #1E293B; padding: 10px 14px; border-radius: 6px; font-size: 0.88rem; line-height: 1.45; white-space: pre-wrap; margin: 8px 0; border-left: 3px solid #00F2FE; color: #F8FAFC;'>{msg_content}</div>" if msg_content else ""}
+                        {f"<div style='background: #171717; padding: 10px 14px; border-radius: 6px; font-size: 0.88rem; line-height: 1.45; white-space: pre-wrap; margin: 8px 0; border-left: 3px solid var(--neon-cyan); color: var(--text-primary);'>{msg_content}</div>" if msg_content else ""}
                         <div style='display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; margin-top: 8px;'>
                             <span style='color: #10B981; font-weight: 600;'>{n.get('dispatch', '✅ Dispatched to mobile health registry')}</span>
-                            <span style='font-family: var(--font-mono); color: #00F2FE;'>{n['hash']}</span>
+                            <span style='font-family: var(--font-mono); color: var(--neon-cyan);'>{n['hash']}</span>
                         </div>
                     </div>
                     """, unsafe_allow_html=True
@@ -3782,7 +3851,7 @@ elif active_nav_idx == 3:
             <div class='glass-card' style='text-align: center;'>
                 <div class='metric-label'>{t['privacy_compliance']}</div>
                 <div class='metric-value' style='color:#10B981;'>Verified Secure</div>
-                <div style='font-size:0.82rem; color:#CBD5E1; margin-top:6px;'>Fully compliant with Data Protection Acts</div>
+                <div style='font-size:0.82rem; color: var(--text-secondary); margin-top:6px;'>Fully compliant with Data Protection Acts</div>
             </div>
             """, unsafe_allow_html=True
         )
@@ -3792,7 +3861,7 @@ elif active_nav_idx == 3:
             <div class='glass-card' style='text-align: center;'>
                 <div class='metric-label'>{t['dp_noise_distortion']}</div>
                 <div class='metric-value'>Level: {epsilon}</div>
-                <div style='font-size:0.82rem; color:#CBD5E1; margin-top:6px;'>Differential Privacy Budget (ε)</div>
+                <div style='font-size:0.82rem; color: var(--text-secondary); margin-top:6px;'>Differential Privacy Budget (ε)</div>
             </div>
             """, unsafe_allow_html=True
         )
@@ -3802,7 +3871,7 @@ elif active_nav_idx == 3:
             <div class='glass-card' style='text-align: center;'>
                 <div class='metric-label'>{t['k_anon_suppression']}</div>
                 <div class='metric-value' style='color:{"#EF4444" if tot_suppressed > 0 else "#10B981"};'>{tot_suppressed} Categories</div>
-                <div style='font-size:0.82rem; color:#CBD5E1; margin-top:6px;'>Low counts (under size {k_anonymity}) suppressed</div>
+                <div style='font-size:0.82rem; color: var(--text-secondary); margin-top:6px;'>Low counts (under size {k_anonymity}) suppressed</div>
             </div>
             """, unsafe_allow_html=True
         )
@@ -3812,13 +3881,13 @@ elif active_nav_idx == 3:
     col_dp_form, col_dp_act = st.columns([1.3, 1.2])
     with col_dp_form:
         st.markdown(f"""
-        <div class="glass-card" style="border-left: 4px solid #0284C7;">
-            <strong style="color: #0284C7; font-size: 1.05rem;">🔒 On-Device Differential Privacy (Laplace Mechanism)</strong>
+        <div class="glass-card" style="border-left: 4px solid #D97706;">
+            <strong style="color: #D97706; font-size: 1.05rem;">🔒 On-Device Differential Privacy (Laplace Mechanism)</strong>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 6px 0 10px 0; line-height: 1.5;">
                 Noise is injected at the edge device before any number reaches the network. An observer cannot mathematically distinguish whether a specific patient reported or not:
             </p>
             <div style="background: var(--inner-card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px 16px; text-align: center;">
-                <code style="font-size: 1.15rem; color: #0284C7; font-weight: bold;">Y = X + Lap(&Delta;f / &epsilon;)</code><br>
+                <code style="font-size: 1.15rem; color: #D97706; font-weight: bold;">Y = X + Lap(&Delta;f / &epsilon;)</code><br>
                 <span style="font-size: 0.8rem; color: var(--text-muted); display: inline-block; margin-top: 4px;">Current Budget &epsilon; = {epsilon} | Sensitivity &Delta;f = 1.0 | Noise Mean &mu; = 0</span>
             </div>
         </div>
