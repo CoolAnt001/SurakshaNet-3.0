@@ -2724,24 +2724,30 @@ if active_nav_idx == 0:
                     This service is prioritized for the elderly, disabled, and severely sick individuals needing remote or at-home checkups.
                 </p>
                 <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;'>
-                    <div style='background: rgba(239, 68, 68, 0.1); border: 1px solid #EF4444; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15); transition: transform 0.2s;'>
-                        <div style='font-size: 2rem; margin-bottom: 5px;'>🚑</div>
-                        <h4 style='color: #EF4444 !important; margin: 0 0 5px 0;'>Public Ambulance</h4>
-                        <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: #EF4444;'>108</div>
-                        <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>24/7 Immediate Dispatch</div>
-                    </div>
-                    <div style='background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.15); transition: transform 0.2s;'>
-                        <div style='font-size: 2rem; margin-bottom: 5px;'>👨‍⚕️</div>
-                        <h4 style='color: #10B981 !important; margin: 0 0 5px 0;'>Specialist Consult</h4>
-                        <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: #10B981;'>104</div>
-                        <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>Health Helpline / Telemed</div>
-                    </div>
-                    <div style='background: rgba(245, 158, 11, 0.1); border: 1px solid #F59E0B; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.15); transition: transform 0.2s;'>
-                        <div style='font-size: 2rem; margin-bottom: 5px;'>🏥</div>
-                        <h4 style='color: #F59E0B !important; margin: 0 0 5px 0;'>Local Hospital Triage</h4>
-                        <div style='font-size: 1.6rem; font-family: var(--font-mono); font-weight: 800; color: #F59E0B;'>1800-112-545</div>
-                        <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>Report & Remote Checkup</div>
-                    </div>
+                    <a href="tel:108" style="text-decoration: none; display: block; color: inherit;">
+                        <div style='background: rgba(239, 68, 68, 0.1); border: 1px solid #EF4444; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15); transition: transform 0.2s; cursor: pointer;'>
+                            <div style='font-size: 2rem; margin-bottom: 5px;'>🚑</div>
+                            <h4 style='color: #EF4444 !important; margin: 0 0 5px 0;'>Public Ambulance</h4>
+                            <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: #EF4444;'>108</div>
+                            <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>24/7 Immediate Dispatch</div>
+                        </div>
+                    </a>
+                    <a href="tel:104" style="text-decoration: none; display: block; color: inherit;">
+                        <div style='background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.15); transition: transform 0.2s; cursor: pointer;'>
+                            <div style='font-size: 2rem; margin-bottom: 5px;'>👨‍⚕️</div>
+                            <h4 style='color: #10B981 !important; margin: 0 0 5px 0;'>Specialist Consult</h4>
+                            <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: #10B981;'>104</div>
+                            <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>Health Helpline / Telemed</div>
+                        </div>
+                    </a>
+                    <a href="tel:1800-112-545" style="text-decoration: none; display: block; color: inherit;">
+                        <div style='background: rgba(245, 158, 11, 0.1); border: 1px solid #F59E0B; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.15); transition: transform 0.2s; cursor: pointer;'>
+                            <div style='font-size: 2rem; margin-bottom: 5px;'>🏥</div>
+                            <h4 style='color: #F59E0B !important; margin: 0 0 5px 0;'>Local Hospital Triage</h4>
+                            <div style='font-size: 1.6rem; font-family: var(--font-mono); font-weight: 800; color: #F59E0B;'>1800-112-545</div>
+                            <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>Report & Remote Checkup</div>
+                        </div>
+                    </a>
                 </div>
             </div>
             """, unsafe_allow_html=True
