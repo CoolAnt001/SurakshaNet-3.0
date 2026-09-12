@@ -1689,20 +1689,30 @@ if "active_nav_index" not in st.session_state or st.session_state.active_nav_ind
     st.session_state.active_nav_index = 0
 
 # --- Top Navigation / Main Header ---
-hero_light_b64 = ""
+hero_logo_b64 = ""
 import os, base64
 
-if os.path.exists("assets/LOGO_dark.jpg"):
+logo_filename = "LOGO_dark.jpg" if is_dark_mode else "LOGO_light.jpg"
+logo_path = f"assets/{logo_filename}"
+fallback_path = "assets/LOGO_dark.jpg"
+
+if os.path.exists(logo_path):
     try:
-        with open("assets/LOGO_dark.jpg", "rb") as f:
-            hero_light_b64 = base64.b64encode(f.read()).decode()
+        with open(logo_path, "rb") as f:
+            hero_logo_b64 = base64.b64encode(f.read()).decode()
+    except Exception:
+        pass
+elif os.path.exists(fallback_path):
+    try:
+        with open(fallback_path, "rb") as f:
+            hero_logo_b64 = base64.b64encode(f.read()).decode()
     except Exception:
         pass
 
 col_head1, col_head2 = st.columns([1.5, 1.5])
 with col_head1:
-    if hero_light_b64:
-        img_badge = f'<img src="data:image/jpeg;base64,{hero_light_b64}" style="width:68px; height:68px; min-width:68px; border-radius:16px; border:2px solid #FF9933; box-shadow:0 0 20px rgba(255, 153, 51,0.4); object-fit:cover;" />'
+    if hero_logo_b64:
+        img_badge = f'<img src="data:image/jpeg;base64,{hero_logo_b64}" style="width:68px; height:68px; min-width:68px; border-radius:16px; border:2px solid #FF9933; box-shadow:0 0 20px rgba(255, 153, 51,0.4); object-fit:cover;" />'
     else:
         img_badge = '<div style="width:64px; height:64px; min-width:64px; border-radius:16px; background:linear-gradient(135deg, rgba(255, 153, 51,0.2) 0%, rgba(19, 136, 8,0.4) 100%); border:1.5px solid #FF9933; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(255, 153, 51,0.35); font-size:2rem;">🛡️</div>'
 
@@ -2705,6 +2715,39 @@ if active_nav_idx == 0:
     """
     st.markdown(action_plan_card_html, unsafe_allow_html=True)
 
+    with st.expander("🚨 Emergency Medical Speed-Dial & Remote Checkup", expanded=(display_risk != "safe")):
+        st.markdown(
+            f"""
+            <div style='background: var(--inner-card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--card-border);'>
+                <p style='color: var(--text-primary); font-size: 1.05rem; margin-bottom: 15px;'>
+                    If you are experiencing severe symptoms and reside in an affected zone, use the speed-dials below. 
+                    This service is prioritized for the elderly, disabled, and severely sick individuals needing remote or at-home checkups.
+                </p>
+                <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;'>
+                    <div style='background: rgba(239, 68, 68, 0.1); border: 1px solid #EF4444; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15); transition: transform 0.2s;'>
+                        <div style='font-size: 2rem; margin-bottom: 5px;'>🚑</div>
+                        <h4 style='color: #EF4444 !important; margin: 0 0 5px 0;'>Public Ambulance</h4>
+                        <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: #EF4444;'>108</div>
+                        <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>24/7 Immediate Dispatch</div>
+                    </div>
+                    <div style='background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.15); transition: transform 0.2s;'>
+                        <div style='font-size: 2rem; margin-bottom: 5px;'>👨‍⚕️</div>
+                        <h4 style='color: #10B981 !important; margin: 0 0 5px 0;'>Specialist Consult</h4>
+                        <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: #10B981;'>104</div>
+                        <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>Health Helpline / Telemed</div>
+                    </div>
+                    <div style='background: rgba(245, 158, 11, 0.1); border: 1px solid #F59E0B; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.15); transition: transform 0.2s;'>
+                        <div style='font-size: 2rem; margin-bottom: 5px;'>🏥</div>
+                        <h4 style='color: #F59E0B !important; margin: 0 0 5px 0;'>Local Hospital Triage</h4>
+                        <div style='font-size: 1.6rem; font-family: var(--font-mono); font-weight: 800; color: #F59E0B;'>1800-112-545</div>
+                        <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>Report & Remote Checkup</div>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True
+        )
+
+
     
     # Visual Trends Chart & Gauge
     col_pub1, col_pub2 = st.columns([1.5, 2])
@@ -2746,11 +2789,7 @@ if active_nav_idx == 0:
     with col_pub2:
         st.markdown(f"<p style='text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);'>{t['threat_prob']} (%) - {loc_info['short_name'] if is_local_focus else 'Regional Grid'}</p>", unsafe_allow_html=True)
         # Determine theme for Plotly
-        try:
-            current_theme = st.context.theme.type
-        except Exception:
-            current_theme = "light"
-        plot_theme = PLOTLY_DARK if current_theme == "dark" else PLOTLY_LIGHT
+        plot_theme = PLOTLY_DARK if is_dark_mode else PLOTLY_LIGHT
 
         fig_gauge_pub = go.Figure(go.Indicator(
             mode = "gauge+number",
