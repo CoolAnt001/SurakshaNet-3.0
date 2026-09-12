@@ -1440,6 +1440,45 @@ selected_lang = st.sidebar.selectbox(
 )
 t = I18N[selected_lang]
 
+is_dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True, key="dark_mode_toggle")
+
+if not is_dark_mode:
+    st.markdown("""
+    <style>
+    :root {
+        --card-bg: #FFFFFF;
+        --inner-card-bg: #F8FAFC;
+        --card-border: rgba(19, 136, 8, 0.25);
+        --text-primary: #0F172A;
+        --text-secondary: #334155;
+        --text-muted: #64748B;
+        --heading-color: #0F172A;
+        --nav-bar-bg: #FFFFFF;
+        --nav-border: #E2E8F0;
+        --hero-bg: linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 100%);
+        --input-bg: #FFFFFF;
+        --input-border: #CBD5E1;
+        --input-text: #0F172A;
+        --btn-text: #FFFFFF;
+        --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        --auth-clinic-bg: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F8FAFC 75%);
+        --auth-officer-bg: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F8FAFC 75%);
+        --grassroots-badge-bg: #F8FAFC;
+    }
+    .stApp, [data-testid="stHeader"] {
+        background-color: #F1F5F9 !important;
+        color: #0F172A !important;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #FFFFFF !important;
+    }
+    .stMarkdown, .stText, p, span, div, h1, h2, h3, h4, h5, h6 {
+        color: var(--text-primary);
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+
 # --- Timestamp Formatting Helpers ---
 def format_log_timestamp(ts):
     """
