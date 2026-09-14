@@ -423,6 +423,47 @@ st.markdown("""
         color: var(--nav-active-text) !important;
         font-weight: 700 !important;
     }
+    
+    /* Specific Override for Sidebar Vertical Navigation Menu (JEEVAN DHARA style) */
+    section[data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        margin-bottom: 20px;
+    }
+    section[data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label {
+        flex: unset;
+        min-width: unset;
+        background: transparent !important;
+        padding: 10px 14px;
+        border-radius: 6px;
+        color: var(--text-secondary) !important;
+        font-weight: 500;
+        font-size: 0.95rem;
+        border: none !important;
+        justify-content: flex-start;
+        text-align: left;
+    }
+    section[data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
+        background: rgba(128, 128, 128, 0.1) !important;
+        color: var(--text-primary) !important;
+        border: none !important;
+    }
+    section[data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
+        background: rgba(59, 130, 246, 0.12) !important; /* Soft blue */
+        color: var(--text-primary) !important;
+        font-weight: 700 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    section[data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) p {
+        color: var(--text-primary) !important;
+        font-weight: 700 !important;
+    }
 
     .stTabs [data-baseweb="tab-list"] {
         gap: 6px;
