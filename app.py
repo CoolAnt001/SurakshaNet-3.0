@@ -1778,11 +1778,13 @@ st.sidebar.radio(
 st.sidebar.markdown("---")
 with st.sidebar.expander("⚙️ Settings & Tools", expanded=False):
     def _on_lang_change():
-        pass
+        st.session_state.global_sidebar_lang_selector = st.session_state.settings_lang_selector
+
     st.selectbox(
         t.get("sidebar_lang_header", "🌐 Language"),
         ["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"],
-        key="global_sidebar_lang_selector",
+        index=["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"].index(selected_lang),
+        key="settings_lang_selector",
         on_change=_on_lang_change
     )
     
