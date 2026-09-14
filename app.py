@@ -1754,14 +1754,13 @@ st.sidebar.subheader("📍 Navigation")
 nav_options = [
     t["tab_public"],
     t["tab_clinic"],
-    t["tab_officer"],
-    t.get("tab_audit", "4. Privacy Audit Log")
+    t["tab_officer"]
 ]
 
 if "active_nav_index" not in st.session_state or st.session_state.active_nav_index not in [0, 1, 2, 3]:
     st.session_state.active_nav_index = 0
 
-nav_index = st.session_state.active_nav_index if st.session_state.active_nav_index < 4 else None
+nav_index = st.session_state.active_nav_index if st.session_state.active_nav_index < 3 else None
 
 def _on_nav_change():
     selected_val = st.session_state.portal_navigation_bar
@@ -1777,34 +1776,97 @@ st.sidebar.radio(
     label_visibility="collapsed"
 )
 
-# --- App State & Settings ---
-is_dynamic_baseline = True
+# --- Settings & Tools ---
+st.sidebar.markdown("---")
+with st.sidebar.expander("⚙️ Settings & Tools", expanded=False):
+    def _on_lang_change():
+        st.session_state.global_sidebar_lang_selector = st.session_state.settings_lang_selector
 
-scenario_list = [
-    "🟢 Normal Baseline (No Active Outbreaks)",
-    "🌊 Gastrointestinal Outbreak Cluster (Waterborne)",
-    "🫁 Cold-Snap Acute Respiratory Surge",
-    "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
-    "⚠️ False Alarm (Single-Source Data Typo)",
-    "🔬 Small Cohort Threat (k-Anonymity Guard Demo)"
-]
-
-epicenter_list = [
-    "🌐 All Monitored Regions (Cross-City)",
-    "🏫 Kalinga Institute Clinic (Campus North)",
-    "🏫 SOA University Health Center (Campus South)",
-    "🏫 Utkal University Health Center (Campus East)",
-    "🏥 Capital Hospital (Central OPD)",
-    "🏥 SUM Hospital (Kalinga Nagar)",
-    "🏡 PHC Mendhasal (Rural Outpost)",
-    "🏡 CHC Jatni (Rural Outpost)",
-    "🧪 Municipal Water Treatment Zone"
-]
-
-if "current_scenario" not in st.session_state or st.session_state.current_scenario not in scenario_list:
-    st.session_state.current_scenario = scenario_list[0]
-if "current_epicenter" not in st.session_state or st.session_state.current_epicenter not in epicenter_list:
-    st.session_state.current_epicenter = epicenter_list[0]
+    st.selectbox(
+        t.get("sidebar_lang_header", "🌐 Language"),
+        ["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"],
+        index=["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"].index(selected_lang),
+        key="settings_lang_selector",
+        on_change=_on_lang_change
+    )
+    
+    st.markdown("---")
+    if st.button(f"🔒 {t.get('tab_audit', '4. Privacy Audit Log')}", use_container_width=True):
+        st.session_state.active_nav_index = 3
+        st.rerun()
+        
+    st.markdown("---")
+    st.info(t["zero_central_policy"])
+    
+    st.markdown("---")
+    st.subheader("📈 Baseline Surveillance Engine")
+    baseline_mode_choice = st.radio(
+        "Baseline Adaptation Mode:",
+        ["🔄 Dynamic Moving Baseline (Auto-Adapts Over Time)", "📌 Fixed Reference Baseline"],
+        index=0,
+        help="Dynamic Moving Baseline calculates a rolling 14-day historical mean (μ) and standard deviation (σ) from incoming clinic submissions while excluding epidemic outliers."
+    )
+    is_dynamic_baseline = "Dynamic" in baseline_mode_choice
+    
+    st.markdown("---")
+    
+    scenario_list = [
+        "🟢 Normal Baseline (No Active Outbreaks)",
+        "🌊 Gastrointestinal Outbreak Cluster (Waterborne)",
+        "🫁 Cold-Snap Acute Respiratory Surge",
+        "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
+        "⚠️ False Alarm (Single-Source Data Typo)",
+        "🔬 Small Cohort Threat (k-Anonymity Guard Demo)"
+    ]
+    
+    epicenter_list = [
+        "🌐 All Monitored Regions (Cross-City)",
+        "🏫 Kalinga Institute Clinic (Campus North)",
+        "🏫 SOA University Health Center (Campus South)",
+        "🏫 Utkal University Health Center (Campus East)",
+        "🏥 Capital Hospital (Central OPD)",
+        "🏥 SUM Hospital (Kalinga Nagar)",
+        "🏡 PHC Mendhasal (Rural Outpost)",
+        "🏡 CHC Jatni (Rural Outpost)",
+        "🧪 Municipal Water Treatment Zone"
+    ]
+    
+    if "current_scenario" not in st.session_state or st.session_state.current_scenario not in scenario_list:
+        st.session_state.current_scenario = scenario_list[0]
+    if "current_epicenter" not in st.session_state or st.session_state.current_epicenter not in epicenter_list:
+        st.session_state.current_epicenter = epicenter_list[0]
+        
+    cur_scen = st.session_state.current_scenario
+    scen_idx = scenario_list.index(cur_scen) if cur_scen in scenario_list else 0
+    scenario = st.selectbox(
+        t.get("inject_outbreak", "🕹️ Inject Outbreak Scenario"),
+        scenario_list,
+        index=scen_idx,
+        key="sim_scenario_choice"
+    )
+    st.session_state.current_scenario = scenario
+    
+    cur_epi = st.session_state.current_epicenter
+    epi_idx = epicenter_list.index(cur_epi) if cur_epi in epicenter_list else 0
+    
+    def on_epicenter_change():
+        chosen_epi = st.session_state.get("outbreak_epicenter_choice")
+        if chosen_epi:
+            st.session_state.current_epicenter = chosen_epi
+            if "All Monitored" not in chosen_epi and "Cross-City" not in chosen_epi:
+                st.session_state.radar_view_scope = "🎯 Focus on Selected Location"
+            else:
+                st.session_state.radar_view_scope = "🌐 Regional City Grid View"
+            st.session_state.last_scoped_epicenter = chosen_epi
+    
+    epicenter = st.selectbox(
+        t.get("inject_location", "📍 Outbreak Location / Epicenter"),
+        epicenter_list,
+        index=epi_idx,
+        key="outbreak_epicenter_choice",
+        on_change=on_epicenter_change
+    )
+    st.session_state.current_epicenter = epicenter
 
 # --- Active Nav State Initialization ---
 if "active_nav_index" not in st.session_state or st.session_state.active_nav_index not in [0, 1, 2, 3]:
@@ -1831,7 +1893,7 @@ elif os.path.exists(fallback_path):
     except Exception:
         pass
 
-col_head1, col_head2, col_head3, col_head4 = st.columns([2.5, 2, 2, 0.5])
+col_head1, col_head2 = st.columns([3, 1])
 with col_head1:
     if hero_logo_b64:
         img_badge = f'<img src="data:image/jpeg;base64,{hero_logo_b64}" style="width:68px; height:68px; min-width:68px; border-radius:16px; border:2px solid #FF9933; box-shadow:0 0 20px rgba(255, 153, 51,0.4); object-fit:cover;" />'
@@ -1855,46 +1917,13 @@ with col_head1:
     st.markdown(header_html, unsafe_allow_html=True)
 
 with col_head2:
-    cur_scen = st.session_state.current_scenario
-    scen_idx = scenario_list.index(cur_scen) if cur_scen in scenario_list else 0
-    scenario = st.selectbox(
-        t.get("inject_outbreak", "🕹️ Select Simulation Scenario"),
-        scenario_list,
-        index=scen_idx,
-        key="sim_scenario_choice"
-    )
-    st.session_state.current_scenario = scenario
-
-with col_head3:
-    cur_epi = st.session_state.current_epicenter
-    epi_idx = epicenter_list.index(cur_epi) if cur_epi in epicenter_list else 0
-    def on_epicenter_change():
-        chosen_epi = st.session_state.get("outbreak_epicenter_choice")
-        if chosen_epi:
-            st.session_state.current_epicenter = chosen_epi
-            if "All Monitored" not in chosen_epi and "Cross-City" not in chosen_epi:
-                st.session_state.radar_view_scope = "🎯 Focus on Selected Location"
-            else:
-                st.session_state.radar_view_scope = "🌐 Regional City Grid View"
-            st.session_state.last_scoped_epicenter = chosen_epi
-            
-    epicenter = st.selectbox(
-        t.get("inject_location", "📍 Outbreak Location / Epicenter"),
-        epicenter_list,
-        index=epi_idx,
-        key="outbreak_epicenter_choice",
-        on_change=on_epicenter_change
-    )
-    st.session_state.current_epicenter = epicenter
-
-with col_head4:
     st.markdown("<div style='display: flex; justify-content: flex-end; padding-top: 15px;'>", unsafe_allow_html=True)
     if "dark_mode_toggle" not in st.session_state:
         st.session_state.dark_mode_toggle = True
     def _toggle_theme():
         st.session_state.dark_mode_toggle = not st.session_state.dark_mode_toggle
     
-    icon = "☀️" if st.session_state.dark_mode_toggle else "🌙"
+    icon = "☀️ Light" if st.session_state.dark_mode_toggle else "🌙 Dark"
     st.button(icon, key="theme_icon_btn", on_click=_toggle_theme)
     st.markdown("</div>", unsafe_allow_html=True)
 
