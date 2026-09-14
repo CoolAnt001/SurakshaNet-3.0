@@ -1110,6 +1110,30 @@ components.html("""
     }
     enforceSelectboxGuard();
     setInterval(enforceSelectboxGuard, 250);
+    
+    function autoScrollCarousels() {
+        try {
+            const doc = window.parent ? window.parent.document : document;
+            if (!doc) return;
+            const carousels = doc.querySelectorAll('.horizontal-carousel');
+            carousels.forEach(c => {
+                if (c.matches(':hover') || c.matches(':active')) return;
+                
+                if (!c.dataset.scrollDir) c.dataset.scrollDir = '1';
+                
+                let dir = parseInt(c.dataset.scrollDir);
+                c.scrollLeft += (1 * dir);
+                
+                if (c.scrollLeft + c.clientWidth >= c.scrollWidth - 1) {
+                    c.dataset.scrollDir = '-1';
+                } else if (c.scrollLeft <= 0) {
+                    c.dataset.scrollDir = '1';
+                }
+            });
+        } catch(e) {}
+    }
+    setInterval(autoScrollCarousels, 30);
+    
     try {
         const doc = window.parent ? window.parent.document : document;
         if (doc) {
@@ -2124,10 +2148,10 @@ if st.session_state.active_nav_index == 1:
         <div style='background: rgba(28, 25, 23, 0.7); border: 1px solid rgba(19, 136, 8, 0.3); border-left: 4px solid #138808; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
             <div style='display: flex; align-items: center; justify-content: space-between;'>
                 <div>
-                    <div style='font-size: 0.75rem; font-weight: 700; color: var(--neon-blue); letter-spacing: 0.5px; text-transform: uppercase;'>🏥 Clinic Ingestion Node</div>
-                    <div style='font-size: 0.95rem; font-weight: 700; color: var(--text-primary);'>Grassroots Telemetry Terminal</div>
+                    <div style='font-size: 0.75rem; font-weight: 700; color: #4ADE80; letter-spacing: 0.5px; text-transform: uppercase;'>🏥 Clinic Ingestion Node</div>
+                    <div style='font-size: 0.95rem; font-weight: 700; color: #F8FAFC;'>Grassroots Telemetry Terminal</div>
                 </div>
-                <span style='background: rgba(19, 136, 8, 0.15); color: var(--neon-blue); border: 1px solid #138808; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
+                <span style='background: rgba(74, 222, 128, 0.15); color: #4ADE80; border: 1px solid #4ADE80; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
                     🔒 DPDP ACT SECURE
                 </span>
             </div>
@@ -2140,10 +2164,10 @@ elif st.session_state.active_nav_index == 2:
         <div style='background: rgba(28, 25, 23, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-left: 4px solid #EF4444; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
             <div style='display: flex; align-items: center; justify-content: space-between;'>
                 <div>
-                    <div style='font-size: 0.75rem; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; text-transform: uppercase;'>🏛️ Medical Board Console</div>
-                    <div style='font-size: 0.95rem; font-weight: 700; color: var(--text-primary);'>Statutory Surveillance & Dispatch</div>
+                    <div style='font-size: 0.75rem; font-weight: 700; color: #F87171; letter-spacing: 0.5px; text-transform: uppercase;'>🏛️ Medical Board Console</div>
+                    <div style='font-size: 0.95rem; font-weight: 700; color: #F8FAFC;'>Statutory Surveillance & Dispatch</div>
                 </div>
-                <span style='background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid #EF4444; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
+                <span style='background: rgba(248, 113, 113, 0.15); color: #F87171; border: 1px solid #F87171; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
                     🛡️ MASTER KEY AUTH
                 </span>
             </div>
@@ -3541,14 +3565,10 @@ elif active_nav_idx == 1:
                     key="passcode_clinic_input",
                     label_visibility="collapsed"
                 )
-                col_btn_auth1, col_btn_auth2 = st.columns([1.2, 1])
-                with col_btn_auth1:
-                    submit_clinic = st.form_submit_button("🔓 Unlock Terminal", type="primary", use_container_width=True)
-                with col_btn_auth2:
-                    autofill_clinic = st.form_submit_button("⚡ Quick PIN (1234)", use_container_width=True)
+                submit_clinic = st.form_submit_button("🔓 Unlock Terminal", type="primary", use_container_width=True)
                 
-                if submit_clinic or autofill_clinic:
-                    attempt_pin = "1234" if autofill_clinic else clinic_auth.strip()
+                if submit_clinic:
+                    attempt_pin = clinic_auth.strip()
                     if attempt_pin == "1234":
                         st.session_state.clinic_auth_success = True
                         st.session_state.clinic_auth_denied = False
@@ -4060,14 +4080,10 @@ elif active_nav_idx == 2:
                     key="passcode_officer_input",
                     label_visibility="collapsed"
                 )
-                col_btn_off1, col_btn_off2 = st.columns([1.2, 1])
-                with col_btn_off1:
-                    submit_officer = st.form_submit_button("🛡️ Access Console", type="primary", use_container_width=True)
-                with col_btn_off2:
-                    autofill_officer = st.form_submit_button("⚡ Master Key (9999)", use_container_width=True)
+                submit_officer = st.form_submit_button("🛡️ Access Console", type="primary", use_container_width=True)
                 
-                if submit_officer or autofill_officer:
-                    attempt_pin = "9999" if autofill_officer else officer_auth.strip()
+                if submit_officer:
+                    attempt_pin = officer_auth.strip()
                     if attempt_pin == "9999":
                         st.session_state.officer_auth_success = True
                         st.session_state.officer_auth_denied = False
