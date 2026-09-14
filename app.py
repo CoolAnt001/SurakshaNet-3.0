@@ -51,6 +51,28 @@ st.set_page_config(
     layout="wide"
 )
 
+if st.session_state.get("play_alert_sound"):
+    import numpy as np
+    import io
+    import scipy.io.wavfile as wavfile
+    
+    sample_rate = 44100
+    t = np.linspace(0, 0.4, int(sample_rate * 0.4), False)
+    envelope = np.exp(-10 * t)
+    tone1 = np.sin(2 * np.pi * 880 * t) * envelope
+    tone2 = np.sin(2 * np.pi * 1108.73 * t) * envelope
+    audio_data = np.concatenate([tone1[:int(sample_rate*0.15)], tone2[:int(sample_rate*0.25)]]) * 0.3
+    audio_data = np.int16(audio_data * 32767)
+    
+    wav_io = io.BytesIO()
+    wavfile.write(wav_io, sample_rate, audio_data)
+    
+    st.markdown('<div style="opacity: 0; width: 0px; height: 0px; overflow: hidden; position: absolute; left: -9999px;">', unsafe_allow_html=True)
+    st.audio(wav_io.getvalue(), format='audio/wav', autoplay=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.session_state.play_alert_sound = False
+
 # --- Global Database Configuration ---
 # Set your Google Apps Script Web App URL here for universal cross-device persistence
 DEFAULT_GSHEET_URL = "https://script.google.com/macros/s/AKfycbzt_VXGXKrFKQltXEeXvqPjV0zHjSih0AMjQOcBwc-YwvhvmTJYe8om0NiFMbPPccZU/exec"
@@ -450,8 +472,15 @@ st.markdown("""
     /* Hide Radio Circles Completely */
     [data-testid="stSidebar"] div[data-testid="stRadio"] div[role="radio"],
     [data-testid="stSidebar"] div[data-testid="stRadio"] div[data-baseweb="radio"],
-    [data-testid="stSidebar"] div[data-testid="stRadio"] label > div:first-child {
+    [data-testid="stSidebar"] div[data-testid="stRadio"] input[type="radio"],
+    [data-testid="stSidebar"] div[data-testid="stRadio"] input[type="radio"] + div {
         display: none !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        pointer-events: none !important;
     }
 
     [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label {
@@ -582,7 +611,7 @@ st.markdown("""
     }
 
     /* Popover Menu Button (Hamburger) */
-    div[data-testid="stPopover"] button {
+    div[data-testid="stPopover"] > div > button {
         background: var(--inner-card-bg) !important;
         color: var(--text-primary) !important;
         border: 1px solid var(--nav-border) !important;
@@ -591,10 +620,21 @@ st.markdown("""
         padding: 6px 12px !important;
         font-size: 1.1rem !important;
     }
-    div[data-testid="stPopover"] button:hover {
+    div[data-testid="stPopover"] > div > button:hover {
         background: var(--card-bg) !important;
         border: 1px solid var(--text-muted) !important;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    }
+
+    /* Buttons inside the popover menu (like Theme Toggle) */
+    div[data-testid="stPopoverBody"] div.stButton > button {
+        background: rgba(148, 163, 184, 0.1) !important;
+        border: 1px solid rgba(148, 163, 184, 0.3) !important;
+        border-radius: 6px !important;
+    }
+    div[data-testid="stPopoverBody"] div.stButton > button:hover {
+        background: rgba(148, 163, 184, 0.25) !important;
+        border: 1px solid rgba(148, 163, 184, 0.6) !important;
     }
 
     /* Modern Alert Banners */
@@ -4305,6 +4345,7 @@ elif active_nav_idx == 3:
             st.session_state.notifications.append(new_notif)
             st.session_state.alert_dispatched_popup = new_notif
             st.session_state.active_officer_alert = new_notif
+            st.session_state.play_alert_sound = True
             st.toast(f"📢 Official Advisory Dispatched: {custom_title}", icon="🚨")
             st.toast("🔒 SHA256 cryptographic seal recorded in Ledger", icon="✅")
             st.rerun()
