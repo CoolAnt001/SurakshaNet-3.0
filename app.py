@@ -2148,7 +2148,7 @@ with col_head1:
         img_badge = '<div style="width:64px; height:64px; min-width:64px; border-radius:16px; background:linear-gradient(135deg, rgba(255, 153, 51,0.2) 0%, rgba(19, 136, 8,0.4) 100%); border:1.5px solid #FF9933; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(255, 153, 51,0.35); font-size:2rem;">🛡️</div>'
 
     header_html = (
-        f'<div class="glass-card custom-hero-banner" style="display: flex; align-items: center; gap: 25px; padding: 25px 30px; margin-top: -15px;">'
+        f'<div class="custom-hero-banner" style="display: flex; align-items: center; gap: 20px;">'
         f'{img_badge}'
         f'<div>'
         f'<div style="font-size: 0.78rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--neon-blue); margin-bottom: 5px; display: flex; align-items: center; gap: 8px;">'
