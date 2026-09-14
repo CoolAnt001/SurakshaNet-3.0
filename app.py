@@ -168,23 +168,23 @@ st.markdown("""
         box-shadow: none !important;
     }
     div[data-baseweb="select"] > div {
-        background-color: var(--input-bg) !important;
-        border: 1px solid var(--input-border) !important;
-        color: var(--input-text) !important;
+        background-color: #292524 !important;
+        border: 1px solid #44403C !important;
+        color: #F8FAFC !important;
         border-radius: 10px !important;
         cursor: pointer !important;
     }
     div[data-baseweb="popover"] > div, div[data-baseweb="menu"] {
-        background-color: var(--card-bg) !important;
-        border: 1px solid var(--input-border) !important;
-        color: var(--text-primary) !important;
+        background-color: #292524 !important;
+        border: 1px solid #44403C !important;
+        color: #F8FAFC !important;
     }
     div[data-baseweb="popover"] ul, 
     div[data-baseweb="popover"] ul div, 
     div[data-baseweb="popover"] ul li,
     div[data-baseweb="popover"] [role="option"] {
-        background-color: var(--card-bg) !important;
-        color: var(--text-primary) !important;
+        background-color: #292524 !important;
+        color: #F8FAFC !important;
         cursor: pointer !important;
         user-select: none !important;
         -webkit-user-select: none !important;
@@ -194,12 +194,15 @@ st.markdown("""
     div[data-baseweb="popover"] ul li:hover,
     div[data-baseweb="popover"] [role="option"]:hover,
     div[data-baseweb="popover"] [aria-selected="true"] {
-        background-color: var(--inner-card-bg) !important;
-        color: var(--text-primary) !important;
+        background-color: #1C1917 !important;
+        color: #FF9933 !important;
     }
     div[data-baseweb="select"] > div > div, 
     div[data-baseweb="select"] > div > div > div {
         background-color: transparent !important;
+    }
+    div[data-baseweb="select"] * {
+        color: #F8FAFC !important;
     }
     div[data-baseweb="input"], div[data-baseweb="base-input"] {
         background-color: var(--input-bg) !important;
