@@ -797,8 +797,36 @@ st.markdown("""
         color: var(--text-primary) !important;
     }
 
-
-    
+    /* Native Table Overrides */
+    .custom-glass-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        box-shadow: var(--card-shadow);
+        color: var(--text-primary);
+        font-family: var(--font-sans);
+        font-size: 0.9rem;
+    }
+    .custom-glass-table thead {
+        background: var(--inner-card-bg);
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.75rem;
+    }
+    .custom-glass-table th, .custom-glass-table td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--nav-border);
+    }
+    .custom-glass-table tbody tr:hover {
+        background: rgba(19, 136, 8, 0.05);
+    }
 
 </style>
 """, unsafe_allow_html=True)
@@ -3030,7 +3058,7 @@ if active_nav_idx == 0:
             })
             
     df_baseline = pd.DataFrame(baseline_rows)
-    st.dataframe(df_baseline, use_container_width=True, hide_index=True)
+    st.markdown(df_baseline.to_html(index=False, escape=False, classes="custom-glass-table"), unsafe_allow_html=True)
 
     # Interactive Geospatial Map (Plotly Mapbox)
     st.markdown("---")
@@ -3384,7 +3412,7 @@ elif active_nav_idx == 1:
             
         df_metrics = pd.DataFrame(metric_rows)
         st.markdown(f"#### {t['db_title']}")
-        st.dataframe(df_metrics, use_container_width=True, hide_index=True)
+        st.markdown(df_metrics.to_html(index=False, escape=False, classes="custom-glass-table"), unsafe_allow_html=True)
         
         # Visualizing Privacy Distortion
         st.markdown(f"#### {t['chart_title']}")
@@ -3974,7 +4002,7 @@ elif active_nav_idx == 2:
                 "Average Deviation Index": f"{lai} σ",
                 "Anomaly Status": status_label
             })
-        st.dataframe(pd.DataFrame(lai_rows), use_container_width=True, hide_index=True)
+        st.markdown(pd.DataFrame(lai_rows).to_html(index=False, escape=False, classes="custom-glass-table"), unsafe_allow_html=True)
         
         # Dynamic Baseline Learning & Seasonality Engine Panel
         st.markdown("---")
@@ -4174,4 +4202,4 @@ elif active_nav_idx == 3:
                 t["audit_col_guard"]: "Passed (Group size safe)" if not m["suppressed"] else f"🚨 Masked (Group size {m['raw_val']} < limit {k_anonymity})",
                 t["audit_col_payload"]: f"{m['transmitted_val']} (Anonymized)"
             })
-    st.dataframe(pd.DataFrame(audit_records), use_container_width=True, hide_index=True)
+    st.markdown(pd.DataFrame(audit_records).to_html(index=False, escape=False, classes="custom-glass-table"), unsafe_allow_html=True)
