@@ -3405,6 +3405,7 @@ if active_nav_idx == 0:
             </div>
         </div>
     </div>
+    <img src onerror="if(!this.started){{this.started=true; setInterval(()=>{{ let c=this.previousElementSibling; if(!c) return; if(c.matches(':hover') || c.matches(':active')) return; let dir = parseInt(c.dataset.dir || 1); c.scrollLeft += dir; if(c.scrollLeft + c.clientWidth >= c.scrollWidth - 1) c.dataset.dir = -1; else if(c.scrollLeft <= 0) c.dataset.dir = 1; }}, 30);}}" style="display:none;">
     """
     st.markdown(carousel_html, unsafe_allow_html=True)
 
@@ -3492,6 +3493,7 @@ if active_nav_idx == 0:
             </div>
         </div>
     </div>
+    <img src onerror="if(!this.started){this.started=true; setInterval(()=>{ let c=this.previousElementSibling; if(!c) return; if(c.matches(':hover') || c.matches(':active')) return; let dir = parseInt(c.dataset.dir || 1); c.scrollLeft += dir; if(c.scrollLeft + c.clientWidth >= c.scrollWidth - 1) c.dataset.dir = -1; else if(c.scrollLeft <= 0) c.dataset.dir = 1; }, 30);}" style="display:none;">
     """
     st.markdown(protocols_html, unsafe_allow_html=True)
 
