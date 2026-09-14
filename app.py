@@ -449,7 +449,8 @@ st.markdown("""
     
     /* Hide Radio Circles Completely */
     [data-testid="stSidebar"] div[data-testid="stRadio"] div[role="radio"],
-    [data-testid="stSidebar"] div[data-testid="stRadio"] div[data-baseweb="radio"] {
+    [data-testid="stSidebar"] div[data-testid="stRadio"] div[data-baseweb="radio"],
+    [data-testid="stSidebar"] div[data-testid="stRadio"] label > div:first-child {
         display: none !important;
     }
 
@@ -465,6 +466,8 @@ st.markdown("""
         border: none !important;
         display: flex !important;
         align-items: center !important;
+        justify-content: flex-start !important;
+        text-align: left !important;
         position: relative;
         cursor: pointer !important;
     }
@@ -472,6 +475,7 @@ st.markdown("""
     [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label p {
         margin: 0 !important;
         width: 100% !important;
+        text-align: left !important;
         color: var(--text-primary) !important;
     }
 
@@ -532,8 +536,9 @@ st.markdown("""
         box-shadow: var(--nav-active-shadow) !important;
     }
 
-    /* High-Impact Action Buttons */
-    div.stButton > button {
+    /* High-Impact Action Buttons (Primary and Secondary only) */
+    div.stButton > button[kind="primary"],
+    div.stButton > button[kind="secondary"] {
         background: var(--btn-bg) !important;
         color: var(--btn-text) !important;
         font-weight: 800 !important;
@@ -545,32 +550,35 @@ st.markdown("""
         transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
         letter-spacing: 0.3px !important;
     }
-    div.stButton > button p,
-    div.stButton > button div {
+    div.stButton > button[kind="primary"] p,
+    div.stButton > button[kind="primary"] div,
+    div.stButton > button[kind="secondary"] p,
+    div.stButton > button[kind="secondary"] div {
         color: var(--btn-text) !important;
     }
-    div.stButton > button:hover {
+    div.stButton > button[kind="primary"]:hover,
+    div.stButton > button[kind="secondary"]:hover {
         transform: translateY(-2px) scale(1.02) !important;
         box-shadow: 0 8px 25px rgba(19, 136, 8, 0.5) !important;
         background: var(--btn-hover-bg) !important;
     }
-    div.stButton > button:active {
+    div.stButton > button[kind="primary"]:active,
+    div.stButton > button[kind="secondary"]:active {
         transform: translateY(0) scale(0.98) !important;
     }
 
-    /* Tertiary Button overrides (for theme toggle) */
+    /* Tertiary Button overrides (for theme toggle and close button) */
     div.stButton > button[kind="tertiary"] {
-        background: var(--inner-card-bg) !important;
-        color: var(--text-primary) !important;
-        border: 1px solid var(--nav-border) !important;
+        background: transparent !important;
+        border: 1px solid transparent !important;
         box-shadow: none !important;
         padding: 6px 12px !important;
     }
     div.stButton > button[kind="tertiary"]:hover {
-        background: var(--card-bg) !important;
-        border: 1px solid var(--text-muted) !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        box-shadow: none !important;
         transform: none !important;
+        border: 1px solid var(--nav-border) !important;
+        background: transparent !important;
     }
 
     /* Popover Menu Button (Hamburger) */
@@ -3219,38 +3227,6 @@ if active_nav_idx == 0:
                 """, unsafe_allow_html=True
             )
 
-    # Historical Baseline vs. Current Privatized Health Radar Table
-    st.markdown("---")
-    st.markdown(f"#### {t.get('baseline_comparison_title', '📊 Historical Baseline vs. Current Privatized Health Radar')}")
-    
-    baseline_rows = []
-    # Filter nodes if local focus is active
-    nodes_to_display = {loc_info["node_id"]: node_data[loc_info["node_id"]]} if is_local_focus else node_data
-    
-    for node_id, node_info in nodes_to_display.items():
-        for m_id, m in node_info["metrics"].items():
-            z = m["z_score"]
-            if z <= 1.5:
-                stat_badge = "🟢 Normal Baseline"
-            elif z <= 3.0:
-                stat_badge = "🟡 Elevated Warning"
-            else:
-                stat_badge = "🚨 Outbreak Surge"
-                
-            baseline_rows.append({
-                t.get("col_node_loc", "Health Center / Sensor Node"): f"{node_info['name']} ({node_info['zone']})",
-                t["col_indicator"]: m["label"],
-                t.get("col_hist_baseline", "Historical Normal Baseline"): f"{m['baseline_mean']} (±{m['baseline_std']})",
-                "Baseline Model": m.get("baseline_type", "📌 Fixed"),
-                t.get("col_today_val", "Today's Transmitted Count"): f"{m['transmitted_val']}",
-                t.get("col_surge_ratio", "Surge Factor"): f"{m['surge_ratio']}x",
-                t.get("col_deviation_sigma", "Baseline Deviation (Z)"): f"{'+' if z>=0 else ''}{z} σ",
-                "Status": stat_badge
-            })
-            
-    df_baseline = pd.DataFrame(baseline_rows)
-    st.markdown(f'<div class="table-container">{df_baseline.to_html(index=False, escape=False, classes="custom-glass-table")}</div>', unsafe_allow_html=True)
-
     # Interactive Geospatial Map (Plotly Mapbox)
     st.markdown("---")
     st.markdown(f"#### {t.get('map_title', '🗺️ Regional Health Grid Geospatial Map')}")
@@ -3356,6 +3332,38 @@ if active_nav_idx == 0:
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(color=plot_theme.get("text", "#F8FAFC")))
     )
     st.plotly_chart(fig_map, theme=None, use_container_width=True, config={"responsive": True})
+
+    # Historical Baseline vs. Current Privatized Health Radar Table
+    st.markdown("---")
+    st.markdown(f"#### {t.get('baseline_comparison_title', '📊 Historical Baseline vs. Current Privatized Health Radar')}")
+    
+    baseline_rows = []
+    # Filter nodes if local focus is active
+    nodes_to_display = {loc_info["node_id"]: node_data[loc_info["node_id"]]} if is_local_focus else node_data
+    
+    for node_id, node_info in nodes_to_display.items():
+        for m_id, m in node_info["metrics"].items():
+            z = m["z_score"]
+            if z <= 1.5:
+                stat_badge = "🟢 Normal Baseline"
+            elif z <= 3.0:
+                stat_badge = "🟡 Elevated Warning"
+            else:
+                stat_badge = "🚨 Outbreak Surge"
+                
+            baseline_rows.append({
+                t.get("col_node_loc", "Health Center / Sensor Node"): f"{node_info['name']} ({node_info['zone']})",
+                t["col_indicator"]: m["label"],
+                t.get("col_hist_baseline", "Historical Normal Baseline"): f"{m['baseline_mean']} (±{m['baseline_std']})",
+                "Baseline Model": m.get("baseline_type", "📌 Fixed"),
+                t.get("col_today_val", "Today's Transmitted Count"): f"{m['transmitted_val']}",
+                t.get("col_surge_ratio", "Surge Factor"): f"{m['surge_ratio']}x",
+                t.get("col_deviation_sigma", "Baseline Deviation (Z)"): f"{'+' if z>=0 else ''}{z} σ",
+                "Status": stat_badge
+            })
+            
+    df_baseline = pd.DataFrame(baseline_rows)
+    st.markdown(f'<div class="table-container">{df_baseline.to_html(index=False, escape=False, classes="custom-glass-table")}</div>', unsafe_allow_html=True)
 
     # Grassroots Surveillance Grid Nodes (Real-Time Visual Telemetry)
     st.markdown("---")
@@ -3533,7 +3541,7 @@ if active_nav_idx == 0:
 # ==============================================================================
 # TAB 2: CLINIC REPORTER PORTAL (SECONDARY - CLINIC STAFF)
 # ==============================================================================
-elif active_nav_idx == 3:
+elif active_nav_idx == 2:
     # Initialize authentication state for Tab 2
     if "clinic_auth_success" not in st.session_state:
         st.session_state.clinic_auth_success = False
