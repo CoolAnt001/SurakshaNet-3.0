@@ -53,8 +53,6 @@ st.set_page_config(
 # Set your Google Apps Script Web App URL here for universal cross-device persistence
 DEFAULT_GSHEET_URL = "https://script.google.com/macros/s/AKfycbzt_VXGXKrFKQltXEeXvqPjV0zHjSih0AMjQOcBwc-YwvhvmTJYe8om0NiFMbPPccZU/exec"
 
-
-
 # --- Dynamic Backgrounds ---
 def get_base64_of_bin_file(bin_file):
     try:
@@ -66,27 +64,6 @@ def get_base64_of_bin_file(bin_file):
 
 bg_dark_b64 = get_base64_of_bin_file("assets/bg_dark.jpg")
 bg_light_b64 = get_base64_of_bin_file("assets/bg_light.jpg")
-
-st.markdown(f"""
-<style>
-    .stApp, [data-testid="stAppViewContainer"] {{
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-    }}
-    @media (prefers-color-scheme: dark) {{
-        .stApp, [data-testid="stAppViewContainer"] {{
-            background-image: url("data:image/jpeg;base64,{bg_dark_b64}") !important;
-        }}
-    }}
-    @media (prefers-color-scheme: light) {{
-        .stApp, [data-testid="stAppViewContainer"] {{
-            background-image: url("data:image/jpeg;base64,{bg_light_b64}") !important;
-        }}
-    }}
-</style>
-""", unsafe_allow_html=True)
 
 # --- Custom CSS Styling (Adaptive Dual-Theme: Dark & Light Mode Glassmorphism) ---
 st.markdown("""
@@ -1551,6 +1528,31 @@ if not is_dark_mode:
     div[data-baseweb="select"] * {
         color: #0F172A !important;
     }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    st.markdown(f"""
+    <style>
+    .stApp, [data-testid="stAppViewContainer"] {{
+        background-image: url("data:image/jpeg;base64,{bg_light_b64}") !important;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
+
+else:
+    st.markdown(f"""
+    <style>
+    .stApp, [data-testid="stAppViewContainer"] {{
+        background-image: url("data:image/jpeg;base64,{bg_dark_b64}") !important;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }}
     </style>
     """, unsafe_allow_html=True)
 
