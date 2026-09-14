@@ -2002,8 +2002,38 @@ if "active_officer_alert" not in st.session_state:
 # --- Officer Broadcast Glowing Popup ---
 # (Moved to global header)
 
+# --- Load Logo ---
+hero_logo_b64 = ""
+import os, base64
+
+logo_filename = "LOGO_dark.png" if is_dark_mode else "LOGO_light.png"
+logo_path = f"assets/{logo_filename}"
+fallback_path = "assets/LOGO_dark.png"
+
+if os.path.exists(logo_path):
+    try:
+        with open(logo_path, "rb") as f:
+            hero_logo_b64 = base64.b64encode(f.read()).decode()
+    except Exception:
+        pass
+elif os.path.exists(fallback_path):
+    try:
+        with open(fallback_path, "rb") as f:
+            hero_logo_b64 = base64.b64encode(f.read()).decode()
+    except Exception:
+        pass
+
 # --- Sidebar Navigation ---
-st.sidebar.markdown("<h2 style='text-align: center; font-weight: 800; color: var(--neon-cyan); letter-spacing: 1px; margin-bottom: 20px; font-family: system-ui;'>SurakshaNet</h2>", unsafe_allow_html=True)
+if hero_logo_b64:
+    sidebar_header = f"""
+    <div style='text-align: center; margin-bottom: 20px;'>
+        <img src="data:image/png;base64,{hero_logo_b64}" style="width: 80px; height: 80px; border-radius: 18px; object-fit: cover; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); border: 2px solid var(--hero-border);" />
+        <h2 style='margin: 0; font-weight: 800; color: var(--text-primary); letter-spacing: 1px; font-family: system-ui;'>SurakshaNet</h2>
+    </div>
+    """
+else:
+    sidebar_header = "<h2 style='text-align: center; font-weight: 800; color: var(--text-primary); letter-spacing: 1px; margin-bottom: 20px; font-family: system-ui;'>SurakshaNet</h2>"
+st.sidebar.markdown(sidebar_header, unsafe_allow_html=True)
 nav_options = [
     f"📊 {t.get('tab_public', 'Dashboard')}",
     "⚙️ Settings",
@@ -2081,25 +2111,6 @@ with st.sidebar:
     )
 
 # --- Top Navigation / Main Header ---
-hero_logo_b64 = ""
-import os, base64
-
-logo_filename = "LOGO_dark.jpg" if is_dark_mode else "LOGO_light.jpg"
-logo_path = f"assets/{logo_filename}"
-fallback_path = "assets/LOGO_dark.jpg"
-
-if os.path.exists(logo_path):
-    try:
-        with open(logo_path, "rb") as f:
-            hero_logo_b64 = base64.b64encode(f.read()).decode()
-    except Exception:
-        pass
-elif os.path.exists(fallback_path):
-    try:
-        with open(fallback_path, "rb") as f:
-            hero_logo_b64 = base64.b64encode(f.read()).decode()
-    except Exception:
-        pass
 
 # --- Officer Broadcast Glowing Popup (Global Header) ---
 if st.session_state.get("active_officer_alert"):
@@ -2160,13 +2171,13 @@ with col_head1:
         sub_size = "0.95rem"
     else:
         banner_cls = ""
-        banner_style = "background: transparent; padding: 10px 0px 5px 0px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px;"
+        banner_style = "background: var(--hero-bg); padding: 8px 18px 8px 10px; border-radius: 14px; border: 1px solid var(--hero-border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; display: flex; align-items: center; gap: 14px; width: fit-content;"
         logo_size = "48px"
         title_size = "1.6rem"
         sub_size = "0.85rem"
         
     if hero_logo_b64:
-        img_badge = f'<img src="data:image/jpeg;base64,{hero_logo_b64}" style="width:{logo_size}; height:{logo_size}; min-width:{logo_size}; border-radius:12px; border:2px solid #FF9933; box-shadow:0 0 15px rgba(255, 153, 51,0.3); object-fit:cover;" />'
+        img_badge = f'<img src="data:image/png;base64,{hero_logo_b64}" style="width:{logo_size}; height:{logo_size}; min-width:{logo_size}; border-radius:12px; border:2px solid #FF9933; box-shadow:0 0 15px rgba(255, 153, 51,0.3); object-fit:cover;" />'
     else:
         img_badge = f'<div style="width:{logo_size}; height:{logo_size}; min-width:{logo_size}; border-radius:12px; background:linear-gradient(135deg, rgba(255, 153, 51,0.2) 0%, rgba(19, 136, 8,0.4) 100%); border:1.5px solid #FF9933; display:flex; align-items:center; justify-content:center; box-shadow:0 0 15px rgba(255, 153, 51,0.3); font-size:1.5rem;">🛡️</div>'
 
@@ -4662,7 +4673,7 @@ elif active_nav_idx == 5:
                 elif any(w in p_lower for w in ["emergency", "ambulance", "die", "unconscious", "blood", "severe"]):
                     response = "🚨 **MEDICAL EMERGENCY DETECTED.** Please use the Emergency Medical Speed-Dial at the top of the dashboard immediately, or call the Toll-Free Hotline at **104** right now. Do not wait for further AI assessment."
                 else:
-                    response = f"(Offline Backup Mode) I am an AI assistant focused on public health and community safety. I can help triage symptoms or guide you on how to report health hazards."
+                    response = "I am an AI assistant focused on public health and community safety. I can help triage symptoms or guide you on how to report health hazards."
                 
                 for chunk in response.split():
                     full_response += chunk + " "
