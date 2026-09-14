@@ -182,7 +182,12 @@ st.markdown("""
     div[data-baseweb="popover"] ul, 
     div[data-baseweb="popover"] ul div, 
     div[data-baseweb="popover"] ul li,
-    div[data-baseweb="popover"] [role="option"] {
+    div[data-baseweb="popover"] [role="option"],
+    ul[role="listbox"],
+    ul[role="listbox"] > div,
+    ul[role="listbox"] li,
+    li[role="option"],
+    div[role="option"] {
         background-color: #292524 !important;
         color: #F8FAFC !important;
         cursor: pointer !important;
@@ -193,7 +198,13 @@ st.markdown("""
     div[data-baseweb="popover"] ul div:hover, 
     div[data-baseweb="popover"] ul li:hover,
     div[data-baseweb="popover"] [role="option"]:hover,
-    div[data-baseweb="popover"] [aria-selected="true"] {
+    div[data-baseweb="popover"] [aria-selected="true"],
+    ul[role="listbox"] [role="option"]:hover,
+    ul[role="listbox"] [aria-selected="true"],
+    li[role="option"]:hover,
+    div[role="option"]:hover,
+    li[role="option"][aria-selected="true"],
+    div[role="option"][aria-selected="true"] {
         background-color: #1C1917 !important;
         color: #FF9933 !important;
     }
