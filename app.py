@@ -15,16 +15,18 @@ from PIL import Image
 
 # Plotly theme dictionaries
 PLOTLY_DARK = {
-    "plot": "#1f1f1f",
-    "paper": "#1f1f1f",
+    "plot": "rgba(0,0,0,0)",
+    "paper": "rgba(0,0,0,0)",
     "gauge_bg": "rgba(0,0,0,0)",
-    "border": "rgba(255,255,255,0.2)"
+    "border": "rgba(255,255,255,0.2)",
+    "text": "#F8FAFC"
 }
 PLOTLY_LIGHT = {
-    "plot": "#ffffff",
-    "paper": "#ffffff",
+    "plot": "rgba(0,0,0,0)",
+    "paper": "rgba(0,0,0,0)",
     "gauge_bg": "rgba(255,255,255,0)",
-    "border": "rgba(0,0,0,0.2)"
+    "border": "rgba(0,0,0,0.2)",
+    "text": "#0F172A"
 }
 
 try:
@@ -416,6 +418,21 @@ st.markdown("""
     }
     div.stButton > button:active {
         transform: translateY(0) scale(0.98) !important;
+    }
+
+    /* Tertiary Button overrides (for theme toggle) */
+    div.stButton > button[kind="tertiary"] {
+        background: var(--inner-card-bg) !important;
+        color: var(--text-primary) !important;
+        border: 1px solid var(--nav-border) !important;
+        box-shadow: none !important;
+        padding: 6px 12px !important;
+    }
+    div.stButton > button[kind="tertiary"]:hover {
+        background: var(--card-bg) !important;
+        border: 1px solid var(--text-muted) !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        transform: none !important;
     }
 
     /* Modern Alert Banners */
@@ -1024,10 +1041,10 @@ I18N = {
         "scenario_small": "🔬 Small Cohort Threat (k-Anonymity Guard Demo)",
         
         # Tabs
-        "tab_public": "📢 1. Public Health Radar",
-        "tab_clinic": "🏥 2. Clinic / Environment Reporter Portal (Passcode)",
-        "tab_officer": "🚨 3. Medical Board Console (Passcode)",
-        "tab_audit": "🔒 4. Privacy Audit Log",
+        "tab_public": "Public Health Radar",
+        "tab_clinic": "Clinic / Environment Reporter Portal (Passcode)",
+        "tab_officer": "Medical Board Console (Passcode)",
+        "tab_audit": "Privacy Audit Log",
         
         # Tab 1 Public Health Radar
         "radar_title": "📢 Public Health Radar & Safety Advisories",
@@ -1186,10 +1203,10 @@ I18N = {
         "scenario_small": "🔬 ଗୋପନୀୟତା ଯାଞ୍ଚ (k-Anonymity ସିମୁଲେସନ)",
         
         # Tabs
-        "tab_public": "📢 ୧. ସାଧାରଣ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା",
-        "tab_clinic": "🏥 ୨. କ୍ଲିନିକ୍ / ପରିବେଶ ତଥ୍ୟ ପୋର୍ଟାଲ୍ (Passcode)",
-        "tab_officer": "🚨 ୩. ମେଡିକାଲ୍ ବୋର୍ଡ କନସୋଲ୍ (Passcode)",
-        "tab_audit": "🔒 ୪. ଗୋପନୀୟତା ଯାଞ୍ଚ ଲଗ୍",
+        "tab_public": "ସାଧାରଣ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା",
+        "tab_clinic": "କ୍ଲିନିକ୍ / ପରିବେଶ ତଥ୍ୟ ପୋର୍ଟାଲ୍ (Passcode)",
+        "tab_officer": "ମେଡିକାଲ୍ ବୋର୍ଡ କନସୋଲ୍ (Passcode)",
+        "tab_audit": "ଗୋପନୀୟତା ଯାଞ୍ଚ ଲଗ୍",
         
         # Tab 1 Public Health Radar
         "radar_title": "📢 ସାଧାରଣ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା ଏବଂ ସୁରକ୍ଷା ପରାମର୍ଶ",
@@ -1348,10 +1365,10 @@ I18N = {
         "scenario_small": "🔬 गोपनीयता जांच (k-Anonymity सिमुलेशन)",
         
         # Tabs
-        "tab_public": "📢 1. सार्वजनिक स्वास्थ्य सूचना",
-        "tab_clinic": "🏥 2. क्लिनिक / पर्यावरण रिपोर्टर पोर्टल (Passcode)",
-        "tab_officer": "🚨 3. मेडिकल बोर्ड कंसोल (Passcode)",
-        "tab_audit": "🔒 4. गोपनीयता ऑडिट लॉग",
+        "tab_public": "सार्वजनिक स्वास्थ्य सूचना",
+        "tab_clinic": "क्लिनिक / पर्यावरण रिपोर्टर पोर्टल (Passcode)",
+        "tab_officer": "मेडिकल बोर्ड कंसोल (Passcode)",
+        "tab_audit": "गोपनीयता ऑडिट लॉग",
         
         # Tab 1 Public Health Radar
         "radar_title": "📢 सार्वजनिक स्वास्थ्य रडार एवं सुरक्षा दिशा-निर्देश",
@@ -1864,37 +1881,6 @@ with st.sidebar.expander("⚙️ Settings & Tools", expanded=False):
     if "current_epicenter" not in st.session_state or st.session_state.current_epicenter not in epicenter_list:
         st.session_state.current_epicenter = epicenter_list[0]
         
-    cur_scen = st.session_state.current_scenario
-    scen_idx = scenario_list.index(cur_scen) if cur_scen in scenario_list else 0
-    scenario = st.selectbox(
-        t.get("inject_outbreak", "🕹️ Inject Outbreak Scenario"),
-        scenario_list,
-        index=scen_idx,
-        key="sim_scenario_choice"
-    )
-    st.session_state.current_scenario = scenario
-    
-    cur_epi = st.session_state.current_epicenter
-    epi_idx = epicenter_list.index(cur_epi) if cur_epi in epicenter_list else 0
-    
-    def on_epicenter_change():
-        chosen_epi = st.session_state.get("outbreak_epicenter_choice")
-        if chosen_epi:
-            st.session_state.current_epicenter = chosen_epi
-            if "All Monitored" not in chosen_epi and "Cross-City" not in chosen_epi:
-                st.session_state.radar_view_scope = "🎯 Focus on Selected Location"
-            else:
-                st.session_state.radar_view_scope = "🌐 Regional City Grid View"
-            st.session_state.last_scoped_epicenter = chosen_epi
-    
-    epicenter = st.selectbox(
-        t.get("inject_location", "📍 Outbreak Location / Epicenter"),
-        epicenter_list,
-        index=epi_idx,
-        key="outbreak_epicenter_choice",
-        on_change=on_epicenter_change
-    )
-    st.session_state.current_epicenter = epicenter
 
 # --- Active Nav State Initialization ---
 if "active_nav_index" not in st.session_state or st.session_state.active_nav_index not in [0, 1, 2, 3]:
@@ -1921,7 +1907,7 @@ elif os.path.exists(fallback_path):
     except Exception:
         pass
 
-col_head1, col_head2 = st.columns([3, 1])
+col_head1, col_head_space, col_popover = st.columns([6, 0.4, 0.4])
 with col_head1:
     if hero_logo_b64:
         img_badge = f'<img src="data:image/jpeg;base64,{hero_logo_b64}" style="width:68px; height:68px; min-width:68px; border-radius:16px; border:2px solid #FF9933; box-shadow:0 0 20px rgba(255, 153, 51,0.4); object-fit:cover;" />'
@@ -1944,15 +1930,49 @@ with col_head1:
     )
     st.markdown(header_html, unsafe_allow_html=True)
 
-with col_head2:
+with col_popover:
     st.markdown("<div style='display: flex; justify-content: flex-end; padding-top: 15px;'>", unsafe_allow_html=True)
-    if "dark_mode_toggle" not in st.session_state:
-        st.session_state.dark_mode_toggle = True
-    def _toggle_theme():
-        st.session_state.dark_mode_toggle = not st.session_state.dark_mode_toggle
-    
-    icon = "☀️ Light" if st.session_state.dark_mode_toggle else "🌙 Dark"
-    st.button(icon, key="theme_icon_btn", on_click=_toggle_theme)
+    with st.popover("☰", use_container_width=True):
+        if "dark_mode_toggle" not in st.session_state:
+            st.session_state.dark_mode_toggle = True
+        def _toggle_theme():
+            st.session_state.dark_mode_toggle = not st.session_state.dark_mode_toggle
+        
+        icon = "☀️ Switch to Light Mode" if st.session_state.dark_mode_toggle else "🌙 Switch to Dark Mode"
+        st.button(icon, key="theme_icon_btn", on_click=_toggle_theme, type="tertiary", use_container_width=True)
+        st.markdown("---")
+        
+        cur_scen = st.session_state.current_scenario
+        scen_idx = scenario_list.index(cur_scen) if cur_scen in scenario_list else 0
+        scenario = st.selectbox(
+            t.get("inject_outbreak", "🕹️ Select Simulation Scenario"),
+            scenario_list,
+            index=scen_idx,
+            key="sim_scenario_choice_popover"
+        )
+        st.session_state.current_scenario = scenario
+        
+        cur_epi = st.session_state.current_epicenter
+        epi_idx = epicenter_list.index(cur_epi) if cur_epi in epicenter_list else 0
+        
+        def on_epicenter_change():
+            chosen_epi = st.session_state.get("outbreak_epicenter_choice_popover")
+            if chosen_epi:
+                st.session_state.current_epicenter = chosen_epi
+                if "All Monitored" not in chosen_epi and "Cross-City" not in chosen_epi:
+                    st.session_state.radar_view_scope = "🎯 Focus on Selected Location"
+                else:
+                    st.session_state.radar_view_scope = "🌐 Regional City Grid View"
+                st.session_state.last_scoped_epicenter = chosen_epi
+        
+        epicenter = st.selectbox(
+            t.get("inject_location", "📍 Outbreak Location / Epicenter"),
+            epicenter_list,
+            index=epi_idx,
+            key="outbreak_epicenter_choice_popover",
+            on_change=on_epicenter_change
+        )
+        st.session_state.current_epicenter = epicenter
     st.markdown("</div>", unsafe_allow_html=True)
 
 scenario = st.session_state.current_scenario
@@ -2984,11 +3004,12 @@ if active_nav_idx == 0:
             fig_pub.update_layout(
                 plot_bgcolor=plot_theme["plot"] ,
                 paper_bgcolor=plot_theme["paper"],
+                font=dict(color=plot_theme.get("text", "#F8FAFC")),
                 height=250,
                 coloraxis_showscale=False,
                 margin=dict(t=10, b=10, l=10, r=10)
             )
-            st.plotly_chart(fig_pub, use_container_width=True)
+            st.plotly_chart(fig_pub, theme=None, use_container_width=True)
             
     with col_pub2:
         st.markdown(f"<p style='text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);'>{t['threat_prob']} (%) - {loc_info['short_name'] if is_local_focus else 'Regional Grid'}</p>", unsafe_allow_html=True)
@@ -3014,10 +3035,11 @@ if active_nav_idx == 0:
         ))
         fig_gauge_pub.update_layout(
             paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(color=plot_theme.get("text", "#F8FAFC")),
             height=250,
             margin=dict(t=35, b=10, l=30, r=30)
         )
-        st.plotly_chart(fig_gauge_pub, use_container_width=True)
+        st.plotly_chart(fig_gauge_pub, theme=None, use_container_width=True)
         
         if is_false_alarm:
             st.markdown(
@@ -3154,13 +3176,17 @@ if active_nav_idx == 0:
             mapbox_style="open-street-map"
         )
 
+    plot_theme = PLOTLY_DARK if is_dark_mode else PLOTLY_LIGHT
     fig_map.update_layout(
         autosize=True,
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
         height=350,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5)
+        paper_bgcolor=plot_theme["paper"],
+        plot_bgcolor=plot_theme["plot"],
+        font=dict(color=plot_theme.get("text", "#F8FAFC")),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(color=plot_theme.get("text", "#F8FAFC")))
     )
-    st.plotly_chart(fig_map, use_container_width=True, config={"responsive": True, "displayModeBar": False})
+    st.plotly_chart(fig_map, theme=None, use_container_width=True, config={"responsive": True, "displayModeBar": False})
 
     # Grassroots Surveillance Grid Nodes (Real-Time Visual Telemetry)
     st.markdown("---")
@@ -3428,15 +3454,17 @@ elif active_nav_idx == 1:
             go.Bar(name=t['bar_raw'], x=labels, y=raws, marker_color='#138808'),
             go.Bar(name=t['bar_trans'], x=labels, y=transports, marker_color='#FF9933')
         ])
+        plot_theme = PLOTLY_DARK if is_dark_mode else PLOTLY_LIGHT
         fig_comp.update_layout(
             barmode='group',
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor=plot_theme["plot"],
+            paper_bgcolor=plot_theme["paper"],
+            font=dict(color=plot_theme.get("text", "#F8FAFC")),
             yaxis_title="Count Value",
             height=300,
             margin=dict(t=20, b=20, l=10, r=10)
         )
-        st.plotly_chart(fig_comp, use_container_width=True)
+        st.plotly_chart(fig_comp, theme=None, use_container_width=True)
 
         st.markdown("---")
         st.markdown(f"### {t['ingest_title']}")
