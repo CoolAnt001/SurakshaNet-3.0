@@ -1968,6 +1968,79 @@ if st.session_state.get("active_officer_alert"):
         button[kind="primary"] * {{
             color: white !important;
         }}
+
+        /* --- CHROME SETTINGS STYLE SIDEBAR MENU --- */
+        section[data-testid="stSidebar"] {{
+            background-color: #202124 !important;
+        }}
+        
+        /* Hide the native radio circles */
+        div[data-testid="stSidebar"] div[data-testid="stRadio"] span[data-baseweb="radio"] {{
+            display: none !important;
+        }}
+        
+        /* Remove gap between items for full-width flat menu */
+        div[data-testid="stSidebar"] div[data-testid="stRadio"] > div {{
+            gap: 0px !important;
+        }}
+        
+        /* Style the menu items */
+        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"] {{
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            margin: 0;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 0px; 
+            background: transparent;
+            transition: background-color 0.15s ease;
+        }}
+        
+        /* Hover state */
+        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"]:hover {{
+            background-color: rgba(255, 255, 255, 0.08) !important;
+        }}
+        
+        /* Active selected state */
+        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"][aria-checked="true"] {{
+            background-color: rgba(138, 180, 248, 0.12) !important;
+        }}
+        
+        /* Menu Text Styling */
+        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"] p {{
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+            font-size: 0.95rem !important;
+            font-weight: 400 !important;
+            color: #e8eaed !important;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }}
+        
+        /* Active Menu Text Styling */
+        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"][aria-checked="true"] p {{
+            color: #8ab4f8 !important;
+            font-weight: 500 !important;
+        }}
+        
+        /* Add the Right Chevron (›) */
+        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"] p::after {{
+            content: "›";
+            font-size: 1.6rem;
+            color: #9aa0a6;
+            margin-left: auto;
+            font-weight: 300;
+            line-height: 0.8;
+            padding-bottom: 2px;
+        }}
+        
+        /* Active Right Chevron */
+        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"][aria-checked="true"] p::after {{
+            color: #8ab4f8 !important;
+        }}
         </style>
         """,
         unsafe_allow_html=True
@@ -2075,7 +2148,7 @@ with col_head1:
         img_badge = '<div style="width:64px; height:64px; min-width:64px; border-radius:16px; background:linear-gradient(135deg, rgba(255, 153, 51,0.2) 0%, rgba(19, 136, 8,0.4) 100%); border:1.5px solid #FF9933; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(255, 153, 51,0.35); font-size:2rem;">🛡️</div>'
 
     header_html = (
-        f'<div class="custom-hero-banner" style="display: flex; align-items: center; gap: 20px;">'
+        f'<div class="glass-card custom-hero-banner" style="display: flex; align-items: center; gap: 25px; padding: 25px 30px; margin-top: -15px;">'
         f'{img_badge}'
         f'<div>'
         f'<div style="font-size: 0.78rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--neon-blue); margin-bottom: 5px; display: flex; align-items: center; gap: 8px;">'
@@ -3437,7 +3510,7 @@ if active_nav_idx == 0:
             <div class="hygiene-card" style="height: 100%; margin-bottom: 0;">
                 <span style="font-size:1.8rem;">🥤</span>
                 <div>
-                    <strong style="color:#10B981 !important; font-size:1.02rem;">ORS & Hydration Protocol</strong><br>
+                    <strong style="color: var(--neon-emerald) !important; font-size:1.02rem;">ORS & Hydration Protocol</strong><br>
                     <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
                     • Mix 1 ORS sachet in 1L clean water.<br>
                     • <em>ଓଡ଼ିଆ: ଓଆରଏସ୍ (ORS) ଦ୍ରବଣ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
@@ -3450,7 +3523,7 @@ if active_nav_idx == 0:
             <div class="hygiene-card" style="height: 100%; margin-bottom: 0;">
                 <span style="font-size:1.8rem;">😷</span>
                 <div>
-                    <strong style="color:#F59E0B !important; font-size:1.02rem;">Respiratory Care</strong><br>
+                    <strong style="color: var(--neon-amber) !important; font-size:1.02rem;">Respiratory Care</strong><br>
                     <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
                     • Wear 3-layer mask in crowded areas.<br>
                     • <em>ଓଡ଼ିଆ: ଭିଡ଼ ସ୍ଥାନରେ ମାସ୍କ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
@@ -3463,7 +3536,7 @@ if active_nav_idx == 0:
             <div class="hygiene-card" style="height: 100%; margin-bottom: 0;">
                 <span style="font-size:1.8rem;">🧼</span>
                 <div>
-                    <strong style="color:#8B5CF6 !important; font-size:1.02rem;">Hand Hygiene</strong><br>
+                    <strong style="color: var(--neon-purple) !important; font-size:1.02rem;">Hand Hygiene</strong><br>
                     <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
                     • Wash hands with soap for 20 seconds.<br>
                     • <em>ଓଡ଼ିଆ: ୨୦ ସେକେଣ୍ଡ୍ ପର୍ଯ୍ୟନ୍ତ ସାବୁନରେ ହାତ ଧୋଇବେ।</em><br>
@@ -3476,7 +3549,7 @@ if active_nav_idx == 0:
             <div class="hygiene-card" style="height: 100%; margin-bottom: 0;">
                 <span style="font-size:1.8rem;">🦟</span>
                 <div>
-                    <strong style="color:#EF4444 !important; font-size:1.02rem;">Vector Control</strong><br>
+                    <strong style="color: var(--neon-crimson) !important; font-size:1.02rem;">Vector Control</strong><br>
                     <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
                     • Clear stagnant water & use mosquito nets.<br>
                     • <em>ଓଡ଼ିଆ: ଜମା ଥିବା ପାଣି ସଫା କରନ୍ତୁ ଓ ମଶାରୀ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
@@ -3489,7 +3562,7 @@ if active_nav_idx == 0:
             <div class="hygiene-card" style="height: 100%; margin-bottom: 0;">
                 <span style="font-size:1.8rem;">🍲</span>
                 <div>
-                    <strong style="color:#F97316 !important; font-size:1.02rem;">Food Safety</strong><br>
+                    <strong style="color: var(--neon-cyan) !important; font-size:1.02rem;">Food Safety</strong><br>
                     <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
                     • Consume freshly cooked, hot food.<br>
                     • <em>ଓଡ଼ିଆ: ସଦ୍ୟ ରନ୍ଧା ହୋଇଥିବା ଗରମ ଖାଦ୍ୟ ଖାଆନ୍ତୁ।</em><br>
