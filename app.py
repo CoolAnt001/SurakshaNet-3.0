@@ -2111,7 +2111,6 @@ with col_popover:
             key="sim_scenario_choice_popover"
         )
         st.session_state.current_scenario = scenario
-        st.session_state.current_epicenter = epicenter
     st.markdown("</div>", unsafe_allow_html=True)
 
 scenario = st.session_state.current_scenario
