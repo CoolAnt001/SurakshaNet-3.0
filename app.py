@@ -187,7 +187,11 @@ st.markdown("""
     ul[role="listbox"] > div,
     ul[role="listbox"] li,
     li[role="option"],
-    div[role="option"] {
+    div[role="option"],
+    ul[role="menu"],
+    ul[role="menu"] li,
+    li[role="menuitem"],
+    div[role="menuitem"] {
         background-color: #292524 !important;
         color: #F8FAFC !important;
         cursor: pointer !important;
@@ -197,9 +201,13 @@ st.markdown("""
     }
     div[data-baseweb="popover"] ul *, 
     div[data-baseweb="popover"] [role="option"] *,
+    div[data-baseweb="menu"] *,
     ul[role="listbox"] *,
     li[role="option"] *,
-    div[role="option"] * {
+    div[role="option"] *,
+    ul[role="menu"] *,
+    li[role="menuitem"] *,
+    div[role="menuitem"] * {
         color: #F8FAFC !important;
     }
     div[data-baseweb="popover"] ul div:hover, 
@@ -224,7 +232,10 @@ st.markdown("""
     li[role="option"]:hover *,
     div[role="option"]:hover *,
     li[role="option"][aria-selected="true"] *,
-    div[role="option"][aria-selected="true"] * {
+    div[role="option"][aria-selected="true"] *,
+    ul[role="menu"] [role="menuitem"]:hover *,
+    li[role="menuitem"]:hover *,
+    div[role="menuitem"]:hover * {
         color: #FF9933 !important;
     }
     div[data-baseweb="select"] > div > div, 
@@ -425,44 +436,44 @@ st.markdown("""
     }
     
     /* Specific Override for Sidebar Vertical Navigation Menu (JEEVAN DHARA style) */
-    section[data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
+    [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
         background: transparent !important;
         padding: 0 !important;
         border: none !important;
         box-shadow: none !important;
-        margin-bottom: 20px;
+        margin-bottom: 20px !important;
     }
-    section[data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label {
-        flex: unset;
-        min-width: unset;
+    [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label {
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
         background: transparent !important;
-        padding: 10px 14px;
-        border-radius: 6px;
+        padding: 12px 14px !important;
+        border-radius: 8px !important;
         color: var(--text-secondary) !important;
-        font-weight: 500;
-        font-size: 0.95rem;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
         border: none !important;
-        justify-content: flex-start;
-        text-align: left;
+        justify-content: flex-start !important;
+        text-align: left !important;
     }
-    section[data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
+    [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
         background: rgba(128, 128, 128, 0.1) !important;
         color: var(--text-primary) !important;
         border: none !important;
     }
-    section[data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
+    [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
         background: rgba(59, 130, 246, 0.12) !important; /* Soft blue */
         color: var(--text-primary) !important;
-        font-weight: 700 !important;
+        font-weight: 800 !important;
         border: none !important;
         box-shadow: none !important;
     }
-    section[data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) p {
+    [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) p {
         color: var(--text-primary) !important;
-        font-weight: 700 !important;
+        font-weight: 800 !important;
     }
 
     .stTabs [data-baseweb="tab-list"] {
@@ -505,6 +516,10 @@ st.markdown("""
         box-shadow: 0 4px 18px rgba(19, 136, 8, 0.35) !important;
         transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
         letter-spacing: 0.3px !important;
+    }
+    div.stButton > button p,
+    div.stButton > button div {
+        color: var(--btn-text) !important;
     }
     div.stButton > button:hover {
         transform: translateY(-2px) scale(1.02) !important;
@@ -1698,7 +1713,7 @@ I18N = {
 if "gsheet_url" not in st.session_state:
     st.session_state.gsheet_url = DEFAULT_GSHEET_URL
 
-selected_lang = st.session_state.get("settings_lang_selector", "English")
+selected_lang = st.session_state.get("stored_lang", "English")
 t = I18N[selected_lang]
 
 is_dark_mode = st.session_state.get("dark_mode_toggle", True)
@@ -1962,18 +1977,21 @@ if st.session_state.get("active_officer_alert"):
         st.rerun()
 
 # --- Sidebar Navigation ---
-st.sidebar.markdown("---")
-st.sidebar.subheader("📍 Navigation")
+st.sidebar.markdown("<h2 style='text-align: center; font-weight: 800; color: var(--neon-cyan); letter-spacing: 1px; margin-bottom: 20px; font-family: system-ui;'>SurakshaNet</h2>", unsafe_allow_html=True)
 nav_options = [
-    t["tab_public"],
-    t["tab_clinic"],
-    t["tab_officer"]
+    f"📊 {t.get('tab_public', 'Dashboard')}",
+    "⚙️ Settings",
+    f"🏥 {t.get('tab_clinic', 'Clinic Ingestion Node')}",
+    f"🏛️ {t.get('tab_officer', 'Medical Board Console')}",
+    "💬 Complaints",
+    "📞 Help / Contact us",
+    "🤝 How to join us"
 ]
 
-if "active_nav_index" not in st.session_state or st.session_state.active_nav_index not in [0, 1, 2, 3]:
+if "active_nav_index" not in st.session_state or st.session_state.active_nav_index not in range(len(nav_options)):
     st.session_state.active_nav_index = 0
 
-nav_index = st.session_state.active_nav_index if st.session_state.active_nav_index < 3 else None
+nav_index = st.session_state.active_nav_index
 
 def _on_nav_change():
     selected_val = st.session_state.portal_navigation_bar
@@ -1989,66 +2007,44 @@ st.sidebar.radio(
     label_visibility="collapsed"
 )
 
-# --- Settings & Tools ---
-st.sidebar.markdown("---")
-with st.sidebar.expander("⚙️ Settings & Tools", expanded=False):
-    st.selectbox(
-        t.get("sidebar_lang_header", "🌐 Language"),
-        ["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"],
-        index=["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"].index(selected_lang),
-        key="settings_lang_selector"
-    )
-    
-    st.markdown("---")
-    if st.button(f"🔒 {t.get('tab_audit', '4. Privacy Audit Log')}", use_container_width=True):
-        st.session_state.active_nav_index = 3
-        st.rerun()
-        
-    st.markdown("---")
-    st.info(t["zero_central_policy"])
-    
-    st.markdown("---")
-    st.subheader("📈 Baseline Surveillance Engine")
-    baseline_mode_choice = st.radio(
-        "Baseline Adaptation Mode:",
-        ["🔄 Dynamic Moving Baseline (Auto-Adapts Over Time)", "📌 Fixed Reference Baseline"],
-        index=0,
-        help="Dynamic Moving Baseline calculates a rolling 14-day historical mean (μ) and standard deviation (σ) from incoming clinic submissions while excluding epidemic outliers."
-    )
-    is_dynamic_baseline = "Dynamic" in baseline_mode_choice
-    
-    st.markdown("---")
-    
-    scenario_list = [
-        "🟢 Normal Baseline (No Active Outbreaks)",
-        "🌊 Gastrointestinal Outbreak Cluster (Waterborne)",
-        "🫁 Cold-Snap Acute Respiratory Surge",
-        "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
-        "⚠️ False Alarm (Single-Source Data Typo)",
-        "🔬 Small Cohort Threat (k-Anonymity Guard Demo)"
-    ]
-    
-    epicenter_list = [
-        "🌐 All Monitored Regions (Cross-City)",
-        "🏫 Kalinga Institute Clinic (Campus North)",
-        "🏫 SOA University Health Center (Campus South)",
-        "🏫 Utkal University Health Center (Campus East)",
-        "🏥 Capital Hospital (Central OPD)",
-        "🏥 SUM Hospital (Kalinga Nagar)",
-        "🏡 PHC Mendhasal (Rural Outpost)",
-        "🏡 CHC Jatni (Rural Outpost)",
-        "🧪 Municipal Water Treatment Zone"
-    ]
-    
-    if "current_scenario" not in st.session_state or st.session_state.current_scenario not in scenario_list:
-        st.session_state.current_scenario = scenario_list[0]
-    if "current_epicenter" not in st.session_state or st.session_state.current_epicenter not in epicenter_list:
-        st.session_state.current_epicenter = epicenter_list[0]
-        
+# Initialize state manually since Settings widgets are rendered in Tab 1
+if "stored_lang" not in st.session_state:
+    st.session_state.stored_lang = "English"
+if "stored_baseline" not in st.session_state:
+    st.session_state.stored_baseline = "🔄 Dynamic Moving Baseline (Auto-Adapts Over Time)"
 
-# --- Active Nav State Initialization ---
-if "active_nav_index" not in st.session_state or st.session_state.active_nav_index not in [0, 1, 2, 3]:
-    st.session_state.active_nav_index = 0
+scenario_list = [
+    "🟢 Normal Baseline (No Active Outbreaks)",
+    "🌊 Gastrointestinal Outbreak Cluster (Waterborne)",
+    "🫁 Cold-Snap Acute Respiratory Surge",
+    "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
+    "⚠️ False Alarm (Single-Source Data Typo)",
+    "🔬 Small Cohort Threat (k-Anonymity Guard Demo)"
+]
+
+epicenter_list = [
+    "🌐 All Monitored Regions (Cross-City)",
+    "🏫 Kalinga Institute Clinic (Campus North)",
+    "🏫 SOA University Health Center (Campus South)",
+    "🏫 Utkal University Health Center (Campus East)",
+    "🏥 Capital Hospital (Central OPD)",
+    "🏥 SUM Hospital (Kalinga Nagar)",
+    "🏡 PHC Mendhasal (Rural Outpost)",
+    "🏡 CHC Jatni (Rural Outpost)",
+    "🧪 Municipal Water Treatment Zone"
+]
+
+if "current_scenario" not in st.session_state or st.session_state.current_scenario not in scenario_list:
+    st.session_state.current_scenario = scenario_list[0]
+if "current_epicenter" not in st.session_state or st.session_state.current_epicenter not in epicenter_list:
+    st.session_state.current_epicenter = epicenter_list[0]
+
+is_dynamic_baseline = "Dynamic" in st.session_state.stored_baseline
+
+# Move Epicenter to bottom of sidebar
+with st.sidebar:
+    st.markdown("<div style='margin-top: 25vh;'></div>", unsafe_allow_html=True)
+    st.markdown("---")
 
 # --- Top Navigation / Main Header ---
 hero_logo_b64 = ""
@@ -2115,34 +2111,13 @@ with col_popover:
             key="sim_scenario_choice_popover"
         )
         st.session_state.current_scenario = scenario
-        
-        cur_epi = st.session_state.current_epicenter
-        epi_idx = epicenter_list.index(cur_epi) if cur_epi in epicenter_list else 0
-        
-        def on_epicenter_change():
-            chosen_epi = st.session_state.get("outbreak_epicenter_choice_popover")
-            if chosen_epi:
-                st.session_state.current_epicenter = chosen_epi
-                if "All Monitored" not in chosen_epi and "Cross-City" not in chosen_epi:
-                    st.session_state.radar_view_scope = "🎯 Focus on Selected Location"
-                else:
-                    st.session_state.radar_view_scope = "🌐 Regional City Grid View"
-                st.session_state.last_scoped_epicenter = chosen_epi
-        
-        epicenter = st.selectbox(
-            t.get("inject_location", "📍 Outbreak Location / Epicenter"),
-            epicenter_list,
-            index=epi_idx,
-            key="outbreak_epicenter_choice_popover",
-            on_change=on_epicenter_change
-        )
         st.session_state.current_epicenter = epicenter
     st.markdown("</div>", unsafe_allow_html=True)
 
 scenario = st.session_state.current_scenario
 epicenter = st.session_state.current_epicenter
         
-if st.session_state.active_nav_index == 1:
+if st.session_state.active_nav_index == 2:
     st.markdown(
         """
         <div style='background: rgba(28, 25, 23, 0.7); border: 1px solid rgba(19, 136, 8, 0.3); border-left: 4px solid #138808; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
@@ -2158,7 +2133,7 @@ if st.session_state.active_nav_index == 1:
         </div>
         """, unsafe_allow_html=True
     )
-elif st.session_state.active_nav_index == 2:
+elif st.session_state.active_nav_index == 3:
     st.markdown(
         """
         <div style='background: rgba(28, 25, 23, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-left: 4px solid #EF4444; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
@@ -3526,7 +3501,7 @@ if active_nav_idx == 0:
 # ==============================================================================
 # TAB 2: CLINIC REPORTER PORTAL (SECONDARY - CLINIC STAFF)
 # ==============================================================================
-elif active_nav_idx == 1:
+elif active_nav_idx == 3:
     # Initialize authentication state for Tab 2
     if "clinic_auth_success" not in st.session_state:
         st.session_state.clinic_auth_success = False
@@ -4041,7 +4016,7 @@ elif active_nav_idx == 1:
 # ==============================================================================
 # TAB 3: MEDICAL BOARD CONSOLE (TERTIARY - MEDICAL BOARD)
 # ==============================================================================
-elif active_nav_idx == 2:
+elif active_nav_idx == 3:
     # Initialize authentication state for Tab 3
     if "officer_auth_success" not in st.session_state:
         st.session_state.officer_auth_success = False
@@ -4336,9 +4311,9 @@ elif active_nav_idx == 2:
                     <div style='background: var(--card-bg); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--nav-border); border-left: 4px solid #EF4444; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); color: var(--text-primary);'>
                         <div style='display: flex; justify-content: space-between; align-items: center;'>
                             <strong style='color:#EF4444; font-size: 1.05rem;'>{n['status']}</strong>
-                            <span style='font-size: 0.8rem; color: #737373; background: #171717; border: 1px solid var(--nav-border); padding: 2px 8px; border-radius: 6px;'>🕒 {n['timestamp']}</span>
+                            <span style='font-size: 0.8rem; color: #A3A3A3; background: #171717; border: 1px solid var(--nav-border); padding: 2px 8px; border-radius: 6px;'>🕒 {n['timestamp']}</span>
                         </div>
-                        {f"<div style='background: #171717; padding: 10px 14px; border-radius: 6px; font-size: 0.88rem; line-height: 1.45; white-space: pre-wrap; margin: 8px 0; border-left: 3px solid var(--neon-cyan); color: var(--text-primary);'>{msg_content}</div>" if msg_content else ""}
+                        {f"<div style='background: #171717; padding: 10px 14px; border-radius: 6px; font-size: 0.88rem; line-height: 1.45; white-space: pre-wrap; margin: 8px 0; border-left: 3px solid var(--neon-cyan); color: #F8FAFC;'>{msg_content}</div>" if msg_content else ""}
                         <div style='display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; margin-top: 8px;'>
                             <span style='color: #10B981; font-weight: 600;'>{n.get('dispatch', '✅ Dispatched to mobile health registry')}</span>
                             <span style='font-family: var(--font-mono); color: var(--neon-cyan);'>{n['hash']}</span>
@@ -4347,10 +4322,7 @@ elif active_nav_idx == 2:
                     """, unsafe_allow_html=True
                 )
 
-# ==============================================================================
-# TAB 4: PRIVACY AUDIT LEDGER (VERIFICATION - ALL)
-# ==============================================================================
-elif active_nav_idx == 3:
+    st.markdown("<br><hr><br>", unsafe_allow_html=True)
     st.markdown(f"### {t['audit_title']}")
     st.markdown(t['audit_desc'])
     
@@ -4433,3 +4405,92 @@ elif active_nav_idx == 3:
                 t["audit_col_payload"]: f"{m['transmitted_val']} (Anonymized)"
             })
     st.markdown(f'<div class="table-container">{pd.DataFrame(audit_records).to_html(index=False, escape=False, classes="custom-glass-table")}</div>', unsafe_allow_html=True)
+elif active_nav_idx == 1:
+    st.markdown("## ⚙️ Settings & Tools")
+    st.markdown("Configure your regional health portal preferences.")
+    def _update_lang():
+        st.session_state.stored_lang = st.session_state.settings_lang_selector
+    st.selectbox(
+        t.get("sidebar_lang_header", "🌐 Language"),
+        ["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"],
+        index=["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"].index(selected_lang),
+        key="settings_lang_selector",
+        on_change=_update_lang
+    )
+    st.markdown("---")
+    st.info(t["zero_central_policy"])
+    st.markdown("---")
+    st.subheader("📈 Baseline Surveillance Engine")
+    def _update_baseline():
+        st.session_state.stored_baseline = st.session_state.baseline_mode_choice
+    st.radio(
+        "Baseline Adaptation Mode:",
+        ["🔄 Dynamic Moving Baseline (Auto-Adapts Over Time)", "📌 Fixed Reference Baseline"],
+        index=0 if "Dynamic" in st.session_state.stored_baseline else 1,
+        help="Dynamic Moving Baseline calculates a rolling 14-day historical mean (μ) and standard deviation (σ) from incoming clinic submissions while excluding epidemic outliers.",
+        key="baseline_mode_choice",
+        on_change=_update_baseline
+    )
+
+elif active_nav_idx == 4:
+    st.markdown("## 💬 Citizen Complaints & Reporting Portal")
+    st.markdown("Use this portal to report public health hazards, sanitation issues, or suspected disease clusters directly to the Municipal Health Board. Your reports help us detect outbreaks early.")
+    
+    st.markdown("---")
+    
+    col1, col2 = st.columns([1.5, 1])
+    
+    with col1:
+        st.markdown("### 📝 File a New Report")
+        with st.form("citizen_complaint_form", clear_on_submit=True):
+            incident_type = st.selectbox("Incident Type*", [
+                "Water Contamination / Discoloration",
+                "Food Poisoning Cluster",
+                "Unsanitary Public Area / Garbage Accumulation",
+                "Severe Mosquito Breeding Ground",
+                "Unusual Spike in Fevers in Neighborhood",
+                "Other Public Health Hazard"
+            ])
+            
+            location = st.text_input("Exact Location / Landmark*", placeholder="e.g., Near Ward 4 Community Center")
+            
+            desc = st.text_area("Detailed Description*", placeholder="Please describe what you observed, when it started, and any symptoms in the community...", height=120)
+            
+            st.markdown("📸 **Photographic Evidence (Optional)**")
+            uploaded_photo = st.file_uploader("Upload an image of the hazard", type=["jpg", "jpeg", "png"])
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            submit_complaint = st.form_submit_button("🚨 Submit Public Health Report", type="primary", use_container_width=True)
+            
+            if submit_complaint:
+                if not location or not desc:
+                    st.error("⚠️ Please fill in the exact location and a detailed description.")
+                else:
+                    st.success("✅ **Report Successfully Lodged!** Your complaint has been securely routed to the Rapid Response Team for evaluation. Thank you for keeping our community safe.")
+                    
+    with col2:
+        st.markdown("### 🛡️ Whistleblower Protection")
+        st.info("Your identity is strictly protected. By default, all reports submitted through this portal are treated as **Anonymous** under the SurakshaNet Zero-Trace Policy.")
+        st.markdown("### 📊 Recent Actions")
+        st.markdown(
+            """
+            <div class='glass-card' style='border-left: 3px solid #10B981; margin-bottom: 10px; padding: 12px;'>
+                <strong style='color:#10B981; font-size: 0.9rem;'>Resolved (2 hrs ago)</strong><br>
+                <span style='font-size: 0.85rem; color: var(--text-secondary);'>Mosquito fogging completed at Kalinga North Campus based on citizen reports.</span>
+            </div>
+            <div class='glass-card' style='border-left: 3px solid #F59E0B; margin-bottom: 10px; padding: 12px;'>
+                <strong style='color:#F59E0B; font-size: 0.9rem;'>Investigating (1 day ago)</strong><br>
+                <span style='font-size: 0.85rem; color: var(--text-secondary);'>Water turbidity inspection ongoing in Ward 7.</span>
+            </div>
+            """, unsafe_allow_html=True
+        )
+
+elif active_nav_idx == 5:
+    st.markdown("## 📞 Help & Contact Us")
+    st.info("Emergency Health Hotline: 104 (Toll-Free)\nTechnical Support: support@surakshanet.gov.in")
+    st.markdown("A direct chat interface with response agents will be added here.")
+
+elif active_nav_idx == 6:
+    st.markdown("## 🤝 How to Join Us")
+    st.success("Are you a clinic, hospital, or regional health center? Join the SurakshaNet surveillance grid.")
+    st.markdown("- **Step 1:** Register your node with the regional Medical Board.\n- **Step 2:** Obtain your cryptographic Master Key for secure transmission.\n- **Step 3:** Begin continuous syndromic logging.")
