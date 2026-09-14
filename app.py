@@ -129,9 +129,14 @@ st.markdown("""
 
     footer {visibility: hidden;}
 
+    /* Popover Container */
+    [data-testid="stPopoverBody"] {
+        background-color: var(--card-bg) !important;
+        border: 1px solid var(--nav-border) !important;
+        border-radius: 12px !important;
+        box-shadow: var(--card-shadow) !important;
+    }
     
-
-
     /* Form Controls & Inputs - Touch & Mobile Keyboard Friendly */
     div[data-baseweb="select"] {
         cursor: pointer !important;
@@ -433,6 +438,22 @@ st.markdown("""
         border: 1px solid var(--text-muted) !important;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
         transform: none !important;
+    }
+
+    /* Popover Menu Button (Hamburger) */
+    div[data-testid="stPopover"] button {
+        background: var(--inner-card-bg) !important;
+        color: var(--text-primary) !important;
+        border: 1px solid var(--nav-border) !important;
+        box-shadow: none !important;
+        border-radius: 8px !important;
+        padding: 6px 12px !important;
+        font-size: 1.1rem !important;
+    }
+    div[data-testid="stPopover"] button:hover {
+        background: var(--card-bg) !important;
+        border: 1px solid var(--text-muted) !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
     }
 
     /* Modern Alert Banners */
@@ -815,26 +836,47 @@ st.markdown("""
     }
 
     /* Native Table Overrides */
+    .table-container {
+        max-height: 400px;
+        overflow-y: auto;
+        border-radius: 12px;
+        border: 1px solid var(--nav-border);
+        box-shadow: var(--card-shadow);
+        background: var(--card-bg);
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+    .table-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    .table-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 0.3);
+        border-radius: 4px;
+    }
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(148, 163, 184, 0.5);
+    }
     .custom-glass-table {
         width: 100%;
         border-collapse: collapse;
-        border-radius: 12px;
-        overflow: hidden;
-        margin-top: 10px;
-        margin-bottom: 20px;
-        background: var(--card-bg);
-        border: 1px solid var(--card-border);
-        box-shadow: var(--card-shadow);
         color: var(--text-primary);
         font-family: var(--font-sans);
         font-size: 0.9rem;
     }
-    .custom-glass-table thead {
+    .custom-glass-table thead th {
         background: var(--inner-card-bg);
         color: var(--text-muted);
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-size: 0.75rem;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        border-bottom: 1px solid var(--nav-border);
     }
     .custom-glass-table th, .custom-glass-table td {
         padding: 12px 16px;
@@ -3080,7 +3122,7 @@ if active_nav_idx == 0:
             })
             
     df_baseline = pd.DataFrame(baseline_rows)
-    st.markdown(df_baseline.to_html(index=False, escape=False, classes="custom-glass-table"), unsafe_allow_html=True)
+    st.markdown(f'<div class="table-container">{df_baseline.to_html(index=False, escape=False, classes="custom-glass-table")}</div>', unsafe_allow_html=True)
 
     # Interactive Geospatial Map (Plotly Mapbox)
     st.markdown("---")
@@ -3186,7 +3228,7 @@ if active_nav_idx == 0:
         font=dict(color=plot_theme.get("text", "#F8FAFC")),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(color=plot_theme.get("text", "#F8FAFC")))
     )
-    st.plotly_chart(fig_map, theme=None, use_container_width=True, config={"responsive": True, "displayModeBar": False})
+    st.plotly_chart(fig_map, theme=None, use_container_width=True, config={"responsive": True})
 
     # Grassroots Surveillance Grid Nodes (Real-Time Visual Telemetry)
     st.markdown("---")
@@ -3438,7 +3480,7 @@ elif active_nav_idx == 1:
             
         df_metrics = pd.DataFrame(metric_rows)
         st.markdown(f"#### {t['db_title']}")
-        st.markdown(df_metrics.to_html(index=False, escape=False, classes="custom-glass-table"), unsafe_allow_html=True)
+        st.markdown(f'<div class="table-container">{df_metrics.to_html(index=False, escape=False, classes="custom-glass-table")}</div>', unsafe_allow_html=True)
         
         # Visualizing Privacy Distortion
         st.markdown(f"#### {t['chart_title']}")
@@ -4030,7 +4072,7 @@ elif active_nav_idx == 2:
                 "Average Deviation Index": f"{lai} σ",
                 "Anomaly Status": status_label
             })
-        st.markdown(pd.DataFrame(lai_rows).to_html(index=False, escape=False, classes="custom-glass-table"), unsafe_allow_html=True)
+        st.markdown(f'<div class="table-container">{pd.DataFrame(lai_rows).to_html(index=False, escape=False, classes="custom-glass-table")}</div>', unsafe_allow_html=True)
         
         # Dynamic Baseline Learning & Seasonality Engine Panel
         st.markdown("---")
@@ -4230,4 +4272,4 @@ elif active_nav_idx == 3:
                 t["audit_col_guard"]: "Passed (Group size safe)" if not m["suppressed"] else f"🚨 Masked (Group size {m['raw_val']} < limit {k_anonymity})",
                 t["audit_col_payload"]: f"{m['transmitted_val']} (Anonymized)"
             })
-    st.markdown(pd.DataFrame(audit_records).to_html(index=False, escape=False, classes="custom-glass-table"), unsafe_allow_html=True)
+    st.markdown(f'<div class="table-container">{pd.DataFrame(audit_records).to_html(index=False, escape=False, classes="custom-glass-table")}</div>', unsafe_allow_html=True)
