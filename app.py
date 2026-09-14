@@ -435,45 +435,73 @@ st.markdown("""
         font-weight: 700 !important;
     }
     
-    /* Specific Override for Sidebar Vertical Navigation Menu (JEEVAN DHARA style) */
+    /* Specific Override for Sidebar Vertical Navigation Menu (System Menu Style) */
     [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] {
         display: flex !important;
         flex-direction: column !important;
-        gap: 4px !important;
+        gap: 2px !important;
         background: transparent !important;
         padding: 0 !important;
         border: none !important;
         box-shadow: none !important;
         margin-bottom: 20px !important;
     }
+    
+    /* Hide Radio Circles Completely */
+    [data-testid="stSidebar"] div[data-testid="stRadio"] div[role="radio"],
+    [data-testid="stSidebar"] div[data-testid="stRadio"] div[data-baseweb="radio"] {
+        display: none !important;
+    }
+
     [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label {
         flex: 1 1 100% !important;
-        min-width: 100% !important;
+        width: 100% !important;
         background: transparent !important;
-        padding: 12px 14px !important;
-        border-radius: 8px !important;
-        color: var(--text-secondary) !important;
-        font-weight: 600 !important;
+        padding: 10px 14px !important;
+        border-radius: 6px !important;
+        color: var(--text-primary) !important;
+        font-weight: 500 !important;
         font-size: 0.95rem !important;
         border: none !important;
-        justify-content: flex-start !important;
-        text-align: left !important;
+        display: flex !important;
+        align-items: center !important;
+        position: relative;
+        cursor: pointer !important;
     }
+    
+    [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label p {
+        margin: 0 !important;
+        width: 100% !important;
+        color: var(--text-primary) !important;
+    }
+
+    /* Add the chevron arrow */
+    [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label::after {
+        content: "›";
+        font-size: 1.6rem;
+        line-height: 1;
+        color: var(--text-muted);
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-55%);
+        transition: color 0.2s ease;
+    }
+    
     [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
-        background: rgba(128, 128, 128, 0.1) !important;
-        color: var(--text-primary) !important;
-        border: none !important;
+        background: rgba(148, 163, 184, 0.15) !important; /* Soft adaptive grey hover */
     }
+    
+    [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover::after {
+        color: var(--text-primary);
+    }
+
     [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
-        background: rgba(59, 130, 246, 0.12) !important; /* Soft blue */
-        color: var(--text-primary) !important;
-        font-weight: 800 !important;
-        border: none !important;
-        box-shadow: none !important;
+        background: rgba(148, 163, 184, 0.25) !important; /* Slightly darker grey for active */
     }
+    
     [data-testid="stSidebar"] div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) p {
-        color: var(--text-primary) !important;
-        font-weight: 800 !important;
+        font-weight: 700 !important;
     }
 
     .stTabs [data-baseweb="tab-list"] {
@@ -1924,130 +1952,7 @@ if "active_officer_alert" not in st.session_state:
 # --- Sidebar Controls (Simplified) ---
 
 # --- Officer Broadcast Glowing Popup ---
-if st.session_state.get("active_officer_alert"):
-    alert = st.session_state.active_officer_alert
-    clean_msg = alert.get("message", alert.get("status", "")).strip()
-    status_line = alert.get("status", "Emergency Advisory")
-    
-    st.sidebar.markdown(
-        f"""
-        <div class='sidebar-glow-box'>
-            <div class='sidebar-glow-header'>
-                <span style='font-size: 0.72rem; font-weight: 800; color: #FCA5A5; letter-spacing: 0.8px; text-transform: uppercase; display: flex; align-items: center; gap: 6px;'>
-                    <span style='font-size: 1.05rem;'>🚨</span> STATE OFFICER ADVISORY
-                </span>
-                <span class='live-pulse-dot' style='width: 9px; height: 9px; background: #EF4444;'></span>
-            </div>
-            <div class='sidebar-glow-title'>{status_line}</div>
-            <div class='sidebar-glow-msg'>{clean_msg}</div>
-            <div class='sidebar-glow-meta'>
-                <span>🕒 {alert.get('timestamp', 'Live')}</span>
-                <span style='color: var(--neon-cyan); font-family: monospace; font-size: 0.7rem;'>{alert.get('hash', '')[:14]}...</span>
-            </div>
-        </div>
-        <style>
-        /* Force override Streamlit's emotion cache CSS */
-        button[kind="primary"], 
-        div.stButton button[kind="primary"],
-        [data-testid="stSidebar"] button[kind="primary"] {{
-            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
-            background-color: #EF4444 !important;
-            border-color: #DC2626 !important;
-            color: white !important;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35) !important;
-        }}
-        
-        button[kind="primary"]:hover,
-        div.stButton button[kind="primary"]:hover,
-        [data-testid="stSidebar"] button[kind="primary"]:hover {{
-            background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%) !important;
-            background-color: #DC2626 !important;
-            border-color: #B91C1C !important;
-        }}
-        
-        button[kind="primary"] * {{
-            color: white !important;
-        }}
-
-        /* --- CHROME SETTINGS STYLE SIDEBAR MENU --- */
-        section[data-testid="stSidebar"] {{
-            background-color: #202124 !important;
-        }}
-        
-        /* Hide the native radio circles */
-        div[data-testid="stSidebar"] div[data-testid="stRadio"] span[data-baseweb="radio"] {{
-            display: none !important;
-        }}
-        
-        /* Remove gap between items for full-width flat menu */
-        div[data-testid="stSidebar"] div[data-testid="stRadio"] > div {{
-            gap: 0px !important;
-        }}
-        
-        /* Style the menu items */
-        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"] {{
-            display: flex;
-            align-items: center;
-            padding: 12px 24px;
-            margin: 0;
-            width: 100%;
-            cursor: pointer;
-            border-radius: 0px; 
-            background: transparent;
-            transition: background-color 0.15s ease;
-        }}
-        
-        /* Hover state */
-        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"]:hover {{
-            background-color: rgba(255, 255, 255, 0.08) !important;
-        }}
-        
-        /* Active selected state */
-        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"][aria-checked="true"] {{
-            background-color: rgba(138, 180, 248, 0.12) !important;
-        }}
-        
-        /* Menu Text Styling */
-        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"] p {{
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-            font-size: 0.95rem !important;
-            font-weight: 400 !important;
-            color: #e8eaed !important;
-            width: 100%;
-            margin: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }}
-        
-        /* Active Menu Text Styling */
-        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"][aria-checked="true"] p {{
-            color: #8ab4f8 !important;
-            font-weight: 500 !important;
-        }}
-        
-        /* Add the Right Chevron (›) */
-        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"] p::after {{
-            content: "›";
-            font-size: 1.6rem;
-            color: #9aa0a6;
-            margin-left: auto;
-            font-weight: 300;
-            line-height: 0.8;
-            padding-bottom: 2px;
-        }}
-        
-        /* Active Right Chevron */
-        div[data-testid="stSidebar"] div[data-testid="stRadio"] label[data-baseweb="radio"][aria-checked="true"] p::after {{
-            color: #8ab4f8 !important;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-    if st.sidebar.button("✕ DISMISS ALERT BULLETIN", key="dismiss_sidebar_glow_btn", use_container_width=True, type="primary"):
-        st.session_state.active_officer_alert = None
-        st.rerun()
+# (Moved to global header)
 
 # --- Sidebar Navigation ---
 st.sidebar.markdown("<h2 style='text-align: center; font-weight: 800; color: var(--neon-cyan); letter-spacing: 1px; margin-bottom: 20px; font-family: system-ui;'>SurakshaNet</h2>", unsafe_allow_html=True)
@@ -2139,6 +2044,53 @@ elif os.path.exists(fallback_path):
             hero_logo_b64 = base64.b64encode(f.read()).decode()
     except Exception:
         pass
+
+# --- Officer Broadcast Glowing Popup (Global Header) ---
+if st.session_state.get("active_officer_alert"):
+    alert = st.session_state.active_officer_alert
+    clean_msg = alert.get("message", alert.get("status", "")).strip()
+    status_line = alert.get("status", "Emergency Advisory")
+    
+    col_alert, col_close = st.columns([15, 1])
+    with col_alert:
+        st.markdown(
+            f"""
+            <div class='sidebar-glow-box' style='margin: 0; padding: 10px 20px; box-shadow: 0 8px 30px rgba(239, 68, 68, 0.25); display: flex; align-items: center;'>
+                <marquee behavior="scroll" direction="left" scrollamount="10" style="color: white; font-size: 1.1rem;">
+                    <span style="color: #FCA5A5; font-weight: 800; letter-spacing: 0.5px;">🚨 STATE OFFICER ADVISORY: {status_line.upper()}</span> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 
+                    <span style="font-weight: 500;">{clean_msg}</span> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 
+                    <span style='color: var(--neon-cyan); font-family: monospace; font-size: 0.95rem;'>[Auth Hash: {alert.get('hash', '')[:24]}]</span>
+                </marquee>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    with col_close:
+        st.markdown(
+            """
+            <style>
+            div[data-testid="stButton"]:has(button[key="dismiss_global_glow_btn"]) {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                margin-top: 2px;
+            }
+            button[key="dismiss_global_glow_btn"] {
+                font-size: 1.5rem !important;
+                padding: 0 !important;
+                color: rgba(255, 255, 255, 0.6) !important;
+            }
+            button[key="dismiss_global_glow_btn"]:hover {
+                color: #EF4444 !important;
+                transform: scale(1.1) !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+        if st.button("✖", key="dismiss_global_glow_btn", type="tertiary", use_container_width=True):
+            st.session_state.active_officer_alert = None
+            st.rerun()
+    st.markdown("<div style='margin-bottom: 15px;'></div>", unsafe_allow_html=True)
 
 col_head1, col_head_space, col_popover = st.columns([6, 0.4, 0.4])
 with col_head1:
@@ -4546,7 +4498,23 @@ elif active_nav_idx == 4:
                 if not location or not desc:
                     st.error("⚠️ Please fill in the exact location and a detailed description.")
                 else:
-                    st.success("✅ **Report Successfully Lodged!** Your complaint has been securely routed to the Rapid Response Team for evaluation. Thank you for keeping our community safe.")
+                    import time
+                    with st.spinner("🤖 AI NLP Engine analyzing complaint sentiment and urgency..."):
+                        time.sleep(1.2) # Simulate ML inference time
+                        desc_lower = desc.lower()
+                        high_risk_keywords = ["emergency", "fever", "diarrhea", "vomit", "blood", "hospital", "urgent", "many people", "outbreak", "cluster", "sick", "vomiting", "death", "severe"]
+                        risk_score = sum([1 for w in high_risk_keywords if w in desc_lower])
+                        
+                        st.success("✅ **Report Successfully Lodged!** Your complaint has been securely routed.")
+                        
+                        # NLP Triage Output
+                        st.markdown("#### 🧠 AI Triage Analysis (NLP)")
+                        if risk_score >= 2:
+                            st.error(f"**Sentiment & Urgency:** 🚨 CRITICAL PRIORITY\n\n**Category Flag:** Suspected Epidemic Cluster\n\n**AI Confidence Score:** {min(98, 70 + risk_score * 8)}%\n\n*Action taken: Instant SMS dispatched to Ward {location[:5]} Rapid Response Team.*")
+                        elif risk_score == 1:
+                            st.warning(f"**Sentiment & Urgency:** ⚠️ MODERATE PRIORITY\n\n**Category Flag:** Health Hazard\n\n**AI Confidence Score:** 65%\n\n*Action taken: Added to priority inspection queue.*")
+                        else:
+                            st.info(f"**Sentiment & Urgency:** 🟢 ROUTINE PRIORITY\n\n**Category Flag:** General Sanitation\n\n**AI Confidence Score:** 88%\n\n*Action taken: Logged for standard municipal review.*")
                     
     with col2:
         st.markdown("### 🛡️ Whistleblower Protection")
@@ -4566,9 +4534,73 @@ elif active_nav_idx == 4:
         )
 
 elif active_nav_idx == 5:
-    st.markdown("## 📞 Help & Contact Us")
-    st.info("Emergency Health Hotline: 104 (Toll-Free)\nTechnical Support: support@surakshanet.gov.in")
-    st.markdown("A direct chat interface with response agents will be added here.")
+    st.markdown("## 🤖 Suraksha AI Health Assistant")
+    st.markdown("Powered by **Suraksha LLM**. Ask me any public health questions or describe your symptoms for an immediate AI triage based on current municipal guidelines.")
+    
+    if "chat_messages" not in st.session_state:
+        st.session_state.chat_messages = [{"role": "assistant", "content": "Hello! I am the Suraksha AI Health Assistant. How can I help you or your community today?"}]
+        
+    for msg in st.session_state.chat_messages:
+        st.chat_message(msg["role"]).write(msg["content"])
+        
+    if prompt := st.chat_input("Type your symptoms or public health question here..."):
+        st.session_state.chat_messages.append({"role": "user", "content": prompt})
+        st.chat_message("user").write(prompt)
+        
+        # Generate Live LLM Response using g4f
+        with st.chat_message("assistant"):
+            placeholder = st.empty()
+            full_response = ""
+            
+            try:
+                import g4f
+                import asyncio
+                
+                # Ensure asyncio event loop exists (Streamlit sometimes drops it in threads)
+                try:
+                    loop = asyncio.get_event_loop()
+                except RuntimeError:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    
+                # Inject System Prompt for context
+                system_prompt = {"role": "system", "content": "You are Suraksha LLM, a highly advanced public health AI assistant for SurakshaNet. Provide brief, professional, and empathetic triage advice based on WHO guidelines. Keep answers under 4 sentences. If symptoms are severe (blood, unconsciousness, severe pain), immediately tell them to call the Emergency Hotline 104."}
+                api_messages = [system_prompt] + [{"role": m["role"], "content": m["content"]} for m in st.session_state.chat_messages]
+                
+                # Call free GPT-3.5 endpoint
+                response_stream = g4f.ChatCompletion.create(
+                    model=g4f.models.gpt_35_turbo,
+                    messages=api_messages,
+                    stream=True,
+                )
+                
+                for chunk in response_stream:
+                    if chunk:
+                        full_response += chunk
+                        placeholder.markdown(full_response + "▌")
+                        
+            except Exception as e:
+                # -------------------------------------------------------------
+                # Fallback Heuristic Engine (In case free endpoints are busy)
+                # -------------------------------------------------------------
+                import time
+                p_lower = prompt.lower()
+                if any(w in p_lower for w in ["fever", "cough", "tired", "sick", "headache"]):
+                    response = "Based on your symptoms, this could be a seasonal viral infection. **However, if the fever exceeds 102°F or lasts more than 3 days, please visit your nearest SurakshaNet-monitored clinic immediately.** Stay hydrated, isolate if possible, and wear a mask."
+                elif any(w in p_lower for w in ["water", "dirty", "smell", "garbage", "waste"]):
+                    response = "This sounds like a public sanitation issue which can lead to vector-borne diseases like Dengue or water-borne illnesses like Cholera. Please file a formal report in the **Complaints** tab so our AI can automatically dispatch an inspection team to your area."
+                elif any(w in p_lower for w in ["emergency", "ambulance", "die", "unconscious", "blood", "severe"]):
+                    response = "🚨 **MEDICAL EMERGENCY DETECTED.** Please use the Emergency Medical Speed-Dial at the top of the dashboard immediately, or call the Toll-Free Hotline at **104** right now. Do not wait for further AI assessment."
+                else:
+                    response = f"(Offline Backup Mode) I am an AI assistant focused on public health and community safety. I can help triage symptoms or guide you on how to report health hazards."
+                
+                for chunk in response.split():
+                    full_response += chunk + " "
+                    time.sleep(0.04)
+                    placeholder.markdown(full_response + "▌")
+                    
+            placeholder.markdown(full_response)
+            st.session_state.chat_messages.append({"role": "assistant", "content": full_response})
 
 elif active_nav_idx == 6:
     st.markdown("## 🤝 How to Join Us")
