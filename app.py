@@ -195,6 +195,13 @@ st.markdown("""
         -webkit-user-select: none !important;
         -webkit-tap-highlight-color: transparent !important;
     }
+    div[data-baseweb="popover"] ul *, 
+    div[data-baseweb="popover"] [role="option"] *,
+    ul[role="listbox"] *,
+    li[role="option"] *,
+    div[role="option"] * {
+        color: #F8FAFC !important;
+    }
     div[data-baseweb="popover"] ul div:hover, 
     div[data-baseweb="popover"] ul li:hover,
     div[data-baseweb="popover"] [role="option"]:hover,
@@ -206,6 +213,18 @@ st.markdown("""
     li[role="option"][aria-selected="true"],
     div[role="option"][aria-selected="true"] {
         background-color: #1C1917 !important;
+        color: #FF9933 !important;
+    }
+    div[data-baseweb="popover"] ul div:hover *, 
+    div[data-baseweb="popover"] ul li:hover *,
+    div[data-baseweb="popover"] [role="option"]:hover *,
+    div[data-baseweb="popover"] [aria-selected="true"] *,
+    ul[role="listbox"] [role="option"]:hover *,
+    ul[role="listbox"] [aria-selected="true"] *,
+    li[role="option"]:hover *,
+    div[role="option"]:hover *,
+    li[role="option"][aria-selected="true"] *,
+    div[role="option"][aria-selected="true"] * {
         color: #FF9933 !important;
     }
     div[data-baseweb="select"] > div > div, 
