@@ -55,6 +55,39 @@ DEFAULT_GSHEET_URL = "https://script.google.com/macros/s/AKfycbzt_VXGXKrFKQltXEe
 
 
 
+# --- Dynamic Backgrounds ---
+def get_base64_of_bin_file(bin_file):
+    try:
+        with open(bin_file, 'rb') as f:
+            data = f.read()
+        return base64.b64encode(data).decode()
+    except Exception:
+        return ""
+
+bg_dark_b64 = get_base64_of_bin_file("assets/bg_dark.jpg")
+bg_light_b64 = get_base64_of_bin_file("assets/bg_light.jpg")
+
+st.markdown(f"""
+<style>
+    .stApp, [data-testid="stAppViewContainer"] {{
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }}
+    @media (prefers-color-scheme: dark) {{
+        .stApp, [data-testid="stAppViewContainer"] {{
+            background-image: url("data:image/jpeg;base64,{bg_dark_b64}") !important;
+        }}
+    }}
+    @media (prefers-color-scheme: light) {{
+        .stApp, [data-testid="stAppViewContainer"] {{
+            background-image: url("data:image/jpeg;base64,{bg_light_b64}") !important;
+        }}
+    }}
+</style>
+""", unsafe_allow_html=True)
+
 # --- Custom CSS Styling (Adaptive Dual-Theme: Dark & Light Mode Glassmorphism) ---
 st.markdown("""
 <style>
@@ -950,7 +983,7 @@ def render_app_image(image_path, caption=None, width=None):
             st.image(image_path, caption=caption, width=width)
         else:
             try:
-                st.image(image_path, caption=caption, use_column_width=True)
+                st.image(image_path, caption=caption, use_container_width=True)
             except TypeError:
                 st.image(image_path, caption=caption)
     elif caption:
@@ -1100,6 +1133,12 @@ I18N = {
         "node_soa_desc": "Monitors student health visits and symptoms at Siksha 'O' Anusandhan, Bhubaneswar.",
         "node_utkal_name": "🏫 Utkal University Health Center",
         "node_utkal_desc": "Monitors student health visits and symptoms across Utkal University, Vani Vihar.",
+        "node_sum_name": "🏥 SUM Hospital",
+        "node_sum_desc": "SUM Hospital (Kalinga Nagar) medical triage.",
+        "node_mendhasal_name": "🏡 PHC Mendhasal",
+        "node_mendhasal_desc": "Rural Primary Health Center at Mendhasal.",
+        "node_jatni_name": "🏡 CHC Jatni",
+        "node_jatni_desc": "Rural Community Health Center at Jatni.",
         
         # Symptom Labels
         "lbl_gi": "Diarrhea / Stomach Pain",
@@ -1256,6 +1295,12 @@ I18N = {
         "node_soa_desc": "ଭୁବନେଶ୍ୱର ସୋଆ ବିଶ୍ୱବିଦ୍ୟାଳୟ କ୍ୟାମ୍ପସର ଦୈନିକ ଚିକିତ୍ସା ତଥ୍ୟ।",
         "node_utkal_name": "🏫 ଉତ୍କଳ ବିଶ୍ୱବିଦ୍ୟାଳୟ ସ୍ୱାସ୍ଥ୍ୟ କେନ୍ଦ୍ର",
         "node_utkal_desc": "ବାଣୀବିହାର କ୍ୟାମ୍ପସ ଛାତ୍ର ଏବଂ କର୍ମଚାରୀଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଲକ୍ଷଣ ଟ୍ରାକ୍ କରିଥାଏ।",
+        "node_sum_name": "🏥 SUM Hospital",
+        "node_sum_desc": "SUM Hospital (Kalinga Nagar) medical triage.",
+        "node_mendhasal_name": "🏡 PHC Mendhasal",
+        "node_mendhasal_desc": "Rural Primary Health Center at Mendhasal.",
+        "node_jatni_name": "🏡 CHC Jatni",
+        "node_jatni_desc": "Rural Community Health Center at Jatni.",
         
         # Metric Labels
         "lbl_gi": "ଝାଡ଼ାବାନ୍ତି / ପେଟ ଯନ୍ତ୍ରଣା",
@@ -1412,6 +1457,12 @@ I18N = {
         "node_soa_desc": "भुवनेश्वर सोआ विश्वविद्यालय कैंपस का दैनिक स्वास्थ्य विवरण।",
         "node_utkal_name": "🏫 उत्कल विश्वविद्यालय स्वास्थ्य केंद्र",
         "node_utkal_desc": "वाणी विहार कैंपस में छात्रों और कर्मचारियों के स्वास्थ्य लक्षणों की निगरानी करता है।",
+        "node_sum_name": "🏥 SUM Hospital",
+        "node_sum_desc": "SUM Hospital (Kalinga Nagar) medical triage.",
+        "node_mendhasal_name": "🏡 PHC Mendhasal",
+        "node_mendhasal_desc": "Rural Primary Health Center at Mendhasal.",
+        "node_jatni_name": "🏡 CHC Jatni",
+        "node_jatni_desc": "Rural Community Health Center at Jatni.",
         
         # Symptom Labels
         "lbl_gi": "दस्त / पेट दर्द",
@@ -1440,12 +1491,18 @@ selected_lang = st.sidebar.selectbox(
 )
 t = I18N[selected_lang]
 
-is_dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True, key="dark_mode_toggle")
+is_dark_mode = st.session_state.get("dark_mode_toggle", True)
 
 if not is_dark_mode:
     st.markdown("""
     <style>
     :root {
+        /* Force Streamlit Native Components (like st.dataframe) to Light Mode */
+        --primary-color: #FF9933;
+        --background-color: #FFFFFF;
+        --secondary-background-color: #F8FAFC;
+        --text-color: #0F172A;
+        
         --card-bg: #FFFFFF;
         --inner-card-bg: #F8FAFC;
         --card-border: rgba(19, 136, 8, 0.25);
@@ -1474,6 +1531,25 @@ if not is_dark_mode:
     }
     .stMarkdown, .stText, p, span, div, h1, h2, h3, h4, h5, h6 {
         color: var(--text-primary);
+    }
+    div[data-baseweb="popover"] > div, div[data-baseweb="menu"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #CBD5E1 !important;
+    }
+    div[data-baseweb="popover"] [role="option"] {
+        color: #0F172A !important;
+    }
+    div[data-baseweb="popover"] [role="option"]:hover,
+    div[data-baseweb="popover"] [aria-selected="true"] {
+        background-color: #F1F5F9 !important;
+        color: #0F172A !important;
+    }
+    div[data-baseweb="select"] > div {
+        background-color: #FFFFFF !important;
+        border: 1px solid #CBD5E1 !important;
+    }
+    div[data-baseweb="select"] * {
+        color: #0F172A !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -1670,19 +1746,123 @@ if st.session_state.get("active_officer_alert"):
         st.session_state.active_officer_alert = None
         st.rerun()
 
+# --- Sidebar Navigation ---
 st.sidebar.markdown("---")
-st.sidebar.info(t["zero_central_policy"])
+st.sidebar.subheader("📍 Navigation")
+nav_options = [
+    t["tab_public"],
+    t["tab_clinic"],
+    t["tab_officer"]
+]
 
-# --- Dynamic Adaptive Baseline Controls ---
-st.sidebar.markdown("---")
-st.sidebar.subheader("📈 Baseline Surveillance Engine")
-baseline_mode_choice = st.sidebar.radio(
-    "Baseline Adaptation Mode:",
-    ["🔄 Dynamic Moving Baseline (Auto-Adapts Over Time)", "📌 Fixed Reference Baseline"],
-    index=0,
-    help="Dynamic Moving Baseline calculates a rolling 14-day historical mean (μ) and standard deviation (σ) from incoming clinic submissions while excluding epidemic outliers."
+if "active_nav_index" not in st.session_state or st.session_state.active_nav_index not in [0, 1, 2, 3]:
+    st.session_state.active_nav_index = 0
+
+nav_index = st.session_state.active_nav_index if st.session_state.active_nav_index < 3 else None
+
+def _on_nav_change():
+    selected_val = st.session_state.portal_navigation_bar
+    if selected_val in nav_options:
+        st.session_state.active_nav_index = nav_options.index(selected_val)
+
+st.sidebar.radio(
+    "Navigation Portal Selector",
+    options=nav_options,
+    index=nav_index,
+    key="portal_navigation_bar",
+    on_change=_on_nav_change,
+    label_visibility="collapsed"
 )
-is_dynamic_baseline = "Dynamic" in baseline_mode_choice
+
+# --- Settings & Tools ---
+st.sidebar.markdown("---")
+with st.sidebar.expander("⚙️ Settings & Tools", expanded=False):
+    def _on_lang_change():
+        pass
+    st.selectbox(
+        t.get("sidebar_lang_header", "🌐 Language"),
+        ["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"],
+        key="global_sidebar_lang_selector",
+        on_change=_on_lang_change
+    )
+    
+    st.markdown("---")
+    if st.button(f"🔒 {t.get('tab_audit', '4. Privacy Audit Log')}", use_container_width=True):
+        st.session_state.active_nav_index = 3
+        st.rerun()
+        
+    st.markdown("---")
+    st.info(t["zero_central_policy"])
+    
+    st.markdown("---")
+    st.subheader("📈 Baseline Surveillance Engine")
+    baseline_mode_choice = st.radio(
+        "Baseline Adaptation Mode:",
+        ["🔄 Dynamic Moving Baseline (Auto-Adapts Over Time)", "📌 Fixed Reference Baseline"],
+        index=0,
+        help="Dynamic Moving Baseline calculates a rolling 14-day historical mean (μ) and standard deviation (σ) from incoming clinic submissions while excluding epidemic outliers."
+    )
+    is_dynamic_baseline = "Dynamic" in baseline_mode_choice
+    
+    st.markdown("---")
+    
+    scenario_list = [
+        "🟢 Normal Baseline (No Active Outbreaks)",
+        "🌊 Gastrointestinal Outbreak Cluster (Waterborne)",
+        "🫁 Cold-Snap Acute Respiratory Surge",
+        "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
+        "⚠️ False Alarm (Single-Source Data Typo)",
+        "🔬 Small Cohort Threat (k-Anonymity Guard Demo)"
+    ]
+    
+    epicenter_list = [
+        "🌐 All Monitored Regions (Cross-City)",
+        "🏫 Kalinga Institute Clinic (Campus North)",
+        "🏫 SOA University Health Center (Campus South)",
+        "🏫 Utkal University Health Center (Campus East)",
+        "🏥 Capital Hospital (Central OPD)",
+        "🏥 SUM Hospital (Kalinga Nagar)",
+        "🏡 PHC Mendhasal (Rural Outpost)",
+        "🏡 CHC Jatni (Rural Outpost)",
+        "🧪 Municipal Water Treatment Zone"
+    ]
+    
+    if "current_scenario" not in st.session_state or st.session_state.current_scenario not in scenario_list:
+        st.session_state.current_scenario = scenario_list[0]
+    if "current_epicenter" not in st.session_state or st.session_state.current_epicenter not in epicenter_list:
+        st.session_state.current_epicenter = epicenter_list[0]
+        
+    cur_scen = st.session_state.current_scenario
+    scen_idx = scenario_list.index(cur_scen) if cur_scen in scenario_list else 0
+    scenario = st.selectbox(
+        t.get("inject_outbreak", "🕹️ Inject Outbreak Scenario"),
+        scenario_list,
+        index=scen_idx,
+        key="sim_scenario_choice"
+    )
+    st.session_state.current_scenario = scenario
+    
+    cur_epi = st.session_state.current_epicenter
+    epi_idx = epicenter_list.index(cur_epi) if cur_epi in epicenter_list else 0
+    
+    def on_epicenter_change():
+        chosen_epi = st.session_state.get("outbreak_epicenter_choice")
+        if chosen_epi:
+            st.session_state.current_epicenter = chosen_epi
+            if "All Monitored" not in chosen_epi and "Cross-City" not in chosen_epi:
+                st.session_state.radar_view_scope = "🎯 Focus on Selected Location"
+            else:
+                st.session_state.radar_view_scope = "🌐 Regional City Grid View"
+            st.session_state.last_scoped_epicenter = chosen_epi
+    
+    epicenter = st.selectbox(
+        t.get("inject_location", "📍 Outbreak Location / Epicenter"),
+        epicenter_list,
+        index=epi_idx,
+        key="outbreak_epicenter_choice",
+        on_change=on_epicenter_change
+    )
+    st.session_state.current_epicenter = epicenter
 
 # --- Active Nav State Initialization ---
 if "active_nav_index" not in st.session_state or st.session_state.active_nav_index not in [0, 1, 2, 3]:
@@ -1709,7 +1889,7 @@ elif os.path.exists(fallback_path):
     except Exception:
         pass
 
-col_head1, col_head2 = st.columns([1.5, 1.5])
+col_head1, col_head2 = st.columns([3, 1])
 with col_head1:
     if hero_logo_b64:
         img_badge = f'<img src="data:image/jpeg;base64,{hero_logo_b64}" style="width:68px; height:68px; min-width:68px; border-radius:16px; border:2px solid #FF9933; box-shadow:0 0 20px rgba(255, 153, 51,0.4); object-fit:cover;" />'
@@ -1732,105 +1912,46 @@ with col_head1:
     )
     st.markdown(header_html, unsafe_allow_html=True)
 
-scenario_list = [
-    "🟢 Normal Baseline (No Active Outbreaks)",
-    "🌊 Gastrointestinal Outbreak Cluster (Waterborne)",
-    "🫁 Cold-Snap Acute Respiratory Surge",
-    "⚡ Dual Outbreak (Waterborne Gastro + Respiratory Surge)",
-    "⚠️ False Alarm (Single-Source Data Typo)",
-    "🔬 Small Cohort Threat (k-Anonymity Guard Demo)"
-]
-
-epicenter_list = [
-    "🌐 All Monitored Regions (Cross-City)",
-    "🏫 Kalinga Institute Clinic (Campus North)",
-    "🏫 SOA University Health Center (Campus South)",
-    "🏫 Utkal University Health Center (Campus East)",
-    "🏥 Capital Hospital (Central OPD)",
-    "🧪 Municipal Water Treatment Zone"
-]
-
-if "current_scenario" not in st.session_state or st.session_state.current_scenario not in scenario_list:
-    st.session_state.current_scenario = scenario_list[0]
-if "current_epicenter" not in st.session_state or st.session_state.current_epicenter not in epicenter_list:
-    st.session_state.current_epicenter = epicenter_list[0]
-
-# Hide simulation controls on Tab 2 (Clinic Reporter) and Tab 3 (Medical Board Console)
-show_sim_selectors = (st.session_state.active_nav_index not in [1, 2])
-
 with col_head2:
-    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
-    if show_sim_selectors:
-        col_sel1, col_sel2 = st.columns(2)
-        with col_sel1:
-            cur_scen = st.session_state.current_scenario
-            scen_idx = scenario_list.index(cur_scen) if cur_scen in scenario_list else 0
-            scenario = st.selectbox(
-                t["inject_outbreak"],
-                scenario_list,
-                index=scen_idx,
-                key="sim_scenario_choice"
-            )
-            st.session_state.current_scenario = scenario
-            
-        with col_sel2:
-            cur_epi = st.session_state.current_epicenter
-            epi_idx = epicenter_list.index(cur_epi) if cur_epi in epicenter_list else 0
-            
-            def on_epicenter_change():
-                chosen_epi = st.session_state.get("outbreak_epicenter_choice")
-                if chosen_epi:
-                    st.session_state.current_epicenter = chosen_epi
-                    if "All Monitored" not in chosen_epi and "Cross-City" not in chosen_epi:
-                        st.session_state.radar_view_scope = "🎯 Focus on Selected Location"
-                    else:
-                        st.session_state.radar_view_scope = "🌐 Regional City Grid View"
-                    st.session_state.last_scoped_epicenter = chosen_epi
+    st.markdown("<div style='display: flex; justify-content: flex-end; padding-top: 15px;'>", unsafe_allow_html=True)
+    st.toggle("🌙 Dark Mode", key="dark_mode_toggle")
+    st.markdown("</div>", unsafe_allow_html=True)
 
-            epicenter = st.selectbox(
-                t.get("inject_location", "📍 Outbreak Location / Epicenter"),
-                epicenter_list,
-                index=epi_idx,
-                key="outbreak_epicenter_choice",
-                on_change=on_epicenter_change
-            )
-            st.session_state.current_epicenter = epicenter
-    else:
-        scenario = st.session_state.current_scenario
-        epicenter = st.session_state.current_epicenter
+scenario = st.session_state.current_scenario
+epicenter = st.session_state.current_epicenter
         
-        if st.session_state.active_nav_index == 1:
-            st.markdown(
-                """
-                <div style='background: rgba(28, 25, 23, 0.7); border: 1px solid rgba(19, 136, 8, 0.3); border-left: 4px solid #138808; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
-                    <div style='display: flex; align-items: center; justify-content: space-between;'>
-                        <div>
-                            <div style='font-size: 0.75rem; font-weight: 700; color: var(--neon-blue); letter-spacing: 0.5px; text-transform: uppercase;'>🏥 Clinic Ingestion Node</div>
-                            <div style='font-size: 0.95rem; font-weight: 700; color: var(--text-primary);'>Grassroots Telemetry Terminal</div>
-                        </div>
-                        <span style='background: rgba(19, 136, 8, 0.15); color: var(--neon-blue); border: 1px solid #138808; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
-                            🔒 DPDP ACT SECURE
-                        </span>
-                    </div>
+if st.session_state.active_nav_index == 1:
+    st.markdown(
+        """
+        <div style='background: rgba(28, 25, 23, 0.7); border: 1px solid rgba(19, 136, 8, 0.3); border-left: 4px solid #138808; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
+            <div style='display: flex; align-items: center; justify-content: space-between;'>
+                <div>
+                    <div style='font-size: 0.75rem; font-weight: 700; color: var(--neon-blue); letter-spacing: 0.5px; text-transform: uppercase;'>🏥 Clinic Ingestion Node</div>
+                    <div style='font-size: 0.95rem; font-weight: 700; color: var(--text-primary);'>Grassroots Telemetry Terminal</div>
                 </div>
-                """, unsafe_allow_html=True
-            )
-        elif st.session_state.active_nav_index == 2:
-            st.markdown(
-                """
-                <div style='background: rgba(28, 25, 23, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-left: 4px solid #EF4444; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
-                    <div style='display: flex; align-items: center; justify-content: space-between;'>
-                        <div>
-                            <div style='font-size: 0.75rem; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; text-transform: uppercase;'>🏛️ Medical Board Console</div>
-                            <div style='font-size: 0.95rem; font-weight: 700; color: var(--text-primary);'>Statutory Surveillance & Dispatch</div>
-                        </div>
-                        <span style='background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid #EF4444; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
-                            🛡️ MASTER KEY AUTH
-                        </span>
-                    </div>
+                <span style='background: rgba(19, 136, 8, 0.15); color: var(--neon-blue); border: 1px solid #138808; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
+                    🔒 DPDP ACT SECURE
+                </span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True
+    )
+elif st.session_state.active_nav_index == 2:
+    st.markdown(
+        """
+        <div style='background: rgba(28, 25, 23, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-left: 4px solid #EF4444; border-radius: 12px; padding: 12px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
+            <div style='display: flex; align-items: center; justify-content: space-between;'>
+                <div>
+                    <div style='font-size: 0.75rem; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; text-transform: uppercase;'>🏛️ Medical Board Console</div>
+                    <div style='font-size: 0.95rem; font-weight: 700; color: var(--text-primary);'>Statutory Surveillance & Dispatch</div>
                 </div>
-                """, unsafe_allow_html=True
-            )
+                <span style='background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid #EF4444; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;'>
+                    🛡️ MASTER KEY AUTH
+                </span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True
+    )
 
 # --- Node Parameter Schema ---
 NODES = {
@@ -1892,6 +2013,51 @@ NODES = {
             "diarrheal": {"label": t["lbl_diarrhea"], "baseline_mean": 12.0, "baseline_std": 2.2, "is_count": True},
             "ili": {"label": t["lbl_ili"], "baseline_mean": 15.0, "baseline_std": 3.1, "is_count": True},
             "fever_high": {"label": t["lbl_fever_high"], "baseline_mean": 25.0, "baseline_std": 4.5, "is_count": True}
+        }
+    },
+    "node_sum": {
+        "name": t["node_sum_name"],
+        "short_name": "SUM Hospital",
+        "lat": 20.278,
+        "lon": 85.776,
+        "zone": "Kalinga Nagar Urban",
+        "type": "Hospital Triage",
+        "image": "assets/district_hospital_opd.jpg",
+        "description": t["node_sum_desc"],
+        "metrics": {
+            "gastrointestinal": {"label": t["lbl_gi"], "baseline_mean": 6.0, "baseline_std": 1.5, "is_count": True},
+            "respiratory": {"label": t["lbl_resp"], "baseline_mean": 8.0, "baseline_std": 2.0, "is_count": True},
+            "fever": {"label": t["lbl_fever"], "baseline_mean": 10.0, "baseline_std": 2.5, "is_count": True}
+        }
+    },
+    "node_mendhasal": {
+        "name": t["node_mendhasal_name"],
+        "short_name": "PHC Mendhasal",
+        "lat": 20.28,
+        "lon": 85.73,
+        "zone": "Rural West",
+        "type": "Primary Health Center",
+        "image": "assets/rural_phc_clinic.jpg",
+        "description": t["node_mendhasal_desc"],
+        "metrics": {
+            "gastrointestinal": {"label": t["lbl_gi"], "baseline_mean": 4.5, "baseline_std": 1.2, "is_count": True},
+            "respiratory": {"label": t["lbl_resp"], "baseline_mean": 5.0, "baseline_std": 1.5, "is_count": True},
+            "fever": {"label": t["lbl_fever"], "baseline_mean": 7.0, "baseline_std": 1.8, "is_count": True}
+        }
+    },
+    "node_jatni": {
+        "name": t["node_jatni_name"],
+        "short_name": "CHC Jatni",
+        "lat": 20.16,
+        "lon": 85.70,
+        "zone": "Rural South-West",
+        "type": "Community Health Center",
+        "image": "assets/rural_phc_clinic.jpg",
+        "description": t["node_jatni_desc"],
+        "metrics": {
+            "gastrointestinal": {"label": t["lbl_gi"], "baseline_mean": 5.5, "baseline_std": 1.3, "is_count": True},
+            "respiratory": {"label": t["lbl_resp"], "baseline_mean": 6.5, "baseline_std": 1.6, "is_count": True},
+            "fever": {"label": t["lbl_fever"], "baseline_mean": 8.0, "baseline_std": 2.0, "is_count": True}
         }
     },
     "node_water": {
@@ -2138,6 +2304,9 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
     is_soa_epicenter = "SOA" in epicenter or is_all_regions
     is_utkal_epicenter = "Utkal" in epicenter or is_all_regions
     is_hospital_epicenter = "Capital Hospital" in epicenter or is_all_regions
+    is_sum_epicenter = "SUM Hospital" in epicenter or is_all_regions
+    is_mendhasal_epicenter = "Mendhasal" in epicenter or is_all_regions
+    is_jatni_epicenter = "Jatni" in epicenter or is_all_regions
     is_water_epicenter = "Water" in epicenter or is_all_regions
     
     active_gsheet_url = st.session_state.gsheet_url
@@ -2202,11 +2371,17 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                 elif (is_water_epicenter or is_all_regions) and node_id == "node_water":
                     if metric_id == "coliform": val = 5.6 # 🔴 RED (> 10σ Bacterial Spike)
                     elif metric_id == "turbidity": val = 3.6 # 🔴 RED (Turbidity Runoff)
+                elif node_id == "node_mendhasal":
+                    if metric_id == "gastrointestinal": val = 14.5 # 🔴 RED
+                elif node_id == "node_jatni":
+                    if metric_id == "gastrointestinal": val = 15.5 # 🔴 RED
                 # Secondary Contact: SOA Campus South & Capital Hospital Triage -> 🟡 YELLOW Warning
                 elif node_id == "node_soa":
                     if metric_id == "gastrointestinal": val = 6.4 # 🟡 YELLOW (~2.4σ Warning)
                 elif node_id == "node_hospital":
                     if metric_id == "diarrheal": val = 17.5 # 🟡 YELLOW (~2.5σ Intake Surge)
+                elif node_id == "node_sum":
+                    if metric_id == "gastrointestinal": val = 9.5 # 🟡 YELLOW
                 elif node_id == "node_weather":
                     if metric_id == "rainfall": val = 24.0 # 🟡 YELLOW (Heavy Precipitation Trigger)
                     elif metric_id == "temp": val = 32.8
@@ -2218,11 +2393,17 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                     elif metric_id == "fever_high": val = mean + 1.9 * std
                 elif node_id == "node_campus":
                     if metric_id == "respiratory": val = 11.0 # 🔴 RED (~5.0σ Outbreak Surge)
+                elif node_id == "node_sum":
+                    if metric_id == "respiratory": val = 16.0 # 🔴 RED
                 # Secondary Warning: SOA University & Utkal University -> 🟡 YELLOW Warning
                 elif node_id == "node_soa":
                     if metric_id == "respiratory": val = 9.2 # 🟡 YELLOW (~2.3σ Warning)
                 elif node_id == "node_utkal":
                     if metric_id == "respiratory": val = 8.5 # 🟡 YELLOW (~2.3σ Warning)
+                elif node_id == "node_mendhasal":
+                    if metric_id == "respiratory": val = 8.8 # 🟡 YELLOW
+                elif node_id == "node_jatni":
+                    if metric_id == "respiratory": val = 9.5 # 🟡 YELLOW
                 elif node_id == "node_weather":
                     if metric_id == "temp": val = 16.5 # 🟡 Cold Snap Meteorological Anomaly
                     elif metric_id == "humidity": val = 93.0
@@ -2235,6 +2416,15 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                 elif node_id == "node_hospital":
                     if metric_id == "diarrheal": val = 26.0 # 🔴 RED
                     elif metric_id == "ili": val = 32.0 # 🔴 RED
+                elif node_id == "node_sum":
+                    if metric_id == "gastrointestinal": val = 9.5
+                    elif metric_id == "respiratory": val = 16.0
+                elif node_id == "node_mendhasal":
+                    if metric_id == "gastrointestinal": val = 14.5
+                    elif metric_id == "respiratory": val = 8.8
+                elif node_id == "node_jatni":
+                    if metric_id == "gastrointestinal": val = 15.5
+                    elif metric_id == "respiratory": val = 9.5
                 elif node_id == "node_water":
                     if metric_id == "coliform": val = 5.6 # 🔴 RED
                 elif node_id == "node_soa":
@@ -2427,6 +2617,9 @@ def run_federated_aggregation(node_data, threshold, scenario_name="", epicenter_
     elif "SOA" in epicenter_name: loc_node_id = "node_soa"
     elif "Utkal" in epicenter_name: loc_node_id = "node_utkal"
     elif "Capital Hospital" in epicenter_name: loc_node_id = "node_hospital"
+    elif "SUM Hospital" in epicenter_name: loc_node_id = "node_sum"
+    elif "Mendhasal" in epicenter_name: loc_node_id = "node_mendhasal"
+    elif "Jatni" in epicenter_name: loc_node_id = "node_jatni"
     elif "Water" in epicenter_name: loc_node_id = "node_water"
     elif "Weather" in epicenter_name: loc_node_id = "node_weather"
     
@@ -2495,31 +2688,7 @@ def run_federated_aggregation(node_data, threshold, scenario_name="", epicenter_
 node_data = generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mode=is_dynamic_baseline)
 agg_results = run_federated_aggregation(node_data, false_alarm_threshold, scenario, epicenter)
 
-# --- Stateful Navigation Portals ---
-tab_options = [
-    t["tab_public"],
-    t["tab_clinic"],
-    t["tab_officer"],
-    t["tab_audit"]
-]
-
-if "active_nav_index" not in st.session_state or st.session_state.active_nav_index not in [0, 1, 2, 3]:
-    st.session_state.active_nav_index = 0
-
-def _on_nav_change():
-    selected_val = st.session_state.portal_navigation_bar
-    if selected_val in tab_options:
-        st.session_state.active_nav_index = tab_options.index(selected_val)
-
-st.radio(
-    "Navigation Portal Selector",
-    options=tab_options,
-    index=st.session_state.active_nav_index,
-    horizontal=True,
-    key="portal_navigation_bar",
-    on_change=_on_nav_change,
-    label_visibility="collapsed"
-)
+# Navigation handled in sidebar
 
 active_nav_idx = st.session_state.active_nav_index
 
@@ -2537,18 +2706,9 @@ if active_nav_idx == 0:
     elif "radar_view_scope" not in st.session_state:
         st.session_state.radar_view_scope = "🎯 Focus on Selected Location" if is_specific_loc else "🌐 Regional City Grid View"
 
-    col_scope1, col_scope2 = st.columns([1.7, 1.3])
-    with col_scope1:
-        st.markdown(f"### {t['radar_title']}")
-        st.markdown(t['radar_desc'])
-    with col_scope2:
-        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
-        view_scope = st.radio(
-            "🔭 Surveillance Data Scope:",
-            ["🎯 Focus on Selected Location", "🌐 Regional City Grid View"],
-            horizontal=True,
-            key="radar_view_scope"
-        )
+    st.markdown(f"### {t['radar_title']}")
+    st.markdown(t['radar_desc'])
+    view_scope = st.session_state.radar_view_scope
         
     # Evaluate scoped display variables
     loc_info = agg_results.get("local_metrics")
@@ -3460,7 +3620,7 @@ elif active_nav_idx == 1:
                     uploaded_file = st.file_uploader("Upload custom photo (PNG, JPG, JPEG)", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
                     
                     if uploaded_file is not None:
-                        st.image(uploaded_file, caption="Uploaded Document", use_column_width=True)
+                        st.image(uploaded_file, caption="Uploaded Document", use_container_width=True)
                         if st.button("🔍 Run AI Extraction", type="primary", use_container_width=True):
                             with st.spinner("Initializing Deep Learning ANN and parsing text..."):
                                 reader = load_ocr_model()
