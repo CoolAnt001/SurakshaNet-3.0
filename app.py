@@ -179,11 +179,27 @@ st.markdown("""
         border: 1px solid var(--input-border) !important;
         color: var(--text-primary) !important;
     }
+    div[data-baseweb="popover"] ul, 
+    div[data-baseweb="popover"] ul div, 
+    div[data-baseweb="popover"] ul li,
     div[data-baseweb="popover"] [role="option"] {
+        background-color: var(--card-bg) !important;
+        color: var(--text-primary) !important;
         cursor: pointer !important;
         user-select: none !important;
         -webkit-user-select: none !important;
         -webkit-tap-highlight-color: transparent !important;
+    }
+    div[data-baseweb="popover"] ul div:hover, 
+    div[data-baseweb="popover"] ul li:hover,
+    div[data-baseweb="popover"] [role="option"]:hover,
+    div[data-baseweb="popover"] [aria-selected="true"] {
+        background-color: var(--inner-card-bg) !important;
+        color: var(--text-primary) !important;
+    }
+    div[data-baseweb="select"] > div > div, 
+    div[data-baseweb="select"] > div > div > div {
+        background-color: transparent !important;
     }
     div[data-baseweb="input"], div[data-baseweb="base-input"] {
         background-color: var(--input-bg) !important;
@@ -1628,31 +1644,7 @@ if not is_dark_mode:
     .stMarkdown, .stText, p, span, div, h1, h2, h3, h4, h5, h6 {
         color: var(--text-primary);
     }
-    div[data-baseweb="popover"] > div, div[data-baseweb="menu"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #CBD5E1 !important;
-    }
-    div[data-baseweb="popover"] ul, 
-    div[data-baseweb="popover"] ul div, 
-    div[data-baseweb="popover"] ul li,
-    div[data-baseweb="popover"] [role="option"] {
-        background-color: #FFFFFF !important;
-        color: #0F172A !important;
-    }
-    div[data-baseweb="popover"] ul div:hover, 
-    div[data-baseweb="popover"] ul li:hover,
-    div[data-baseweb="popover"] [role="option"]:hover,
-    div[data-baseweb="popover"] [aria-selected="true"] {
-        background-color: #F1F5F9 !important;
-        color: #0F172A !important;
-    }
-    div[data-baseweb="select"] > div {
-        background-color: #FFFFFF !important;
-        border: 1px solid #CBD5E1 !important;
-    }
-    div[data-baseweb="select"] * {
-        color: #0F172A !important;
-    }
+
     </style>
     """, unsafe_allow_html=True)
     
