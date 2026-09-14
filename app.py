@@ -2071,6 +2071,14 @@ is_dynamic_baseline = "Dynamic" in st.session_state.stored_baseline
 with st.sidebar:
     st.markdown("<div style='margin-top: 25vh;'></div>", unsafe_allow_html=True)
     st.markdown("---")
+    
+    epicenter_idx = epicenter_list.index(st.session_state.current_epicenter) if st.session_state.current_epicenter in epicenter_list else 0
+    st.session_state.current_epicenter = st.selectbox(
+        t.get("sidebar_epicenter_label", "📍 Select Health Node (Epicenter)"),
+        epicenter_list,
+        index=epicenter_idx,
+        key="sidebar_epicenter_select"
+    )
 
 # --- Top Navigation / Main Header ---
 hero_logo_b64 = ""
@@ -2142,22 +2150,35 @@ if st.session_state.get("active_officer_alert"):
 
 col_head1, col_head_space, col_popover = st.columns([6, 0.4, 0.4])
 with col_head1:
-    if hero_logo_b64:
-        img_badge = f'<img src="data:image/jpeg;base64,{hero_logo_b64}" style="width:68px; height:68px; min-width:68px; border-radius:16px; border:2px solid #FF9933; box-shadow:0 0 20px rgba(255, 153, 51,0.4); object-fit:cover;" />'
+    is_home = (st.session_state.active_nav_index == 0)
+    
+    if is_home:
+        banner_cls = "custom-hero-banner"
+        banner_style = "display: flex; align-items: center; gap: 20px;"
+        logo_size = "68px"
+        title_size = "2.15rem"
+        sub_size = "0.95rem"
     else:
-        img_badge = '<div style="width:64px; height:64px; min-width:64px; border-radius:16px; background:linear-gradient(135deg, rgba(255, 153, 51,0.2) 0%, rgba(19, 136, 8,0.4) 100%); border:1.5px solid #FF9933; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(255, 153, 51,0.35); font-size:2rem;">🛡️</div>'
+        banner_cls = ""
+        banner_style = "background: transparent; padding: 10px 0px 5px 0px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px;"
+        logo_size = "48px"
+        title_size = "1.6rem"
+        sub_size = "0.85rem"
+        
+    if hero_logo_b64:
+        img_badge = f'<img src="data:image/jpeg;base64,{hero_logo_b64}" style="width:{logo_size}; height:{logo_size}; min-width:{logo_size}; border-radius:12px; border:2px solid #FF9933; box-shadow:0 0 15px rgba(255, 153, 51,0.3); object-fit:cover;" />'
+    else:
+        img_badge = f'<div style="width:{logo_size}; height:{logo_size}; min-width:{logo_size}; border-radius:12px; background:linear-gradient(135deg, rgba(255, 153, 51,0.2) 0%, rgba(19, 136, 8,0.4) 100%); border:1.5px solid #FF9933; display:flex; align-items:center; justify-content:center; box-shadow:0 0 15px rgba(255, 153, 51,0.3); font-size:1.5rem;">🛡️</div>'
+
+    top_label_html = f'<div style="font-size: 0.78rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--neon-blue); margin-bottom: 5px; display: flex; align-items: center; gap: 8px;"><span>⚡ TEAM CODEKRAFT</span><span style="opacity: 0.35; color: var(--text-primary);">•</span><span style="color: var(--text-secondary);">ODISHA HEALTH SURVEILLANCE GRID</span></div>' if is_home else ""
 
     header_html = (
-        f'<div class="custom-hero-banner" style="display: flex; align-items: center; gap: 20px;">'
+        f'<div class="{banner_cls}" style="{banner_style}">'
         f'{img_badge}'
         f'<div>'
-        f'<div style="font-size: 0.78rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--neon-blue); margin-bottom: 5px; display: flex; align-items: center; gap: 8px;">'
-        f'<span>⚡ TEAM CODEKRAFT</span>'
-        f'<span style="opacity: 0.35; color: #FFFFFF;">•</span>'
-        f'<span style="color: #737373;">ODISHA HEALTH SURVEILLANCE GRID</span>'
-        f'</div>'
-        f'<h1 style="margin: 0; font-size: 2.15rem; line-height: 1.1; letter-spacing: -0.5px;">{t["app_title"]}</h1>'
-        f'<p style="margin: 4px 0 0 0; opacity: 0.85; font-size: 0.95rem; color: #E2E8F0;">{t["app_sub"]}</p>'
+        f'{top_label_html}'
+        f'<h1 style="margin: 0; font-size: {title_size}; line-height: 1.1; letter-spacing: -0.5px;">{t["app_title"]}</h1>'
+        f'<p style="margin: 4px 0 0 0; opacity: 1; font-weight: 500; font-size: {sub_size}; color: var(--text-primary);">{t["app_sub"]}</p>'
         f'</div>'
         f'</div>'
     )
