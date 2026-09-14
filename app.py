@@ -575,6 +575,43 @@ st.markdown("""
     .node-telemetry-box span, .node-telemetry-box div {
         color: var(--text-secondary);
     }
+    .horizontal-carousel {
+        display: flex;
+        overflow-x: auto;
+        gap: 20px;
+        padding: 10px 5px 25px 5px;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+    .horizontal-carousel::-webkit-scrollbar {
+        height: 8px;
+    }
+    .horizontal-carousel::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .horizontal-carousel::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 0.3);
+        border-radius: 4px;
+    }
+    .horizontal-carousel::-webkit-scrollbar-thumb:hover {
+        background: rgba(148, 163, 184, 0.5);
+    }
+    .carousel-item {
+        flex: 0 0 280px;
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
+    }
+    .carousel-item img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid var(--card-border);
+        box-shadow: var(--card-shadow);
+        margin-bottom: 12px;
+    }
+
     .pipeline-step-badge {
         background: rgba(19, 136, 8, 0.12) !important;
         border: 1px solid #D97706 !important;
@@ -1547,12 +1584,7 @@ I18N = {
 if "gsheet_url" not in st.session_state:
     st.session_state.gsheet_url = DEFAULT_GSHEET_URL
 
-st.sidebar.header(I18N["English"]["sidebar_lang_header"])
-selected_lang = st.sidebar.selectbox(
-    "Select Display Language / ଭାଷା ବାଛନ୍ତୁ / भाषा चुनें",
-    ["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"],
-    key="global_sidebar_lang_selector"
-)
+selected_lang = st.session_state.get("settings_lang_selector", "English")
 t = I18N[selected_lang]
 
 is_dark_mode = st.session_state.get("dark_mode_toggle", True)
@@ -1600,9 +1632,15 @@ if not is_dark_mode:
         background-color: #FFFFFF !important;
         border: 1px solid #CBD5E1 !important;
     }
+    div[data-baseweb="popover"] ul, 
+    div[data-baseweb="popover"] ul div, 
+    div[data-baseweb="popover"] ul li,
     div[data-baseweb="popover"] [role="option"] {
+        background-color: #FFFFFF !important;
         color: #0F172A !important;
     }
+    div[data-baseweb="popover"] ul div:hover, 
+    div[data-baseweb="popover"] ul li:hover,
     div[data-baseweb="popover"] [role="option"]:hover,
     div[data-baseweb="popover"] [aria-selected="true"] {
         background-color: #F1F5F9 !important;
@@ -1779,8 +1817,6 @@ if "active_officer_alert" not in st.session_state:
     st.session_state.active_officer_alert = st.session_state.notifications[0] if st.session_state.notifications else None
 
 # --- Sidebar Controls (Simplified) ---
-st.sidebar.title(t["sidebar_title"])
-st.sidebar.markdown(t["sidebar_desc"])
 
 # --- Officer Broadcast Glowing Popup ---
 if st.session_state.get("active_officer_alert"):
@@ -1866,15 +1902,11 @@ st.sidebar.radio(
 # --- Settings & Tools ---
 st.sidebar.markdown("---")
 with st.sidebar.expander("⚙️ Settings & Tools", expanded=False):
-    def _on_lang_change():
-        st.session_state.global_sidebar_lang_selector = st.session_state.settings_lang_selector
-
     st.selectbox(
         t.get("sidebar_lang_header", "🌐 Language"),
         ["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"],
         index=["English", "ଓଡ଼ିଆ (Odia)", "हिंदी (Hindi)"].index(selected_lang),
-        key="settings_lang_selector",
-        on_change=_on_lang_change
+        key="settings_lang_selector"
     )
     
     st.markdown("---")
@@ -3235,123 +3267,169 @@ if active_nav_idx == 0:
     st.markdown("#### 🏥 Grassroots Surveillance Grid Centers (Live Facility Telemetry)")
     st.markdown("Live anonymized stream from Primary Health Centres, municipal water testing stations, and hospital outpatient departments across the region:")
     
-    col_nc1, col_nc2, col_nc3, col_nc4 = st.columns(4)
+    # Calculate Metrics
+    utkal_data = node_data.get("node_utkal", {})
+    utkal_metrics = utkal_data.get("metrics", {})
+    max_z_u = max([m["z_score"] for m in utkal_metrics.values()]) if utkal_metrics else 0.0
+    badge_u = "🟢 Normal" if max_z_u <= 1.5 else ("🟡 Warning" if max_z_u <= 3.0 else "🚨 Outbreak")
     
-    # 1. Rural PHC Kanpur
-    with col_nc1:
-        render_app_image("assets/rural_phc_clinic.jpg")
-        utkal_data = node_data.get("node_utkal", {})
-        utkal_metrics = utkal_data.get("metrics", {})
-        max_z_u = max([m["z_score"] for m in utkal_metrics.values()]) if utkal_metrics else 0.0
-        badge_u = "🟢 Normal" if max_z_u <= 1.5 else ("🟡 Warning" if max_z_u <= 3.0 else "🚨 Outbreak")
-        st.markdown(f"""
-        <div class="node-telemetry-box">
-            <strong style="font-size:0.95rem; font-weight:700;">Kanpur PHC Clinic</strong><br>
-            <span style="font-size:0.78rem; opacity: 0.85;">Odisha Health Mission</span><br>
-            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_u}</span> <span style="font-size:0.78rem; font-weight:bold; margin-left:4px;">Z: {max_z_u}σ</span></div>
-            <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">Daily Paper Register & IVR</div>
+    water_data = node_data.get("node_water", {})
+    water_metrics = water_data.get("metrics", {})
+    max_z_w = max([m["z_score"] for m in water_metrics.values()]) if water_metrics else 0.0
+    badge_w = "🟢 Normal" if max_z_w <= 1.5 else ("🟡 Warning" if max_z_w <= 3.0 else "🚨 Outbreak")
+    turb_val = water_metrics.get("turbidity", {}).get("transmitted_val", 1.0)
+    colif_val = water_metrics.get("coliform", {}).get("transmitted_val", 1.2)
+    
+    hosp_data = node_data.get("node_hospital", {})
+    hosp_metrics = hosp_data.get("metrics", {})
+    max_z_h = max([m["z_score"] for m in hosp_metrics.values()]) if hosp_metrics else 0.0
+    badge_h = "🟢 Normal" if max_z_h <= 1.5 else ("🟡 Warning" if max_z_h <= 3.0 else "🚨 Outbreak")
+    diarrhea_h = hosp_metrics.get("diarrheal", {}).get("transmitted_val", 12.0)
+    ili_h = hosp_metrics.get("ili", {}).get("transmitted_val", 15.0)
+    
+    campus_data = node_data.get("node_campus", {})
+    campus_metrics = campus_data.get("metrics", {})
+    max_z_c = max([m["z_score"] for m in campus_metrics.values()]) if campus_metrics else 0.0
+    badge_c = "🟢 Normal" if max_z_c <= 1.5 else ("🟡 Warning" if max_z_c <= 3.0 else "🚨 Outbreak")
+    fever_c = campus_metrics.get("fever", {}).get("transmitted_val", 8.0)
+    
+    # Base64 Images
+    try:
+        img_phc = get_base64_of_bin_file("assets/rural_phc_clinic.jpg")
+        img_water = get_base64_of_bin_file("assets/rural_water_point.jpg")
+        img_hosp = get_base64_of_bin_file("assets/district_hospital_opd.jpg")
+        img_camp = get_base64_of_bin_file("assets/college_clinic.jpg")
+    except Exception:
+        img_phc, img_water, img_hosp, img_camp = "", "", "", ""
+    
+    carousel_html = f"""
+    <div class="horizontal-carousel">
+        <div class="carousel-item">
+            <img src="data:image/jpeg;base64,{img_phc}">
+            <div class="node-telemetry-box">
+                <strong style="font-size:0.95rem; font-weight:700;">Kanpur PHC Clinic</strong><br>
+                <span style="font-size:0.78rem; opacity: 0.85;">Odisha Health Mission</span><br>
+                <div style="margin-top:8px;"><span class="grassroots-badge">{badge_u}</span> <span style="font-size:0.78rem; font-weight:bold; margin-left:4px;">Z: {max_z_u}σ</span></div>
+                <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">Daily Paper Register & IVR</div>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-    # 2. Municipal Water Station
-    with col_nc2:
-        render_app_image("assets/rural_water_point.jpg")
-        water_data = node_data.get("node_water", {})
-        water_metrics = water_data.get("metrics", {})
-        max_z_w = max([m["z_score"] for m in water_metrics.values()]) if water_metrics else 0.0
-        badge_w = "🟢 Normal" if max_z_w <= 1.5 else ("🟡 Warning" if max_z_w <= 3.0 else "🚨 Outbreak")
-        turb_val = water_metrics.get("turbidity", {}).get("transmitted_val", 1.0)
-        colif_val = water_metrics.get("coliform", {}).get("transmitted_val", 1.2)
-        st.markdown(f"""
-        <div class="node-telemetry-box">
-            <strong style="font-size:0.95rem; font-weight:700;">Municipal Water Testing</strong><br>
-            <span style="font-size:0.78rem; opacity: 0.85;">Reservoir & Supply Standpost</span><br>
-            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_w}</span> <span style="font-size:0.78rem; font-weight:bold; color:#D97706; margin-left:4px;">NTU: {turb_val}</span></div>
-            <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">Coliform: {colif_val} MPN/100ml</div>
+        <div class="carousel-item">
+            <img src="data:image/jpeg;base64,{img_water}">
+            <div class="node-telemetry-box">
+                <strong style="font-size:0.95rem; font-weight:700;">Municipal Water Testing</strong><br>
+                <span style="font-size:0.78rem; opacity: 0.85;">Reservoir & Supply Standpost</span><br>
+                <div style="margin-top:8px;"><span class="grassroots-badge">{badge_w}</span> <span style="font-size:0.78rem; font-weight:bold; color:#D97706; margin-left:4px;">NTU: {turb_val}</span></div>
+                <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">Coliform: {colif_val} MPN/100ml</div>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-    # 3. Capital Civil Hospital OPD
-    with col_nc3:
-        render_app_image("assets/district_hospital_opd.jpg")
-        hosp_data = node_data.get("node_hospital", {})
-        hosp_metrics = hosp_data.get("metrics", {})
-        max_z_h = max([m["z_score"] for m in hosp_metrics.values()]) if hosp_metrics else 0.0
-        badge_h = "🟢 Normal" if max_z_h <= 1.5 else ("🟡 Warning" if max_z_h <= 3.0 else "🚨 Outbreak")
-        diarrhea_h = hosp_metrics.get("diarrheal", {}).get("transmitted_val", 12.0)
-        ili_h = hosp_metrics.get("ili", {}).get("transmitted_val", 15.0)
-        st.markdown(f"""
-        <div class="node-telemetry-box">
-            <strong style="font-size:0.95rem; font-weight:700;">Capital Civil Hospital</strong><br>
-            <span style="font-size:0.78rem; opacity: 0.85;">Urban OPD & Fever Clinic</span><br>
-            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_h}</span> <span style="font-size:0.78rem; font-weight:bold; margin-left:4px;">Z: {max_z_h}σ</span></div>
-            <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">OPD Diarrheal: {diarrhea_h} | ILI: {ili_h}</div>
+        <div class="carousel-item">
+            <img src="data:image/jpeg;base64,{img_hosp}">
+            <div class="node-telemetry-box">
+                <strong style="font-size:0.95rem; font-weight:700;">Capital Civil Hospital</strong><br>
+                <span style="font-size:0.78rem; opacity: 0.85;">Urban OPD & Fever Clinic</span><br>
+                <div style="margin-top:8px;"><span class="grassroots-badge">{badge_h}</span> <span style="font-size:0.78rem; font-weight:bold; margin-left:4px;">Z: {max_z_h}σ</span></div>
+                <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">OPD Diarrheal: {diarrhea_h} | ILI: {ili_h}</div>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-    # 4. Campus Health Center
-    with col_nc4:
-        render_app_image("assets/college_clinic.jpg")
-        campus_data = node_data.get("node_campus", {})
-        campus_metrics = campus_data.get("metrics", {})
-        max_z_c = max([m["z_score"] for m in campus_metrics.values()]) if campus_metrics else 0.0
-        badge_c = "🟢 Normal" if max_z_c <= 1.5 else ("🟡 Warning" if max_z_c <= 3.0 else "🚨 Outbreak")
-        fever_c = campus_metrics.get("fever", {}).get("transmitted_val", 8.0)
-        st.markdown(f"""
-        <div class="node-telemetry-box">
-            <strong style="font-size:0.95rem; font-weight:700;">Campus Health Center</strong><br>
-            <span style="font-size:0.78rem; opacity: 0.85;">Student & Staff Infirmary</span><br>
-            <div style="margin-top:8px;"><span class="grassroots-badge">{badge_c}</span> <span style="font-size:0.78rem; font-weight:bold; margin-left:4px;">Z: {max_z_c}σ</span></div>
-            <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">Febrile triage: {fever_c} cases</div>
+        <div class="carousel-item">
+            <img src="data:image/jpeg;base64,{img_camp}">
+            <div class="node-telemetry-box">
+                <strong style="font-size:0.95rem; font-weight:700;">Campus Health Center</strong><br>
+                <span style="font-size:0.78rem; opacity: 0.85;">Student & Staff Infirmary</span><br>
+                <div style="margin-top:8px;"><span class="grassroots-badge">{badge_c}</span> <span style="font-size:0.78rem; font-weight:bold; margin-left:4px;">Z: {max_z_c}σ</span></div>
+                <div style="font-size:0.78rem; margin-top:6px; opacity: 0.9;">Febrile triage: {fever_c} cases</div>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """
+    st.markdown(carousel_html, unsafe_allow_html=True)
 
     # Preventive Community Health Action Protocols
     st.markdown("---")
     st.markdown("#### 🛡️ Verified Public Health & Preventive Protocols")
-    col_hy1, col_hy2, col_hy3 = st.columns(3)
-    with col_hy1:
-        st.markdown("""
-        <div class="hygiene-card">
-            <span style="font-size:1.8rem;">💧</span>
-            <div>
-                <strong style="color: var(--neon-blue); font-size:1.02rem;">Drinking Water Safety</strong><br>
-                <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
-                • <strong>Boil water for 10 minutes</strong> before drinking.<br>
-                • <em>ଓଡ଼ିଆ: ପାଣିକୁ ୧୦ ମିନିଟ୍ ଫୁଟାଇ ପିଅନ୍ତୁ।</em><br>
-                • <em>हिंदी: पीने का पानी 10 मिनट तक उबालें।</em>
-                </span>
+    protocols_html = """
+    <div class="horizontal-carousel">
+        <div class="carousel-item" style="flex: 0 0 320px;">
+            <div class="hygiene-card" style="height: 100%; margin-bottom: 0;">
+                <span style="font-size:1.8rem;">💧</span>
+                <div>
+                    <strong style="color: var(--neon-blue) !important; font-size:1.02rem;">Drinking Water Safety</strong><br>
+                    <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
+                    • <strong>Boil water for 10 minutes</strong> before drinking.<br>
+                    • <em>ଓଡ଼ିଆ: ପାଣିକୁ ୧୦ ମିନିଟ୍ ଫୁଟାଇ ପିଅନ୍ତୁ।</em><br>
+                    • <em>हिंदी: पीने का पानी 10 मिनट तक उबालें।</em>
+                    </span>
+                </div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
-    with col_hy2:
-        st.markdown("""
-        <div class="hygiene-card">
-            <span style="font-size:1.8rem;">🥤</span>
-            <div>
-                <strong style="color:#10B981; font-size:1.02rem;">ORS & Hydration Protocol</strong><br>
-                <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
-                • Mix 1 ORS sachet in 1L clean water.<br>
-                • <em>ଓଡ଼ିଆ: ଓଆରଏସ୍ (ORS) ଦ୍ରବଣ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
-                • <em>हिंदी: ओआरएस (ORS) घोल का तुरंत सेवन करें।</em>
-                </span>
+        <div class="carousel-item" style="flex: 0 0 320px;">
+            <div class="hygiene-card" style="height: 100%; margin-bottom: 0;">
+                <span style="font-size:1.8rem;">🥤</span>
+                <div>
+                    <strong style="color:#10B981 !important; font-size:1.02rem;">ORS & Hydration Protocol</strong><br>
+                    <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
+                    • Mix 1 ORS sachet in 1L clean water.<br>
+                    • <em>ଓଡ଼ିଆ: ଓଆରଏସ୍ (ORS) ଦ୍ରବଣ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
+                    • <em>हिंदी: ओआरएस (ORS) घोल का तुरंत सेवन करें।</em>
+                    </span>
+                </div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
-    with col_hy3:
-        st.markdown("""
-        <div class="hygiene-card">
-            <span style="font-size:1.8rem;">😷</span>
-            <div>
-                <strong style="color:#F59E0B; font-size:1.02rem;">Respiratory Care</strong><br>
-                <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
-                • Wear 3-layer mask in crowded areas.<br>
-                • <em>ଓଡ଼ିଆ: ଭିଡ଼ ସ୍ଥାନରେ ମାସ୍କ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
-                • <em>हिंदी: भीड़भाड़ वाली जगहों पर मास्क पहनें।</em>
-                </span>
+        <div class="carousel-item" style="flex: 0 0 320px;">
+            <div class="hygiene-card" style="height: 100%; margin-bottom: 0;">
+                <span style="font-size:1.8rem;">😷</span>
+                <div>
+                    <strong style="color:#F59E0B !important; font-size:1.02rem;">Respiratory Care</strong><br>
+                    <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
+                    • Wear 3-layer mask in crowded areas.<br>
+                    • <em>ଓଡ଼ିଆ: ଭିଡ଼ ସ୍ଥାନରେ ମାସ୍କ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
+                    • <em>हिंदी: भीड़भाड़ वाली जगहों पर मास्क पहनें।</em>
+                    </span>
+                </div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        <div class="carousel-item" style="flex: 0 0 320px;">
+            <div class="hygiene-card" style="height: 100%; margin-bottom: 0;">
+                <span style="font-size:1.8rem;">🧼</span>
+                <div>
+                    <strong style="color:#8B5CF6 !important; font-size:1.02rem;">Hand Hygiene</strong><br>
+                    <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
+                    • Wash hands with soap for 20 seconds.<br>
+                    • <em>ଓଡ଼ିଆ: ୨୦ ସେକେଣ୍ଡ୍ ପର୍ଯ୍ୟନ୍ତ ସାବୁନରେ ହାତ ଧୋଇବେ।</em><br>
+                    • <em>हिंदी: 20 सेकंड तक साबुन से हाथ धोएं।</em>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item" style="flex: 0 0 320px;">
+            <div class="hygiene-card" style="height: 100%; margin-bottom: 0;">
+                <span style="font-size:1.8rem;">🦟</span>
+                <div>
+                    <strong style="color:#EF4444 !important; font-size:1.02rem;">Vector Control</strong><br>
+                    <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
+                    • Clear stagnant water & use mosquito nets.<br>
+                    • <em>ଓଡ଼ିଆ: ଜମା ଥିବା ପାଣି ସଫା କରନ୍ତୁ ଓ ମଶାରୀ ବ୍ୟବହାର କରନ୍ତୁ।</em><br>
+                    • <em>हिंदी: जमा पानी साफ करें और मच्छरदानी का उपयोग करें।</em>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item" style="flex: 0 0 320px;">
+            <div class="hygiene-card" style="height: 100%; margin-bottom: 0;">
+                <span style="font-size:1.8rem;">🍲</span>
+                <div>
+                    <strong style="color:#F97316 !important; font-size:1.02rem;">Food Safety</strong><br>
+                    <span style="font-size:0.86rem; color: var(--text-secondary); line-height:1.5; display:inline-block; margin-top:4px;">
+                    • Consume freshly cooked, hot food.<br>
+                    • <em>ଓଡ଼ିଆ: ସଦ୍ୟ ରନ୍ଧା ହୋଇଥିବା ଗରମ ଖାଦ୍ୟ ଖାଆନ୍ତୁ।</em><br>
+                    • <em>हिंदी: ताजा पका हुआ, गर्म भोजन ही खाएं।</em>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    """
+    st.markdown(protocols_html, unsafe_allow_html=True)
 
 
 
