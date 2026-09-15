@@ -165,7 +165,7 @@ st.markdown("""
     }
 
     /* Hides the radio buttons visually but keeps them in the DOM */
-    input[type="radio"] {
+    div[data-testid="stRadio"] input[type="radio"] + div {
         display: none !important;
     }
     
@@ -2068,7 +2068,7 @@ st.sidebar.radio(
     "Navigation Portal Selector",
     options=nav_options,
     index=nav_index,
-    key="portal_navigation_bar",
+    key="portal_navigation_bar_new",
     on_change=_on_nav_change,
     label_visibility="collapsed"
 )
