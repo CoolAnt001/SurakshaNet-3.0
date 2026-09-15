@@ -4,3 +4,10 @@ numpy
 plotly
 qrcode
 python-pptx
+requests
+Pillow
+fastapi
+uvicorn
+nicegui
+easyocr
+g4f
