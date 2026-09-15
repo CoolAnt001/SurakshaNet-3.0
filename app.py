@@ -95,7 +95,7 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
     /* Global Typography & Theme Tokens */
-    :root, .stApp {
+    :root, .stApp, section[data-testid="stSidebar"], header[data-testid="stHeader"] {
         --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
         --font-mono: 'JetBrains Mono', monospace;
         --neon-cyan: #FF9933;
@@ -283,9 +283,17 @@ st.markdown("""
         color: var(--input-text) !important;
         border-radius: 10px !important;
     }
+    div[data-baseweb="input"] > div, div[data-baseweb="base-input"] > div {
+        background-color: transparent !important;
+    }
+    div[data-baseweb="input"] svg, div[data-baseweb="base-input"] svg {
+        fill: var(--input-text) !important;
+        color: var(--input-text) !important;
+    }
     input, textarea {
         color: var(--input-text) !important;
-        background-color: var(--input-bg) !important;
+        background-color: transparent !important;
+        -webkit-text-fill-color: var(--input-text) !important;
     }
     input::placeholder, textarea::placeholder {
         color: var(--text-muted) !important;
@@ -1897,7 +1905,7 @@ is_dark_mode = st.session_state.get("dark_mode_toggle", True)
 if not is_dark_mode:
     st.markdown("""
     <style>
-    :root, .stApp {
+    :root, .stApp, section[data-testid="stSidebar"], header[data-testid="stHeader"] {
         /* Force Streamlit Native Components (like st.dataframe) to Light Mode */
         --primary-color: #FF9933;
         --background-color: #FFFFFF;
