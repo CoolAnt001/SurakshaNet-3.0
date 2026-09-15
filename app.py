@@ -2112,14 +2112,100 @@ if st.session_state.get("active_officer_alert"):
     
     col_alert, col_close = st.columns([15, 1])
     with col_alert:
+        css_animations = """
+        <style>
+        @keyframes pulse-alert {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        @keyframes scroll-text {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .modern-advisory-banner {
+            background: linear-gradient(90deg, rgba(239,68,68,0.15) 0%, rgba(28,25,23,0.9) 15%, rgba(28,25,23,0.9) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-left: 5px solid #EF4444;
+            border-radius: 8px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            height: 52px;
+            box-shadow: 0 8px 30px rgba(239, 68, 68, 0.12);
+            position: relative;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .advisory-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 16px;
+            background: linear-gradient(90deg, rgba(28,25,23,1) 80%, rgba(28,25,23,0) 100%);
+            height: 100%;
+            z-index: 10;
+            position: absolute;
+            left: 0;
+            top: 0;
+            white-space: nowrap;
+        }
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background: #EF4444;
+            border-radius: 50%;
+            animation: pulse-alert 2s infinite;
+        }
+        .advisory-badge-text {
+            color: #FCA5A5;
+            font-weight: 800;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+        }
+        .advisory-ticker-container {
+            flex: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            mask-image: linear-gradient(to right, transparent 15%, black 25%, black 95%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 15%, black 25%, black 95%, transparent 100%);
+        }
+        .advisory-ticker-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: scroll-text 25s linear infinite;
+            font-size: 0.95rem;
+        }
+        .advisory-ticker-text:hover {
+            animation-play-state: paused;
+        }
+        .advisory-ticker-text span {
+            margin: 0 15px;
+        }
+        </style>
+        """
+        
         st.markdown(
             f"""
-            <div class='sidebar-glow-box' style='margin: 0; padding: 10px 20px; box-shadow: 0 8px 30px rgba(239, 68, 68, 0.25); display: flex; align-items: center;'>
-                <marquee behavior="scroll" direction="left" scrollamount="10" style="color: white; font-size: 1.1rem;">
-                    <span style="color: #FCA5A5; font-weight: 800; letter-spacing: 0.5px;">🚨 STATE OFFICER ADVISORY: {status_line.upper()}</span> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <span style="font-weight: 500;">{clean_msg}</span> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <span style='color: var(--neon-cyan); font-family: monospace; font-size: 0.95rem;'>[Auth Hash: {alert.get('hash', '')[:24]}]</span>
-                </marquee>
+            {css_animations}
+            <div class='modern-advisory-banner'>
+                <div class='advisory-badge'>
+                    <div class='pulse-dot'></div>
+                    <span class='advisory-badge-text'>STATE ADVISORY</span>
+                </div>
+                <div class='advisory-ticker-container'>
+                    <div class='advisory-ticker-text'>
+                        <strong style="color: #F8FAFC;">🚨 {status_line.upper()}</strong>
+                        <span style="color: #64748B;">|</span>
+                        <span style="color: #E2E8F0; font-weight: 500;">{clean_msg}</span>
+                        <span style="color: #64748B;">|</span>
+                        <span style="color: var(--neon-cyan); font-family: monospace; font-size: 0.9rem;">[AUTH: {alert.get('hash', '')[:20]}]</span>
+                    </div>
+                </div>
             </div>
             """,
             unsafe_allow_html=True
@@ -2131,17 +2217,22 @@ if st.session_state.get("active_officer_alert"):
             div[data-testid="stButton"]:has(button[key="dismiss_global_glow_btn"]) {
                 display: flex;
                 align-items: center;
-                justify-content: center;
+                justify-content: flex-end;
                 height: 100%;
-                margin-top: 2px;
+                margin-top: 10px;
             }
             button[key="dismiss_global_glow_btn"] {
-                font-size: 1.5rem !important;
-                padding: 0 !important;
-                color: rgba(255, 255, 255, 0.6) !important;
+                font-size: 1.2rem !important;
+                padding: 6px !important;
+                background: transparent !important;
+                border: none !important;
+                color: #64748B !important;
+                transition: all 0.2s ease !important;
             }
             button[key="dismiss_global_glow_btn"]:hover {
                 color: #EF4444 !important;
+                background: rgba(239, 68, 68, 0.1) !important;
+                border-radius: 50% !important;
                 transform: scale(1.1) !important;
             }
             </style>
@@ -2158,13 +2249,13 @@ with col_head1:
     if is_home:
         banner_cls = "custom-hero-banner"
         banner_style = "display: flex; align-items: center; gap: 20px;"
-        logo_size = "68px"
+        logo_size = "84px"
         title_size = "2.15rem"
         sub_size = "0.95rem"
     else:
         banner_cls = ""
         banner_style = "background: var(--hero-bg); padding: 8px 18px 8px 10px; border-radius: 14px; border: 1px solid var(--hero-border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; display: flex; align-items: center; gap: 14px; width: fit-content;"
-        logo_size = "48px"
+        logo_size = "60px"
         title_size = "1.6rem"
         sub_size = "0.85rem"
         
@@ -2180,7 +2271,7 @@ with col_head1:
         f'{img_badge}'
         f'<div>'
         f'{top_label_html}'
-        f'<h1 style="margin: 0; font-size: {title_size}; line-height: 1.1; letter-spacing: -0.5px;">{t["app_title"]}</h1>'
+        f'<h1 style="margin: 0; font-size: {title_size}; line-height: 1.1; letter-spacing: -0.5px; background: var(--hero-title-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">{t["app_title"]}</h1>'
         f'<p style="margin: 4px 0 0 0; opacity: 1; font-weight: 500; font-size: {sub_size}; color: var(--text-primary);">{t["app_sub"]}</p>'
         f'</div>'
         f'</div>'
