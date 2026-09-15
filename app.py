@@ -158,6 +158,11 @@ st.markdown("""
         border-radius: 12px !important;
         box-shadow: var(--card-shadow) !important;
     }
+
+    /* Sidebar List Styling */
+    section[data-testid="stSidebar"] ul {
+        list-style-type: none !important;
+    }
     
     /* Form Controls & Inputs - Touch & Mobile Keyboard Friendly */
     div[data-baseweb="select"] {
@@ -2097,19 +2102,6 @@ if "current_epicenter" not in st.session_state or st.session_state.current_epice
 
 is_dynamic_baseline = "Dynamic" in st.session_state.stored_baseline
 
-# Move Epicenter to bottom of sidebar
-with st.sidebar:
-    st.markdown("<div style='margin-top: 25vh;'></div>", unsafe_allow_html=True)
-    st.markdown("---")
-    
-    epicenter_idx = epicenter_list.index(st.session_state.current_epicenter) if st.session_state.current_epicenter in epicenter_list else 0
-    st.session_state.current_epicenter = st.selectbox(
-        t.get("sidebar_epicenter_label", "📍 Select Health Node (Epicenter)"),
-        epicenter_list,
-        index=epicenter_idx,
-        key="sidebar_epicenter_select"
-    )
-
 # --- Top Navigation / Main Header ---
 
 # --- Officer Broadcast Glowing Popup (Global Header) ---
@@ -2209,13 +2201,23 @@ with col_popover:
         
         cur_scen = st.session_state.current_scenario
         scen_idx = scenario_list.index(cur_scen) if cur_scen in scenario_list else 0
-        scenario = st.selectbox(
+        st.session_state.current_scenario = st.selectbox(
             t.get("inject_outbreak", "🕹️ Select Simulation Scenario"),
             scenario_list,
             index=scen_idx,
             key="sim_scenario_choice_popover"
         )
-        st.session_state.current_scenario = scenario
+        
+        st.markdown("---")
+        
+        epicenter_idx = epicenter_list.index(st.session_state.current_epicenter) if st.session_state.current_epicenter in epicenter_list else 0
+        st.session_state.current_epicenter = st.selectbox(
+            t.get("sidebar_epicenter_label", "📍 Select Simulation Location"),
+            epicenter_list,
+            index=epicenter_idx,
+            key="popover_epicenter_select"
+        )
+        
     st.markdown("</div>", unsafe_allow_html=True)
 
 scenario = st.session_state.current_scenario
@@ -3223,6 +3225,7 @@ if active_nav_idx == 0:
 
     
     # Visual Trends Chart & Gauge
+    plot_theme = PLOTLY_DARK if is_dark_mode else PLOTLY_LIGHT
     col_pub1, col_pub2 = st.columns([1.5, 2])
     with col_pub1:
         symptom_header = f"#### {t['active_symptoms']} ({loc_info['short_name'] if is_local_focus else 'All Regions'})"
@@ -3262,8 +3265,6 @@ if active_nav_idx == 0:
             
     with col_pub2:
         st.markdown(f"<p style='text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);'>{t['threat_prob']} (%) - {loc_info['short_name'] if is_local_focus else 'Regional Grid'}</p>", unsafe_allow_html=True)
-        # Determine theme for Plotly
-        plot_theme = PLOTLY_DARK if is_dark_mode else PLOTLY_LIGHT
 
         fig_gauge_pub = go.Figure(go.Indicator(
             mode = "gauge+number",
@@ -3659,7 +3660,7 @@ elif active_nav_idx == 2:
                     if attempt_pin == "1234":
                         st.session_state.clinic_auth_success = True
                         st.session_state.clinic_auth_denied = False
-                        st.session_state.active_nav_index = 1
+                        st.session_state.active_nav_index = 2
                         st.toast("✅ Clinic Portal Unlocked! Welcome, Health Reporter.", icon="🔓")
                         st.rerun()
                     else:
@@ -3889,7 +3890,29 @@ elif active_nav_idx == 2:
                     """, unsafe_allow_html=True
                 )
                 
-            if st.button(t["submit_btn"], type="primary", use_container_width=True):
+            st.markdown("""
+            <style>
+            .red-upload-btn-container button {
+                background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%) !important;
+                border: none !important;
+                color: white !important;
+                box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3) !important;
+                transition: all 0.3s ease !important;
+            }
+            .red-upload-btn-container button:hover {
+                background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%) !important;
+                box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5) !important;
+                transform: translateY(-2px) !important;
+                color: white !important;
+            }
+            </style>
+            <div class='red-upload-btn-container'>
+            """, unsafe_allow_html=True)
+            
+            submitted = st.button(t["submit_btn"], type="primary", use_container_width=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+            if submitted:
                 new_log = {
                     "symptom": selected_symptom,
                     "location": location_input,
@@ -4174,7 +4197,7 @@ elif active_nav_idx == 3:
                     if attempt_pin == "9999":
                         st.session_state.officer_auth_success = True
                         st.session_state.officer_auth_denied = False
-                        st.session_state.active_nav_index = 2
+                        st.session_state.active_nav_index = 3
                         st.toast("✅ Medical Board Console Unlocked! Welcome, Board Member.", icon="🔑")
                         st.rerun()
                     else:
