@@ -3306,7 +3306,7 @@ if active_nav_idx == 0:
             </p>
             <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;'>
                 <a href="tel:108" style="text-decoration: none; display: block; color: inherit;">
-                    <div style='background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.4); padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0, 0.2); transition: transform 0.2s; cursor: pointer;'>
+                    <div style='background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.6); padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1); transition: transform 0.2s; cursor: pointer;'>
                         <div style='font-size: 2rem; margin-bottom: 5px;'>🚑</div>
                         <h4 style='color: var(--text-primary) !important; margin: 0 0 5px 0;'>Public Ambulance</h4>
                         <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: #EF4444;'>108</div>
@@ -3314,7 +3314,7 @@ if active_nav_idx == 0:
                     </div>
                 </a>
                 <a href="tel:104" style="text-decoration: none; display: block; color: inherit;">
-                    <div style='background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.4); padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0, 0.2); transition: transform 0.2s; cursor: pointer;'>
+                    <div style='background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.6); padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1); transition: transform 0.2s; cursor: pointer;'>
                         <div style='font-size: 2rem; margin-bottom: 5px;'>👨‍⚕️</div>
                         <h4 style='color: var(--text-primary) !important; margin: 0 0 5px 0;'>Specialist Consult</h4>
                         <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: #EF4444;'>104</div>
@@ -3322,7 +3322,7 @@ if active_nav_idx == 0:
                     </div>
                 </a>
                 <a href="tel:1800-112-545" style="text-decoration: none; display: block; color: inherit;">
-                    <div style='background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.4); padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0, 0.2); transition: transform 0.2s; cursor: pointer;'>
+                    <div style='background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.6); padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1); transition: transform 0.2s; cursor: pointer;'>
                         <div style='font-size: 2rem; margin-bottom: 5px;'>🏥</div>
                         <h4 style='color: var(--text-primary) !important; margin: 0 0 5px 0;'>Local Hospital Triage</h4>
                         <div style='font-size: 1.6rem; font-family: var(--font-mono); font-weight: 800; color: #EF4444;'>1800-112-545</div>
