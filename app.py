@@ -3225,26 +3225,26 @@ if active_nav_idx == 0:
             </p>
             <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;'>
                 <a href="tel:108" style="text-decoration: none; display: block; color: inherit;">
-                    <div style='background: rgba(239, 68, 68, 0.1); border: 1px solid #EF4444; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15); transition: transform 0.2s; cursor: pointer;'>
+                    <div style='background: var(--inner-card-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0, 0.15); transition: transform 0.2s; cursor: pointer;'>
                         <div style='font-size: 2rem; margin-bottom: 5px;'>🚑</div>
-                        <h4 style='color: #EF4444 !important; margin: 0 0 5px 0;'>Public Ambulance</h4>
-                        <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: #EF4444;'>108</div>
+                        <h4 style='color: var(--text-primary) !important; margin: 0 0 5px 0;'>Public Ambulance</h4>
+                        <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: var(--text-primary);'>108</div>
                         <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>24/7 Immediate Dispatch</div>
                     </div>
                 </a>
                 <a href="tel:104" style="text-decoration: none; display: block; color: inherit;">
-                    <div style='background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.15); transition: transform 0.2s; cursor: pointer;'>
+                    <div style='background: var(--inner-card-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0, 0.15); transition: transform 0.2s; cursor: pointer;'>
                         <div style='font-size: 2rem; margin-bottom: 5px;'>👨‍⚕️</div>
-                        <h4 style='color: #10B981 !important; margin: 0 0 5px 0;'>Specialist Consult</h4>
-                        <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: #10B981;'>104</div>
+                        <h4 style='color: var(--text-primary) !important; margin: 0 0 5px 0;'>Specialist Consult</h4>
+                        <div style='font-size: 1.8rem; font-family: var(--font-mono); font-weight: 800; color: var(--text-primary);'>104</div>
                         <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>Health Helpline / Telemed</div>
                     </div>
                 </a>
                 <a href="tel:1800-112-545" style="text-decoration: none; display: block; color: inherit;">
-                    <div style='background: rgba(245, 158, 11, 0.1); border: 1px solid #F59E0B; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.15); transition: transform 0.2s; cursor: pointer;'>
+                    <div style='background: var(--inner-card-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0, 0.15); transition: transform 0.2s; cursor: pointer;'>
                         <div style='font-size: 2rem; margin-bottom: 5px;'>🏥</div>
-                        <h4 style='color: #F59E0B !important; margin: 0 0 5px 0;'>Local Hospital Triage</h4>
-                        <div style='font-size: 1.6rem; font-family: var(--font-mono); font-weight: 800; color: #F59E0B;'>1800-112-545</div>
+                        <h4 style='color: var(--text-primary) !important; margin: 0 0 5px 0;'>Local Hospital Triage</h4>
+                        <div style='font-size: 1.6rem; font-family: var(--font-mono); font-weight: 800; color: var(--text-primary);'>1800-112-545</div>
                         <div style='font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;'>Report & Remote Checkup</div>
                     </div>
                 </a>
@@ -3257,10 +3257,10 @@ if active_nav_idx == 0:
     if is_false_alarm:
         st.markdown(
             f"""
-            <div class='glass-card' style='border-left: 5px solid #F59E0B !important; margin-bottom: 20px;'>
+            <div class='glass-card' style='border-left: 5px solid var(--nav-border) !important; margin-bottom: 20px;'>
                 <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 12px;'>
                     <span style='font-size: 1.4rem;'>🔍</span>
-                    <h4 style='margin: 0; color: #F59E0B !important;'>False Alarm vs. Outbreak Signal Verification</h4>
+                    <h4 style='margin: 0; color: var(--text-primary) !important;'>False Alarm vs. Outbreak Signal Verification</h4>
                 </div>
                 <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 10px;'>
                     <div style='background: var(--inner-card-bg); padding: 14px; border-radius: 8px; border: 1px solid var(--card-border);'>
@@ -3268,8 +3268,8 @@ if active_nav_idx == 0:
                         <div style='font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 4px 0;'>{display_outbreak_p}%</div>
                         <div style='font-size: 0.78rem; color: var(--text-secondary);'>Calculated from single-site anomaly</div>
                     </div>
-                    <div style='background: rgba(245,158,11,0.18); padding: 14px; border-radius: 8px; border: 1px solid #F59E0B;'>
-                        <div style='font-size: 0.82rem; color: #B45309; font-weight: 600;'>Probability this Outbreak % is FALSE</div>
+                    <div style='background: var(--inner-card-bg); padding: 14px; border-radius: 8px; border: 1px solid var(--card-border);'>
+                        <div style='font-size: 0.82rem; color: var(--text-muted); font-weight: 600;'>Probability this Outbreak % is FALSE</div>
                         <div style='font-size: 1.5rem; font-weight: 800; color: #D97706; margin: 4px 0;'>{false_p}%</div>
                         <div style='font-size: 0.78rem; color: #92400E;'>Likely single-source typo / glitch</div>
                     </div>
@@ -3840,8 +3840,8 @@ elif active_nav_idx == 2:
             transports.append(m["transmitted_val"])
             
         fig_comp = go.Figure(data=[
-            go.Bar(name=t['bar_raw'], x=labels, y=raws, marker_color='#138808'),
-            go.Bar(name=t['bar_trans'], x=labels, y=transports, marker_color='#FF9933')
+            go.Bar(name=t['bar_raw'], x=labels, y=raws, marker_color='var(--text-secondary)'),
+            go.Bar(name=t['bar_trans'], x=labels, y=transports, marker_color='var(--text-primary)')
         ])
         plot_theme = PLOTLY_DARK if is_dark_mode else PLOTLY_LIGHT
         fig_comp.update_layout(
@@ -3959,8 +3959,8 @@ elif active_nav_idx == 2:
             with prev_col1:
                 st.markdown(
                     f"""
-                    <div style='background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--nav-border); border-left: 4px solid #138808; padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);'>
-                        <strong style='color: var(--neon-blue); font-size: 1.05rem;'>{local_card_title}</strong><br>
+                    <div style='background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--nav-border); border-left: 4px solid var(--text-secondary); padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);'>
+                        <strong style='color: var(--text-primary); font-size: 1.05rem;'>{local_card_title}</strong><br>
                         <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);'>
                             • {item_header_text}: <strong style='color: var(--text-primary);'>{symptom_labels[selected_symptom]}</strong><br>
                             • Original {val_header_text}: <strong style='color: var(--neon-cyan);'>{raw_case_count}</strong><br>
@@ -3974,8 +3974,8 @@ elif active_nav_idx == 2:
                 suppress_alert = "<span style='color:#EF4444; font-weight:bold;'>⚠️ Masked (Under threshold)</span>" if sim_suppressed else "<span style='color:#10B981; font-weight:bold;'>✅ Secure Upload Allowed</span>"
                 st.markdown(
                     f"""
-                    <div style='background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--nav-border); border-left: 4px solid var(--neon-cyan); padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);'>
-                        <strong style='color: var(--neon-cyan); font-size: 1.05rem;'>{transmitted_card_title}</strong><br>
+                    <div style='background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--nav-border); border-left: 4px solid var(--text-secondary); padding: 14px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);'>
+                        <strong style='color: var(--text-primary); font-size: 1.05rem;'>{transmitted_card_title}</strong><br>
                         <div style='margin-top: 6px; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);'>
                             • Uploaded Value: <strong style='color: var(--neon-cyan);'>{sim_transmitted_tally}</strong> ({suppress_alert})<br>
                             • Uploaded Site: <strong style='color: var(--text-primary);'>{sim_transmitted_location}</strong><br>
@@ -4203,13 +4203,13 @@ elif active_nav_idx == 2:
                         clean_notes = clean_notes[clean_notes.find("]")+1:].strip()
                     st.markdown(
                         f"""
-                        <div style='background: var(--card-bg); border: 1px solid var(--nav-border); border-left: 4px solid var(--neon-cyan); padding: 14px 16px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); color: var(--text-primary);'>
+                        <div style='background: var(--card-bg); border: 1px solid var(--nav-border); border-left: 4px solid var(--text-secondary); padding: 14px 16px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); color: var(--text-primary);'>
                             <div style='display: flex; justify-content: space-between; align-items: center;'>
                                 <strong style='font-size: 1.05rem; color: var(--text-primary);'>{symptom_labels.get(log["symptom"], log["symptom"])}</strong>
                                 <span style='font-size: 0.78rem; color: #737373; background: #171717; border: 1px solid var(--nav-border); padding: 3px 8px; border-radius: 6px;'>🕒 {time_badge}</span>
                             </div>
                             <div style='margin-top: 5px;'>
-                                <span style='font-size: 0.88rem; color: var(--text-secondary);'>📍 Location: <strong style='color: var(--text-primary);'>{log["location"]}</strong> | {val_header_text}: <strong style='color: var(--neon-cyan);'>{log["raw_val"]}</strong></span><br>
+                                <span style='font-size: 0.88rem; color: var(--text-secondary);'>📍 Location: <strong style='color: var(--text-primary);'>{log["location"]}</strong> | {val_header_text}: <strong style='color: var(--text-primary);'>{log["raw_val"]}</strong></span><br>
                                 <span style='font-size: 0.82rem; color: #737373;'>📝 Notes: {clean_notes if clean_notes else 'None'}</span>
                             </div>
                         </div>
