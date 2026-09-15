@@ -2011,9 +2011,9 @@ if "active_officer_alert" not in st.session_state:
 hero_logo_b64 = ""
 import os, base64
 
-logo_filename = "LOGO_dark.png" if is_dark_mode else "LOGO_light.png"
+logo_filename = "LOGO.png"
 logo_path = f"assets/{logo_filename}"
-fallback_path = "assets/LOGO_dark.png"
+fallback_path = "assets/LOGO.png"
 
 if os.path.exists(logo_path):
     try:
