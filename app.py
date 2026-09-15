@@ -165,8 +165,16 @@ st.markdown("""
     }
 
     /* Hides the radio buttons visually but keeps them in the DOM */
+    div[data-testid="stRadio"] div[role="radio"],
+    div[data-testid="stRadio"] label > div:first-child,
+    div[data-testid="stRadio"] input[type="radio"],
     div[data-testid="stRadio"] input[type="radio"] + div {
         display: none !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     
     /* Form Controls & Inputs - Touch & Mobile Keyboard Friendly */
