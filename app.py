@@ -3987,21 +3987,21 @@ elif active_nav_idx == 2:
                 
             st.markdown("""
             <style>
-            .red-upload-btn-container button {
-                background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%) !important;
+            .green-upload-btn-container button {
+                background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
                 border: none !important;
                 color: white !important;
-                box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3) !important;
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
                 transition: all 0.3s ease !important;
             }
-            .red-upload-btn-container button:hover {
-                background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%) !important;
-                box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5) !important;
+            .green-upload-btn-container button:hover {
+                background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5) !important;
                 transform: translateY(-2px) !important;
                 color: white !important;
             }
             </style>
-            <div class='red-upload-btn-container'>
+            <div class='green-upload-btn-container'>
             """, unsafe_allow_html=True)
             
             submitted = st.button(t["submit_btn"], type="primary", use_container_width=True)
@@ -4042,7 +4042,21 @@ elif active_nav_idx == 2:
                     """, unsafe_allow_html=True
                 )
                 if not st.session_state.ivr_call_active:
-                    if st.button("🟢 Start Toll-Free IVR Call Simulation", use_container_width=True, type="primary"):
+                    st.markdown("""
+                    <style>
+                    div[data-testid="element-container"]:has(.ivr-btn-marker) + div[data-testid="element-container"] button {
+                        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
+                        color: white !important;
+                        border: none !important;
+                        font-weight: 600 !important;
+                    }
+                    div[data-testid="element-container"]:has(.ivr-btn-marker) + div[data-testid="element-container"] button:hover {
+                        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+                    }
+                    </style>
+                    <div class="ivr-btn-marker"></div>
+                    """, unsafe_allow_html=True)
+                    if st.button("🟢 Start Toll-Free IVR Call Simulation", use_container_width=True):
                         st.session_state.ivr_call_active = True
                         st.rerun()
                 else:
@@ -4331,13 +4345,31 @@ elif active_nav_idx == 3:
             help="Paste the Google Apps Script Web App URL here. All case submissions will sync to the shared Google Sheet.",
             key="officer_gsheet_url"
         )
+        st.markdown("""
+        <style>
+        div[data-testid="element-container"]:has(.green-btn-marker) + div[data-testid="element-container"] button {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+            color: white !important;
+            border: none !important;
+            font-weight: 600 !important;
+        }
+        div[data-testid="element-container"]:has(.red-btn-marker) + div[data-testid="element-container"] button {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+            color: white !important;
+            border: none !important;
+            font-weight: 600 !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
         col_gs1, col_gs2 = st.columns(2)
         with col_gs1:
-            if st.button("✅ Save & Enable Shared DB", type="primary", use_container_width=True):
+            st.markdown('<div class="green-btn-marker"></div>', unsafe_allow_html=True)
+            if st.button("✅ Save & Enable Shared DB", use_container_width=True):
                 st.session_state.gsheet_url = gsheet_url_officer
                 st.success("✅ Google Sheet connected! All case reports will now sync to the shared database.")
                 st.rerun()
         with col_gs2:
+            st.markdown('<div class="red-btn-marker"></div>', unsafe_allow_html=True)
             if st.button("🚫 Disconnect Google Sheet", use_container_width=True):
                 st.session_state.gsheet_url = ""
                 st.success("Disconnected. App is now using local session memory.")
@@ -4467,6 +4499,21 @@ elif active_nav_idx == 3:
         
         is_broadcast_disabled = (agg_results["risk_class"] == "safe" and alert_text.strip() == alert_body.strip())
         
+        st.markdown(
+            """
+            <style>
+            div[data-testid="stButton"] button[kind="primary"] {
+                background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+                border: none !important;
+                color: white !important;
+                font-weight: 800 !important;
+            }
+            div[data-testid="stButton"] button[kind="primary"]:hover {
+                background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%) !important;
+            }
+            </style>
+            """, unsafe_allow_html=True
+        )
         if st.button(t["sign_btn"], type="primary", disabled=is_broadcast_disabled):
             # Dynamically determine title from custom text (e.g., "TEST" or custom STATUS line)
             clean_draft = alert_text.strip()
@@ -4763,12 +4810,12 @@ elif active_nav_idx == 5:
                     asyncio.set_event_loop(loop)
                     
                 # Inject System Prompt for context
-                system_prompt = {"role": "system", "content": "You are Suraksha LLM, a highly advanced public health AI assistant for SurakshaNet. Provide brief, professional, and empathetic triage advice based on WHO guidelines. Keep answers under 4 sentences. If symptoms are severe (blood, unconsciousness, severe pain), immediately tell them to call the Emergency Hotline 104."}
+                system_prompt = {"role": "system", "content": "You are Suraksha LLM, a public health AI assistant for SurakshaNet. Provide brief, professional, and empathetic support. You are strictly an informational assistant. DO NOT give medical diagnosis, prescribe medicines, or provide any clinical advice under any circumstances. If the user asks for medical advice or diagnosis, kindly remind them that you are just an AI assistant and they should contact a doctor or call the Emergency Hotline 104. Keep answers under 4 sentences."}
                 api_messages = [system_prompt] + [{"role": m["role"], "content": m["content"]} for m in st.session_state.chat_messages]
                 
-                # Call free GPT-3.5 endpoint
+                # Call free default model endpoint (automatically routes to free models like gpt-4o-mini/claude/gemini)
                 response_stream = g4f.ChatCompletion.create(
-                    model=g4f.models.gpt_35_turbo,
+                    model=g4f.models.default,
                     messages=api_messages,
                     stream=True,
                 )
