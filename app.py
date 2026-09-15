@@ -2352,7 +2352,6 @@ with col_head1:
     top_label_html = f'<div style="font-size: 0.78rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--neon-blue); margin-bottom: 5px; display: flex; align-items: center; gap: 8px;"><span>⚡ TEAM CODEKRAFT</span><span style="opacity: 0.35; color: var(--text-primary);">•</span><span style="color: var(--text-secondary);">ODISHA HEALTH SURVEILLANCE GRID</span></div>' if is_home else ""
 
     header_html = (
-        f'<a href="." target="_self" style="text-decoration: none; color: inherit; cursor: pointer; display: inline-block;">'
         f'<div class="{banner_cls}" style="{banner_style}">'
         f'{img_badge}'
         f'<div>'
@@ -2361,7 +2360,6 @@ with col_head1:
         f'<p style="margin: 4px 0 0 0; opacity: 1; font-weight: 500; font-size: {sub_size}; color: var(--text-primary);">{t["app_sub"]}</p>'
         f'</div>'
         f'</div>'
-        f'</a>'
     )
     st.markdown(header_html, unsafe_allow_html=True)
 
