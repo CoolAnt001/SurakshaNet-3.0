@@ -163,6 +163,11 @@ st.markdown("""
     section[data-testid="stSidebar"] ul {
         list-style-type: none !important;
     }
+
+    /* Hides the radio buttons visually but keeps them in the DOM */
+    input[type="radio"] {
+        display: none !important;
+    }
     
     /* Form Controls & Inputs - Touch & Mobile Keyboard Friendly */
     div[data-baseweb="select"] {
@@ -2107,7 +2112,7 @@ is_dynamic_baseline = "Dynamic" in st.session_state.stored_baseline
 # --- Officer Broadcast Glowing Popup (Global Header) ---
 if st.session_state.get("active_officer_alert"):
     alert = st.session_state.active_officer_alert
-    clean_msg = alert.get("message", alert.get("status", "")).strip()
+    clean_msg = alert.get("message", alert.get("status", "")).strip().replace("\n", " • ")
     status_line = alert.get("status", "Emergency Advisory")
     
     col_alert, col_close = st.columns([15, 1])
