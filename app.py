@@ -1897,7 +1897,7 @@ t["ai_title"] = "🤖 Suraksha AI Health Assistant" if selected_lang == "English
 t["ai_subtitle"] = "Powered by **Suraksha LLM**. Ask me any public health questions or describe your symptoms for an immediate AI triage based on current municipal guidelines." if selected_lang == "English" else ("**ସୁରକ୍ଷା LLM** ଦ୍ୱାରା ପରିଚାଳିତ | ତୁରନ୍ତ AI ଆକଳନ ପାଇଁ ଆପଣଙ୍କର ଲକ୍ଷଣ ବର୍ଣ୍ଣନା କରନ୍ତୁ |" if selected_lang == "ଓଡ଼ିଆ (Odia)" else "**सुरक्षा LLM** द्वारा संचालित | तत्काल AI मूल्यांकन के लिए अपने लक्षण बताएं |")
 t["ai_greeting"] = "Hello! I am the Suraksha AI Health Assistant. How can I help you or your community today?" if selected_lang == "English" else ("ନମସ୍କାର! ମୁଁ ସୁରକ୍ଷା AI ସ୍ୱାସ୍ଥ୍ୟ ସହାୟକ | ମୁଁ ଆଜି ଆପଣଙ୍କୁ କିପରି ସାହାଯ୍ୟ କରିପାରିବି?" if selected_lang == "ଓଡ଼ିଆ (Odia)" else "नमस्ते! मैं सुरक्षा AI स्वास्थ्य सहायक हूँ। मैं आपकी कैसे मदद कर सकता हूँ?")
 t["ai_placeholder"] = "Type your symptoms or public health question here..." if selected_lang == "English" else ("ଏଠାରେ ଆପଣଙ୍କର ଲକ୍ଷଣ ଟାଇପ୍ କରନ୍ତୁ..." if selected_lang == "ଓଡ଼ିଆ (Odia)" else "यहां अपने लक्षण टाइप करें...")
-t["ai_system_append"] = " (Please respond in English.)" if selected_lang == "English" else (" (Please respond in Odia language exclusively.)" if selected_lang == "ଓଡ଼ିଆ (Odia)" else " (Please respond in Hindi language exclusively.)")\n
+t["ai_system_append"] = " (Please respond in English.)" if selected_lang == "English" else (" (Please respond in Odia language exclusively.)" if selected_lang == "ଓଡ଼ିଆ (Odia)" else " (Please respond in Hindi language exclusively.)")
 # Dynamic UI updates for Additional UI elements
 if selected_lang == "English":
     t["grassroots_grid_title"] = "📡 Grassroots Surveillance Grid Centers (Live Facility Telemetry)"
