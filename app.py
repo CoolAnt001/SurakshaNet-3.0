@@ -165,16 +165,8 @@ st.markdown("""
     }
 
     /* Hides the radio buttons visually but keeps them in the DOM */
-    div[data-testid="stRadio"] div[role="radio"],
-    div[data-testid="stRadio"] label > div:first-child,
-    div[data-testid="stRadio"] input[type="radio"],
-    div[data-testid="stRadio"] input[type="radio"] + div {
+    input[type="radio"] {
         display: none !important;
-        opacity: 0 !important;
-        width: 0 !important;
-        height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
     }
     
     /* Form Controls & Inputs - Touch & Mobile Keyboard Friendly */
@@ -1121,6 +1113,96 @@ st.markdown("""
     }
     .custom-glass-table tbody tr:hover {
         background: rgba(19, 136, 8, 0.05);
+    }
+
+    /* --- Mobile Responsiveness / Device Compatibility --- */
+    @media screen and (max-width: 768px) {
+        /* Hero Banner */
+        .custom-hero-banner {
+            flex-direction: column !important;
+            text-align: center !important;
+            padding: 16px 12px !important;
+            gap: 12px !important;
+            width: 100% !important;
+            justify-content: center !important;
+        }
+        .custom-hero-banner img, .custom-hero-banner div[style*="min-width"] {
+            width: 64px !important;
+            height: 64px !important;
+            min-width: 64px !important;
+            margin: 0 auto !important;
+        }
+        .custom-hero-banner > div:last-child {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .custom-hero-banner > div:last-child > div:first-child {
+            justify-content: center !important;
+        }
+        .custom-hero-banner h1 {
+            font-size: 1.6rem !important;
+            text-align: center !important;
+        }
+        .custom-hero-banner p {
+            font-size: 0.85rem !important;
+            text-align: center !important;
+        }
+        
+        /* Layout Padding */
+        .glass-card {
+            padding: 16px 12px !important;
+        }
+        .metric-value {
+            font-size: 1.7rem !important;
+        }
+        
+        /* Custom Radio Tabs */
+        div[data-testid="stRadio"] > div[role="radiogroup"] {
+            flex-direction: column !important;
+            gap: 6px !important;
+        }
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label {
+            min-width: 100% !important;
+            width: 100% !important;
+            padding: 12px !important;
+        }
+        
+        /* Alert Marquee & Banners */
+        marquee {
+            font-size: 0.85rem !important;
+        }
+        .sidebar-glow-box {
+            padding: 10px !important;
+        }
+        
+        /* Horizontal Carousels */
+        .horizontal-carousel {
+            gap: 12px !important;
+            padding-bottom: 12px !important;
+        }
+        .carousel-item {
+            flex: 0 0 220px !important;
+        }
+        .carousel-item img {
+            height: 130px !important;
+        }
+        
+        /* Auth Terminal Boxes */
+        .auth-card-clinic, .auth-card-officer {
+            padding: 24px 16px 20px 16px !important;
+        }
+        .auth-icon-halo, .auth-icon-halo-officer {
+            width: 64px !important;
+            height: 64px !important;
+            font-size: 1.8rem !important;
+        }
+        
+        /* Custom Tables */
+        .custom-glass-table th, .custom-glass-table td {
+            padding: 8px 10px !important;
+            font-size: 0.8rem !important;
+        }
     }
 
 </style>
@@ -2076,7 +2158,7 @@ st.sidebar.radio(
     "Navigation Portal Selector",
     options=nav_options,
     index=nav_index,
-    key="portal_navigation_bar_new",
+    key="portal_navigation_bar",
     on_change=_on_nav_change,
     label_visibility="collapsed"
 )
