@@ -283,10 +283,14 @@ st.markdown("""
         color: var(--input-text) !important;
         border-radius: 10px !important;
     }
-    div[data-baseweb="input"] > div, div[data-baseweb="base-input"] > div {
+    div[data-baseweb="base-input"] {
+        background-color: transparent !important;
+        border: none !important;
+    }
+    div[data-baseweb="base-input"] > div {
         background-color: transparent !important;
     }
-    div[data-baseweb="input"] svg, div[data-baseweb="base-input"] svg {
+    div[data-baseweb="base-input"] svg {
         fill: var(--input-text) !important;
         color: var(--input-text) !important;
     }
@@ -1905,7 +1909,7 @@ is_dark_mode = st.session_state.get("dark_mode_toggle", True)
 if not is_dark_mode:
     st.markdown("""
     <style>
-    :root, .stApp, section[data-testid="stSidebar"], header[data-testid="stHeader"] {
+    body:root, body .stApp, body section[data-testid="stSidebar"], body header[data-testid="stHeader"] {
         /* Force Streamlit Native Components (like st.dataframe) to Light Mode */
         --primary-color: #FF9933;
         --background-color: #FFFFFF;
