@@ -1892,6 +1892,87 @@ if "gsheet_url" not in st.session_state:
 selected_lang = st.session_state.get("stored_lang", "English")
 t = I18N[selected_lang]
 
+# Dynamic UI updates for AI Assistant based on selected language
+t["ai_title"] = "🤖 Suraksha AI Health Assistant" if selected_lang == "English" else ("🤖 ସୁରକ୍ଷା AI ସ୍ୱାସ୍ଥ୍ୟ ସହାୟକ" if selected_lang == "ଓଡ଼ିଆ (Odia)" else "🤖 सुरक्षा AI स्वास्थ्य सहायक")
+t["ai_subtitle"] = "Powered by **Suraksha LLM**. Ask me any public health questions or describe your symptoms for an immediate AI triage based on current municipal guidelines." if selected_lang == "English" else ("**ସୁରକ୍ଷା LLM** ଦ୍ୱାରା ପରିଚାଳିତ | ତୁରନ୍ତ AI ଆକଳନ ପାଇଁ ଆପଣଙ୍କର ଲକ୍ଷଣ ବର୍ଣ୍ଣନା କରନ୍ତୁ |" if selected_lang == "ଓଡ଼ିଆ (Odia)" else "**सुरक्षा LLM** द्वारा संचालित | तत्काल AI मूल्यांकन के लिए अपने लक्षण बताएं |")
+t["ai_greeting"] = "Hello! I am the Suraksha AI Health Assistant. How can I help you or your community today?" if selected_lang == "English" else ("ନମସ୍କାର! ମୁଁ ସୁରକ୍ଷା AI ସ୍ୱାସ୍ଥ୍ୟ ସହାୟକ | ମୁଁ ଆଜି ଆପଣଙ୍କୁ କିପରି ସାହାଯ୍ୟ କରିପାରିବି?" if selected_lang == "ଓଡ଼ିଆ (Odia)" else "नमस्ते! मैं सुरक्षा AI स्वास्थ्य सहायक हूँ। मैं आपकी कैसे मदद कर सकता हूँ?")
+t["ai_placeholder"] = "Type your symptoms or public health question here..." if selected_lang == "English" else ("ଏଠାରେ ଆପଣଙ୍କର ଲକ୍ଷଣ ଟାଇପ୍ କରନ୍ତୁ..." if selected_lang == "ଓଡ଼ିଆ (Odia)" else "यहां अपने लक्षण टाइप करें...")
+t["ai_system_append"] = " (Please respond in English.)" if selected_lang == "English" else (" (Please respond in Odia language exclusively.)" if selected_lang == "ଓଡ଼ିଆ (Odia)" else " (Please respond in Hindi language exclusively.)")\n
+# Dynamic UI updates for Additional UI elements
+if selected_lang == "English":
+    t["grassroots_grid_title"] = "📡 Grassroots Surveillance Grid Centers (Live Facility Telemetry)"
+    t["grassroots_grid_desc"] = "Live anonymized stream from Primary Health Centres, municipal water testing stations, and hospital outpatient departments across the region:"
+    t["verified_protocols_title"] = "🛡️ Verified Public Health & Preventive Protocols"
+    t["ocr_scanner_title"] = "📸 Edge OCR Scanner: Deep Learning OCR"
+    t["ocr_extracted_text"] = "📝 Extracted Raw Text:"
+    t["db_sync_title"] = "Database Synchronizer Daemon"
+    t["baseline_learning_title"] = "🧠 Dynamic Baseline & Moving Average Learning Engine"
+    t["settings_title"] = "⚙️ Settings & Tools"
+    t["settings_desc"] = "Configure your regional health portal preferences."
+    t["settings_baseline_title"] = "📈 Baseline Surveillance Engine"
+    t["complaints_title"] = "🗣️ Citizen Complaints & Reporting Portal"
+    t["complaints_desc"] = "Use this portal to report public health hazards, sanitation issues, or suspected disease clusters directly to the Municipal Health Board. Your reports help us detect outbreaks early."
+    t["file_report_title"] = "📝 File a New Report"
+    t["photo_evidence_title"] = "Photographic Evidence (Optional)"
+    t["ai_triage_title"] = "🧠 AI Triage Analysis (NLP)"
+    t["whistleblower_title"] = "🛡️ Whistleblower Protection"
+    t["recent_actions_title"] = "🔔 Recent Actions"
+    t["join_us_title"] = "🤝 How to Join Us"
+    t["join_us_steps"] = "- **Step 1:** Register your node with the regional Medical Board.\n- **Step 2:** Obtain your cryptographic Master Key for secure transmission.\n- **Step 3:** Begin continuous syndromic logging."
+    t["complaint_category"] = "Category"
+    t["complaint_options"] = ["Sanitation/Water", "Vector/Mosquito", "Suspected Cluster", "Other"]
+    t["complaint_textarea"] = "Detailed Description (Location, symptoms seen, etc.)"
+    t["complaint_submit_btn"] = "🚀 Submit Encrypted Report"
+elif selected_lang == "ଓଡ଼ିଆ (Odia)":
+    t["grassroots_grid_title"] = "📡 ଗ୍ରାସରୁଟ୍ ସର୍ଭିଲାନ୍ସ ଗ୍ରିଡ୍ କେନ୍ଦ୍ର (ଲାଇଭ୍ ସୁବିଧା ଟେଲିମେଟ୍ରି)"
+    t["grassroots_grid_desc"] = "ପ୍ରାଥମିକ ସ୍ୱାସ୍ଥ୍ୟ କେନ୍ଦ୍ର, ମ୍ୟୁନିସିପାଲିଟି ଜଳ ପରୀକ୍ଷା କେନ୍ଦ୍ର ଏବଂ ଡାକ୍ତରଖାନାରୁ ଲାଇଭ୍ ଅଜ୍ଞାତ ତଥ୍ୟ:"
+    t["verified_protocols_title"] = "🛡️ ପ୍ରମାଣିତ ଜନସ୍ୱାସ୍ଥ୍ୟ ଏବଂ ପ୍ରତିଷେଧକ ପ୍ରୋଟୋକଲ୍"
+    t["ocr_scanner_title"] = "📸 ଏଜ୍ OCR ସ୍କାନର୍: ଡିପ୍ ଲର୍ଣ୍ଣିଂ OCR"
+    t["ocr_extracted_text"] = "📝 ବାହାର କରାଯାଇଥିବା ଟେକ୍ସଟ୍:"
+    t["db_sync_title"] = "ଡାଟାବେସ୍ ସିଙ୍କ୍ରୋନାଇଜର୍ ଡେମନ୍"
+    t["baseline_learning_title"] = "🧠 ଡାଇନାମିକ୍ ବେସଲାଇନ୍ ଏବଂ ମୁଭିଂ ଆଭରେଜ୍ ଲର୍ଣ୍ଣିଂ ଇଞ୍ଜିନ୍"
+    t["settings_title"] = "⚙️ ସେଟିଂସ ଏବଂ ଟୁଲ୍ସ"
+    t["settings_desc"] = "ଆପଣଙ୍କର ଆଞ୍ଚଳିକ ସ୍ୱାସ୍ଥ୍ୟ ପୋର୍ଟାଲ୍ ପସନ୍ଦଗୁଡିକ କନଫିଗର୍ କରନ୍ତୁ |"
+    t["settings_baseline_title"] = "📈 ବେସଲାଇନ୍ ସର୍ଭିଲାନ୍ସ ଇଞ୍ଜିନ୍"
+    t["complaints_title"] = "🗣️ ନାଗରିକ ଅଭିଯୋଗ ଏବଂ ରିପୋର୍ଟିଂ ପୋର୍ଟାଲ୍"
+    t["complaints_desc"] = "ଜନସ୍ୱାସ୍ଥ୍ୟ ବିପଦ, ପରିମଳ ସମସ୍ୟା, କିମ୍ବା ରୋଗ କ୍ଲଷ୍ଟରକୁ ସିଧାସଳଖ ମ୍ୟୁନିସିପାଲିଟି ସ୍ୱାସ୍ଥ୍ୟ ବୋର୍ଡକୁ ରିପୋର୍ଟ କରିବାକୁ ଏହି ପୋର୍ଟାଲ୍ ବ୍ୟବହାର କରନ୍ତୁ |"
+    t["file_report_title"] = "📝 ଏକ ନୂତନ ରିପୋର୍ଟ ଦାଖଲ କରନ୍ତୁ"
+    t["photo_evidence_title"] = "ଫଟୋଗ୍ରାଫିକ୍ ପ୍ରମାଣ (ଇଚ୍ଛାଧୀନ)"
+    t["ai_triage_title"] = "🧠 AI ଟ୍ରାଇଜ୍ ବିଶ୍ଳେଷଣ (NLP)"
+    t["whistleblower_title"] = "🛡️ ହ୍ୱିସଲବ୍ଲୋୟର୍ ସୁରକ୍ଷା"
+    t["recent_actions_title"] = "🔔 ସାମ୍ପ୍ରତିକ କାର୍ଯ୍ୟାନୁଷ୍ଠାନ"
+    t["join_us_title"] = "🤝 ଆମ ସହିତ କିପରି ଯୋଗ ଦେବେ"
+    t["join_us_steps"] = "- **ପଦକ୍ଷେପ ୧:** ଆଞ୍ଚଳିକ ମେଡିକାଲ୍ ବୋର୍ଡ ସହିତ ପଞ୍ଜିକରଣ କରନ୍ତୁ |\n- **ପଦକ୍ଷେପ ୨:** ସୁରକ୍ଷିତ ଟ୍ରାନ୍ସମିସନ୍ ପାଇଁ ଆପଣଙ୍କର କ୍ରିପ୍ଟୋଗ୍ରାଫିକ୍ ମାଷ୍ଟର କି ପ୍ରାପ୍ତ କରନ୍ତୁ |\n- **ପଦକ୍ଷେପ ୩:** କ୍ରମାଗତ ସିଣ୍ଡ୍ରୋମିକ୍ ଲଗିଂ ଆରମ୍ଭ କରନ୍ତୁ |"
+    t["complaint_category"] = "ବର୍ଗ"
+    t["complaint_options"] = ["ପରିମଳ / ଜଳ", "ଭେକ୍ଟର / ମଶା", "ସନ୍ଦିଗ୍ଧ କ୍ଲଷ୍ଟର", "ଅନ୍ୟାନ୍ୟ"]
+    t["complaint_textarea"] = "ବିସ୍ତୃତ ବିବରଣୀ (ଅବସ୍ଥାନ, ଦେଖାଯାଇଥିବା ଲକ୍ଷଣ ଇତ୍ୟାଦି)"
+    t["complaint_submit_btn"] = "🚀 ଏନକ୍ରିପ୍ଟ ହୋଇଥିବା ରିପୋର୍ଟ ଦାଖଲ କରନ୍ତୁ"
+else:
+    t["grassroots_grid_title"] = "📡 ग्रासरूट सर्विलांस ग्रिड केंद्र (लाइव सुविधा टेलीमेट्री)"
+    t["grassroots_grid_desc"] = "प्राथमिक स्वास्थ्य केंद्रों, नगरपालिका जल परीक्षण स्टेशनों और अस्पताल से लाइव डेटा:"
+    t["verified_protocols_title"] = "🛡️ सत्यापित सार्वजनिक स्वास्थ्य और निवारक प्रोटोकॉल"
+    t["ocr_scanner_title"] = "📸 एज OCR स्कैनर: डीप लर्निंग OCR"
+    t["ocr_extracted_text"] = "📝 निकाला गया टेक्स्ट:"
+    t["db_sync_title"] = "डेटाबेस सिंक्रनाइज़र डेमन"
+    t["baseline_learning_title"] = "🧠 डायनामिक बेसलाइन और मूविंग एवरेज लर्निंग इंजन"
+    t["settings_title"] = "⚙️ सेटिंग्स और उपकरण"
+    t["settings_desc"] = "अपने क्षेत्रीय स्वास्थ्य पोर्टल प्राथमिकताओं को कॉन्फ़िगर करें।"
+    t["settings_baseline_title"] = "📈 बेसलाइन सर्विलांस इंजन"
+    t["complaints_title"] = "🗣️ नागरिक शिकायत और रिपोर्टिंग पोर्टल"
+    t["complaints_desc"] = "सार्वजनिक स्वास्थ्य खतरों, स्वच्छता के मुद्दों, या संदिग्ध बीमारी समूहों को सीधे नगरपालिका स्वास्थ्य बोर्ड को रिपोर्ट करने के लिए इस पोर्टल का उपयोग करें।"
+    t["file_report_title"] = "📝 नई रिपोर्ट दर्ज करें"
+    t["photo_evidence_title"] = "फोटोग्राफिक साक्ष्य (वैकल्पिक)"
+    t["ai_triage_title"] = "🧠 AI ट्राइएज विश्लेषण (NLP)"
+    t["whistleblower_title"] = "🛡️ व्हिसलब्लोअर संरक्षण"
+    t["recent_actions_title"] = "🔔 हाल की कार्रवाइयां"
+    t["join_us_title"] = "🤝 हमसे कैसे जुड़ें"
+    t["join_us_steps"] = "- **चरण 1:** क्षेत्रीय मेडिकल बोर्ड के साथ पंजीकरण करें।\n- **चरण 2:** सुरक्षित ट्रांसमिशन के लिए अपनी क्रिप्टोग्राफ़िक मास्टर कुंजी प्राप्त करें।\n- **चरण 3:** निरंतर सिंड्रोमिक लॉगिंग शुरू करें।"
+    t["complaint_category"] = "श्रेणी"
+    t["complaint_options"] = ["स्वच्छता/पानी", "वेक्टर/मच्छर", "संदिग्ध क्लस्टर", "अन्य"]
+    t["complaint_textarea"] = "विस्तृत विवरण (स्थान, देखे गए लक्षण, आदि)"
+    t["complaint_submit_btn"] = "🚀 एन्क्रिप्टेड रिपोर्ट सबमिट करें"
+
+
 is_dark_mode = st.session_state.get("dark_mode_toggle", True)
 
 if not is_dark_mode:
@@ -3535,8 +3616,8 @@ if active_nav_idx == 0:
 
     # Grassroots Surveillance Grid Nodes (Real-Time Visual Telemetry)
     st.markdown("---")
-    st.markdown("#### 🏥 Grassroots Surveillance Grid Centers (Live Facility Telemetry)")
-    st.markdown("Live anonymized stream from Primary Health Centres, municipal water testing stations, and hospital outpatient departments across the region:")
+    st.markdown(f"#### {t.get('grassroots_grid_title', '📡 Grassroots Surveillance Grid Centers (Live Facility Telemetry)')}")
+    st.markdown(t.get('grassroots_grid_desc', 'Live anonymized stream from Primary Health Centres, municipal water testing stations, and hospital outpatient departments across the region:'))
     
     # Calculate Metrics
     utkal_data = node_data.get("node_utkal", {})
@@ -3618,7 +3699,7 @@ if active_nav_idx == 0:
 
     # Preventive Community Health Action Protocols
     st.markdown("---")
-    st.markdown("#### 🛡️ Verified Public Health & Preventive Protocols")
+    st.markdown(f"#### {t.get('verified_protocols_title', '🛡️ Verified Public Health & Preventive Protocols')}")
     protocols_html = """
     <div class="horizontal-carousel">
         <div class="carousel-item" style="flex: 0 0 320px;">
@@ -4044,13 +4125,13 @@ elif active_nav_idx == 2:
                 if not st.session_state.ivr_call_active:
                     st.markdown("""
                     <style>
-                    div[data-testid="element-container"]:has(.ivr-btn-marker) + div[data-testid="element-container"] button {
+                    div[data-testid="element-container"]:has(.ivr-btn-marker) + div[data-testid="element-container"] div.stButton > button[kind="secondary"] {
                         background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
                         color: white !important;
                         border: none !important;
                         font-weight: 600 !important;
                     }
-                    div[data-testid="element-container"]:has(.ivr-btn-marker) + div[data-testid="element-container"] button:hover {
+                    div[data-testid="element-container"]:has(.ivr-btn-marker) + div[data-testid="element-container"] div.stButton > button[kind="secondary"]:hover {
                         background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
                     }
                     </style>
@@ -4091,7 +4172,7 @@ elif active_nav_idx == 2:
                         st.rerun()
                     
         elif t["opt3"] in ingest_method:
-            st.markdown("#### 📋 Edge OCR Scanner: Deep Learning OCR")
+            st.markdown(f"#### {t.get('ocr_scanner_title', '📸 Edge OCR Scanner: Deep Learning OCR')}")
             if easyocr is None:
                 st.error("easyocr library is not installed. Please install it to use this feature.")
             else:
@@ -4121,7 +4202,7 @@ elif active_nav_idx == 2:
                                 results = reader.readtext(img_np, detail=0)
                                 extracted_text = " ".join(results)
                                 
-                            st.markdown("### 📄 Extracted Raw Text:")
+                            st.markdown(f"### {t.get('ocr_extracted_text', '📝 Extracted Raw Text:')}")
                             st.text_area("OCR Output", extracted_text, height=150)
                             
                             found_symptoms = []
@@ -4149,7 +4230,7 @@ elif active_nav_idx == 2:
                                 st.warning("No known symptoms matched the extracted text. You may log it manually.")
 
         elif t["opt4"] in ingest_method:
-            st.markdown("#### Database Synchronizer Daemon")
+            st.markdown(f"#### {t.get('db_sync_title', 'Database Synchronizer Daemon')}")
             st.code("# Secure Connector pushes anonymized averages directly.\nresult = db.query('SELECT COUNT(*) FROM patient_logs')\nupload_safely(result)", language="python")
             if st.button("🔄 Trigger Sync Sync Simulation", use_container_width=True, type="primary"):
                 new_log = {
@@ -4684,8 +4765,8 @@ elif active_nav_idx == 3:
             })
     st.markdown(f'<div class="table-container">{pd.DataFrame(audit_records).to_html(index=False, escape=False, classes="custom-glass-table")}</div>', unsafe_allow_html=True)
 elif active_nav_idx == 1:
-    st.markdown("## ⚙️ Settings & Tools")
-    st.markdown("Configure your regional health portal preferences.")
+    st.markdown(f"## {t.get('settings_title', '⚙️ Settings & Tools')}")
+    st.markdown(t.get('settings_desc', 'Configure your regional health portal preferences.'))
     def _update_lang():
         st.session_state.stored_lang = st.session_state.settings_lang_selector
     st.selectbox(
@@ -4698,7 +4779,7 @@ elif active_nav_idx == 1:
     st.markdown("---")
     st.info(t["zero_central_policy"])
     st.markdown("---")
-    st.subheader("📈 Baseline Surveillance Engine")
+    st.subheader(t.get('settings_baseline_title', '📈 Baseline Surveillance Engine'))
     def _update_baseline():
         st.session_state.stored_baseline = st.session_state.baseline_mode_choice
     st.radio(
@@ -4711,15 +4792,15 @@ elif active_nav_idx == 1:
     )
 
 elif active_nav_idx == 4:
-    st.markdown("## 💬 Citizen Complaints & Reporting Portal")
-    st.markdown("Use this portal to report public health hazards, sanitation issues, or suspected disease clusters directly to the Municipal Health Board. Your reports help us detect outbreaks early.")
+    st.markdown(f"## {t.get('complaints_title', '🗣️ Citizen Complaints & Reporting Portal')}")
+    st.markdown(t.get('complaints_desc', 'Use this portal to report public health hazards, sanitation issues, or suspected disease clusters directly to the Municipal Health Board. Your reports help us detect outbreaks early.'))
     
     st.markdown("---")
     
     col1, col2 = st.columns([1.5, 1])
     
     with col1:
-        st.markdown("### 📝 File a New Report")
+        st.markdown(f"### {t.get('file_report_title', '📝 File a New Report')}")
         with st.form("citizen_complaint_form", clear_on_submit=True):
             incident_type = st.selectbox("Incident Type*", [
                 "Water Contamination / Discoloration",
@@ -4734,7 +4815,7 @@ elif active_nav_idx == 4:
             
             desc = st.text_area("Detailed Description*", placeholder="Please describe what you observed, when it started, and any symptoms in the community...", height=120)
             
-            st.markdown("📸 **Photographic Evidence (Optional)**")
+            st.markdown(f"📸 **{t.get('photo_evidence_title', 'Photographic Evidence (Optional)')}**")
             uploaded_photo = st.file_uploader("Upload an image of the hazard", type=["jpg", "jpeg", "png"])
             
             st.markdown("<br>", unsafe_allow_html=True)
@@ -4754,7 +4835,7 @@ elif active_nav_idx == 4:
                         st.success("✅ **Report Successfully Lodged!** Your complaint has been securely routed.")
                         
                         # NLP Triage Output
-                        st.markdown("#### 🧠 AI Triage Analysis (NLP)")
+                        st.markdown(f"#### {t.get('ai_triage_title', '🧠 AI Triage Analysis (NLP)')}")
                         if risk_score >= 2:
                             st.error(f"**Sentiment & Urgency:** 🚨 CRITICAL PRIORITY\n\n**Category Flag:** Suspected Epidemic Cluster\n\n**AI Confidence Score:** {min(98, 70 + risk_score * 8)}%\n\n*Action taken: Instant SMS dispatched to Ward {location[:5]} Rapid Response Team.*")
                         elif risk_score == 1:
@@ -4763,9 +4844,9 @@ elif active_nav_idx == 4:
                             st.info(f"**Sentiment & Urgency:** 🟢 ROUTINE PRIORITY\n\n**Category Flag:** General Sanitation\n\n**AI Confidence Score:** 88%\n\n*Action taken: Logged for standard municipal review.*")
                     
     with col2:
-        st.markdown("### 🛡️ Whistleblower Protection")
+        st.markdown(f"### {t.get('whistleblower_title', '🛡️ Whistleblower Protection')}")
         st.info("Your identity is strictly protected. By default, all reports submitted through this portal are treated as **Anonymous** under the SurakshaNet Zero-Trace Policy.")
-        st.markdown("### 📊 Recent Actions")
+        st.markdown(f"### {t.get('recent_actions_title', '🔔 Recent Actions')}")
         st.markdown(
             """
             <div class='glass-card' style='border-left: 3px solid #10B981; margin-bottom: 10px; padding: 12px;'>
@@ -4780,16 +4861,16 @@ elif active_nav_idx == 4:
         )
 
 elif active_nav_idx == 5:
-    st.markdown("## 🤖 Suraksha AI Health Assistant")
-    st.markdown("Powered by **Suraksha LLM**. Ask me any public health questions or describe your symptoms for an immediate AI triage based on current municipal guidelines.")
+    st.markdown(f"## {t.get('ai_title', '🤖 Suraksha AI Health Assistant')}")
+    st.markdown(t.get('ai_subtitle', 'Powered by **Suraksha LLM**. Ask me any public health questions or describe your symptoms for an immediate AI triage based on current municipal guidelines.'))
     
     if "chat_messages" not in st.session_state:
-        st.session_state.chat_messages = [{"role": "assistant", "content": "Hello! I am the Suraksha AI Health Assistant. How can I help you or your community today?"}]
+        st.session_state.chat_messages = [{"role": "assistant", "content": t.get('ai_greeting', 'Hello! I am the Suraksha AI Health Assistant. How can I help you or your community today?')}]
         
     for msg in st.session_state.chat_messages:
         st.chat_message(msg["role"]).write(msg["content"])
         
-    if prompt := st.chat_input("Type your symptoms or public health question here..."):
+    if prompt := st.chat_input(t.get('ai_placeholder', 'Type your symptoms or public health question here...')):
         st.session_state.chat_messages.append({"role": "user", "content": prompt})
         st.chat_message("user").write(prompt)
         
@@ -4810,7 +4891,7 @@ elif active_nav_idx == 5:
                     asyncio.set_event_loop(loop)
                     
                 # Inject System Prompt for context
-                system_prompt = {"role": "system", "content": "You are Suraksha LLM, a public health AI assistant for SurakshaNet. Provide brief, professional, and empathetic support. You are strictly an informational assistant. DO NOT give medical diagnosis, prescribe medicines, or provide any clinical advice under any circumstances. If the user asks for medical advice or diagnosis, kindly remind them that you are just an AI assistant and they should contact a doctor or call the Emergency Hotline 104. Keep answers under 4 sentences."}
+                system_prompt = {"role": "system", "content": "You are Suraksha LLM, a public health AI assistant for SurakshaNet. Provide brief, professional, and empathetic support. You are strictly an informational assistant. DO NOT give medical diagnosis, prescribe medicines, or provide any clinical advice under any circumstances. If the user asks for medical advice or diagnosis, kindly remind them that you are just an AI assistant and they should contact a doctor or call the Emergency Hotline 104. Keep answers under 4 sentences." + t.get("ai_system_append", "")}
                 api_messages = [system_prompt] + [{"role": m["role"], "content": m["content"]} for m in st.session_state.chat_messages]
                 
                 # Call free default model endpoint (automatically routes to free models like gpt-4o-mini/claude/gemini)
@@ -4849,6 +4930,6 @@ elif active_nav_idx == 5:
             st.session_state.chat_messages.append({"role": "assistant", "content": full_response})
 
 elif active_nav_idx == 6:
-    st.markdown("## 🤝 How to Join Us")
+    st.markdown(f"## {t.get('join_us_title', '🤝 How to Join Us')}")
     st.success("Are you a clinic, hospital, or regional health center? Join the SurakshaNet surveillance grid.")
-    st.markdown("- **Step 1:** Register your node with the regional Medical Board.\n- **Step 2:** Obtain your cryptographic Master Key for secure transmission.\n- **Step 3:** Begin continuous syndromic logging.")
+    st.markdown(t.get('join_us_steps', '- **Step 1:** Register your node with the regional Medical Board.\n- **Step 2:** Obtain your cryptographic Master Key for secure transmission.\n- **Step 3:** Begin continuous syndromic logging.'))
