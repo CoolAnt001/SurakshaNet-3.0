@@ -67,9 +67,9 @@ if st.session_state.get("play_alert_sound"):
     wav_io = io.BytesIO()
     wavfile.write(wav_io, sample_rate, audio_data)
     
-    st.markdown('<div style="opacity: 0; width: 0px; height: 0px; overflow: hidden; position: absolute; left: -9999px;">', unsafe_allow_html=True)
-    st.audio(wav_io.getvalue(), format='audio/wav', autoplay=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    import base64
+    b64_audio = base64.b64encode(wav_io.getvalue()).decode()
+    st.markdown(f'<audio autoplay="true"><source src="data:audio/wav;base64,{b64_audio}" type="audio/wav"></audio>', unsafe_allow_html=True)
     
     st.session_state.play_alert_sound = False
 
@@ -2171,6 +2171,10 @@ def get_default_presentation_notifications():
         }
     ]
 
+@st.cache_resource
+def get_global_alerts_state():
+    return {"active_officer_alert": None}
+
 # --- Initialize Notifications & Active Officer Alert ---
 if "notifications" not in st.session_state:
     st.session_state.notifications = get_default_presentation_notifications()
@@ -2281,51 +2285,61 @@ is_dynamic_baseline = "Dynamic" in st.session_state.stored_baseline
 # --- Top Navigation / Main Header ---
 
 # --- Officer Broadcast Glowing Popup (Global Header) ---
-if st.session_state.get("active_officer_alert"):
-    alert = st.session_state.active_officer_alert
-    clean_msg = alert.get("message", alert.get("status", "")).strip().replace("\n", " • ")
-    status_line = alert.get("status", "Emergency Advisory")
+if "dismissed_alerts" not in st.session_state:
+    st.session_state.dismissed_alerts = set()
+
+@st.fragment(run_every="2s")
+def render_global_alert():
+    global_state = get_global_alerts_state()
+    global_alert = global_state.get("active_officer_alert")
     
-    col_alert, col_close = st.columns([15, 1])
-    with col_alert:
-        st.markdown(
-            f"""
-            <div class='sidebar-glow-box' style='margin: 0; padding: 10px 20px; box-shadow: 0 8px 30px rgba(239, 68, 68, 0.25); display: flex; align-items: center;'>
-                <marquee behavior="scroll" direction="left" scrollamount="10" style="color: white; font-size: 1.1rem;">
-                    <span style="color: #FCA5A5; font-weight: 800; letter-spacing: 0.5px;">🚨 STATE OFFICER ADVISORY: {status_line.upper()}</span> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <span style="font-weight: 500;">{clean_msg}</span> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <span style='color: var(--neon-cyan); font-family: monospace; font-size: 0.95rem;'>[Auth Hash: {alert.get('hash', '')[:24]}]</span>
-                </marquee>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    with col_close:
-        st.markdown(
-            """
-            <style>
-            div[data-testid="stButton"]:has(button[key="dismiss_global_glow_btn"]) {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-                margin-top: 2px;
-            }
-            button[key="dismiss_global_glow_btn"] {
-                font-size: 1.5rem !important;
-                padding: 0 !important;
-                color: rgba(255, 255, 255, 0.6) !important;
-            }
-            button[key="dismiss_global_glow_btn"]:hover {
-                color: #EF4444 !important;
-                transform: scale(1.1) !important;
-            }
-            </style>
-            """, unsafe_allow_html=True)
-        if st.button("✖", key="dismiss_global_glow_btn", type="tertiary", use_container_width=True):
-            st.session_state.active_officer_alert = None
-            st.rerun()
-    st.markdown("<div style='margin-bottom: 15px;'></div>", unsafe_allow_html=True)
+    if global_alert and global_alert.get("hash") not in st.session_state.dismissed_alerts:
+        alert = global_alert
+        clean_msg = alert.get("message", alert.get("status", "")).strip().replace("\n", " • ")
+        status_line = alert.get("status", "Emergency Advisory")
+        
+        col_alert, col_close = st.columns([15, 1])
+        with col_alert:
+            st.markdown(
+                f"""
+                <div class='sidebar-glow-box' style='margin: 0; padding: 10px 20px; box-shadow: 0 8px 30px rgba(239, 68, 68, 0.25); display: flex; align-items: center;'>
+                    <marquee behavior="scroll" direction="left" scrollamount="10" style="color: white; font-size: 1.1rem;">
+                        <span style="color: #FCA5A5; font-weight: 800; letter-spacing: 0.5px;">🚨 STATE OFFICER ADVISORY: {status_line.upper()}</span> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 
+                        <span style="font-weight: 500;">{clean_msg}</span> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 
+                        <span style='color: var(--neon-cyan); font-family: monospace; font-size: 0.95rem;'>[Auth Hash: {alert.get('hash', '')[:24]}]</span>
+                    </marquee>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        with col_close:
+            st.markdown(
+                """
+                <style>
+                div[data-testid="stButton"]:has(button[key="dismiss_global_glow_btn"]) {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                    margin-top: 2px;
+                }
+                button[key="dismiss_global_glow_btn"] {
+                    font-size: 1.5rem !important;
+                    padding: 0 !important;
+                    color: rgba(255, 255, 255, 0.6) !important;
+                }
+                button[key="dismiss_global_glow_btn"]:hover {
+                    color: #EF4444 !important;
+                    transform: scale(1.1) !important;
+                }
+                </style>
+                """, unsafe_allow_html=True)
+            if st.button("✖", key="dismiss_global_glow_btn", type="tertiary", use_container_width=True):
+                st.session_state.dismissed_alerts.add(alert.get("hash"))
+                st.rerun()
+        st.markdown("<div style='margin-bottom: 15px;'></div>", unsafe_allow_html=True)
+
+render_global_alert()
 
 col_head1, col_head_space, col_popover = st.columns([6, 0.4, 0.4])
 with col_head1:
@@ -2927,7 +2941,7 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                 if node_id in ["node_campus", "node_soa", "node_utkal"] and metric_id == "gastrointestinal":
                     val = 3.0 # Suppressed locally
             
-            if metric_id in manual_sums and manual_sums[metric_id] > 0:
+            if scenario != "🟢 Normal Baseline (No Active Outbreaks)" and metric_id in manual_sums and manual_sums[metric_id] > 0:
                 val += manual_sums[metric_id]
                 
             if is_count:
@@ -2937,8 +2951,18 @@ def generate_node_data(scenario, epicenter, epsilon, k_anonymity, is_dynamic_mod
                 
             # LDP Laplace Mechanism
             sensitivity = 1.0 if is_count else (std * 0.4)
-            scale = sensitivity / epsilon
-            noise = np.random.laplace(0, scale)
+            
+            if scenario == "🟢 Normal Baseline (No Active Outbreaks)":
+                scale = 0.0  # Perfect accuracy for demo (No False Alarms)
+            elif "k-Anonymity" in scenario:
+                scale = sensitivity / epsilon  # Strict user-defined privacy budget for the demo
+            else:
+                # Auto-pilot for Outbreak scenarios: temporarily boost epsilon to suppress background noise
+                # so the actual outbreaks are clearly visible without random false alarms on safe nodes.
+                effective_epsilon = max(epsilon, 2.5) 
+                scale = sensitivity / effective_epsilon
+                
+            noise = np.random.laplace(0, scale) if scale > 0 else 0.0
             dp_val = val + noise
             
             if is_count:
@@ -3485,10 +3509,10 @@ if active_nav_idx == 0:
         max_z = max([m["z_score"] for m in node_info["metrics"].values()])
         top_metric = max(node_info["metrics"].items(), key=lambda item: item[1]["z_score"])
         
-        if max_z <= 1.5:
+        if max_z <= (false_alarm_threshold * 0.6):
             node_status = "Safe (Normal Baseline)"
             size_val = 16
-        elif max_z <= 3.0:
+        elif max_z <= false_alarm_threshold:
             node_status = "Elevated Warning"
             size_val = 24
         else:
@@ -4623,6 +4647,7 @@ elif active_nav_idx == 3:
             st.session_state.notifications.append(new_notif)
             st.session_state.alert_dispatched_popup = new_notif
             st.session_state.active_officer_alert = new_notif
+            get_global_alerts_state()["active_officer_alert"] = new_notif
             st.session_state.play_alert_sound = True
             st.toast(f"📢 Official Advisory Dispatched: {custom_title}", icon="🚨")
             st.toast("🔒 SHA256 cryptographic seal recorded in Ledger", icon="✅")
