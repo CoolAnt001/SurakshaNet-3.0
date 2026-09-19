@@ -181,7 +181,6 @@ components.html("""
         function animate() {
             requestAnimationFrame(animate);
             sphere.rotation.y += 0.002;
-            sphere.rotation.x += 0.001;
             particlesMesh.rotation.y -= 0.0005;
             renderer.render(scene, camera);
         }
