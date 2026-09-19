@@ -267,6 +267,18 @@ def get_base64_of_bin_file(bin_file):
 bg_dark_b64 = get_base64_of_bin_file("assets/bg_dark.jpg")
 bg_light_b64 = get_base64_of_bin_file("assets/bg_light.jpg")
 
+@st.cache_data
+def load_india_geojson():
+    import json
+    import os
+    file_path = "assets/india_boundary.geojson"
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return None
+
+india_geojson = load_india_geojson()
+
 if is_dark_mode:
     theme_tokens = f"""
         /* Core Unified Theme Tokens */
@@ -366,6 +378,10 @@ st.markdown("""
     .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
         background-color: transparent !important;
         background-image: none !important;
+    }
+    
+    html, body {
+        background: var(--hero-bg) !important;
     }
     
     [data-testid="stSidebar"] {
@@ -3740,7 +3756,6 @@ if active_nav_idx == 0:
                 zoom=map_zoom,
                 center={"lat": center_lat, "lon": center_lon}
             )
-            fig_map.update_layout(map_style="open-street-map")
         else:
             fig_map = px.scatter_mapbox(
                 df_map,
@@ -3756,8 +3771,7 @@ if active_nav_idx == 0:
                 hover_name="Short_Name",
                 hover_data={"lat": False, "lon": False, "Zone": True, "Status": True, "Primary Indicator": True, "Max Z-Score": True, "Size": False},
                 zoom=map_zoom,
-                center={"lat": center_lat, "lon": center_lon},
-                mapbox_style="open-street-map"
+                center={"lat": center_lat, "lon": center_lon}
             )
     except Exception:
         fig_map = px.scatter_mapbox(
@@ -3774,17 +3788,29 @@ if active_nav_idx == 0:
             hover_name="Short_Name",
             hover_data={"lat": False, "lon": False, "Zone": True, "Status": True, "Primary Indicator": True, "Max Z-Score": True, "Size": False},
             zoom=map_zoom,
-            center={"lat": center_lat, "lon": center_lon},
-            mapbox_style="open-street-map"
+            center={"lat": center_lat, "lon": center_lon}
         )
 
     plot_theme = PLOTLY_DARK if is_dark_mode else PLOTLY_LIGHT
+    mapbox_bg_style = "carto-darkmatter" if is_dark_mode else "carto-positron"
+    
+    layer_config = []
+    if india_geojson:
+        layer_config.append({
+            "source": india_geojson,
+            "type": "line",
+            "color": "#10B981" if is_dark_mode else "#059669", # Highlight border with official SurakshaNet Green
+            "line": {"width": 2.5}
+        })
+        
     fig_map.update_layout(
         autosize=True,
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
         height=350,
         paper_bgcolor=plot_theme["paper"],
         plot_bgcolor=plot_theme["plot"],
+        mapbox_style=mapbox_bg_style,
+        mapbox_layers=layer_config,
         font=dict(color=plot_theme.get("text", "#F8FAFC")),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(color=plot_theme.get("text", "#F8FAFC")))
     )
