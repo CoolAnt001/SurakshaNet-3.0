@@ -243,12 +243,12 @@ else:
     """
 
 # --- Custom CSS Styling (Adaptive Dual-Theme: Dark & Light Mode Glassmorphism) ---
-st.markdown(f"""
+st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
     /* Global Typography & Theme Tokens */
-    :root, .stApp {{
+    :root, .stApp {
         --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
         --font-mono: 'JetBrains Mono', monospace;
         --neon-cyan: #FF9933;
@@ -258,8 +258,8 @@ st.markdown(f"""
         --neon-crimson: #EF4444;
         --neon-purple: #A855F7;
         
-        {theme_tokens}
-    }}
+""" + theme_tokens + """
+    }
 
     html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select {
         font-family: var(--font-sans) !important;
