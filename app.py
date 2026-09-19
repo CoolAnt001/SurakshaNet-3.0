@@ -82,9 +82,9 @@ if is_dark_mode:
     threejs_h1_grad = "linear-gradient(135deg, #58a6ff 0%, #ffffff 100%)"
     threejs_particle_color = "0x58a6ff"
 else:
-    threejs_text_color = "#1E3A8A"
-    threejs_shadow = "rgba(30, 58, 138, 0.2)"
-    threejs_h1_grad = "linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)"
+    threejs_text_color = "#000080"
+    threejs_shadow = "rgba(0, 0, 128, 0.2)"
+    threejs_h1_grad = "#000080"
     threejs_particle_color = "0x58a6ff"
 
 # --- 3D Animation Injection ---
@@ -97,7 +97,7 @@ components.html("""
         canvas { display: block; position: absolute; top: 0; left: 0; z-index: -1; pointer-events: none; }
         .hero-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: """ + threejs_text_color + """; font-family: sans-serif; text-align: center; text-shadow: 0 0 20px """ + threejs_shadow + """; z-index: 10; pointer-events: none;}
         .hero-text h1 { font-size: 3rem; margin: 0; font-weight: 800; background: """ + threejs_h1_grad + """; -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
-        .hero-text p { font-size: 1.2rem; opacity: 0.8; letter-spacing: 2px;}
+        .hero-text p { font-size: 1.2rem; opacity: 0.9; letter-spacing: 2px; margin: 0; margin-top: 10px; }
     </style>
 </head>
 <body>
