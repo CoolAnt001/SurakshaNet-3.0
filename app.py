@@ -85,7 +85,7 @@ else:
     threejs_text_color = "#0F172A"
     threejs_shadow = "rgba(15, 23, 42, 0.2)"
     threejs_h1_grad = "linear-gradient(135deg, #d97706 0%, #0F172A 100%)"
-    threejs_particle_color = "0x138808"
+    threejs_particle_color = "0x1e3a8a"
 
 # --- 3D Animation Injection ---
 components.html("""
@@ -298,13 +298,13 @@ st.markdown("""
     }
 
     /* Force Toggle Switch / Checkbox to respect our theme */
-    div[data-testid="stCheckbox"] div[data-baseweb="checkbox"] > div:first-of-type {
+    div[data-baseweb="checkbox-toggle-track"] {
         background-color: var(--nav-border) !important;
     }
-    div[data-testid="stCheckbox"] div[data-baseweb="checkbox"] > div:first-of-type > div {
+    div[data-baseweb="checkbox-toggle-handle"] {
         background-color: var(--card-bg) !important;
     }
-    div[data-testid="stCheckbox"] input:checked + div {
+    input:checked + div[data-baseweb="checkbox-toggle-track"] {
         background-color: var(--nav-active-text) !important;
     }
 
@@ -363,16 +363,16 @@ st.markdown("""
         box-shadow: none !important;
     }
     div[data-baseweb="select"] > div {
-        background-color: #292524 !important;
-        border: 1px solid #44403C !important;
-        color: #F8FAFC !important;
+        background-color: var(--card-bg) !important;
+        border: 1px solid var(--nav-border) !important;
+        color: var(--text-primary) !important;
         border-radius: 10px !important;
         cursor: pointer !important;
     }
     div[data-baseweb="popover"] > div, div[data-baseweb="menu"] {
-        background-color: #292524 !important;
-        border: 1px solid #44403C !important;
-        color: #F8FAFC !important;
+        background-color: var(--card-bg) !important;
+        border: 1px solid var(--nav-border) !important;
+        color: var(--text-primary) !important;
     }
     div[data-baseweb="popover"] ul, 
     div[data-baseweb="popover"] ul div, 
