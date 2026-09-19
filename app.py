@@ -380,10 +380,6 @@ st.markdown("""
         background-image: none !important;
     }
     
-    html, body {
-        background: var(--hero-bg) !important;
-    }
-    
     [data-testid="stSidebar"] {
         background-color: var(--nav-bar-bg) !important;
         backdrop-filter: blur(12px) !important;
