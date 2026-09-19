@@ -3816,17 +3816,24 @@ if active_nav_idx == 0:
             "line": {"width": 2.5}
         })
         
-    fig_map.update_layout(
-        autosize=True,
-        margin={"r": 0, "t": 0, "l": 0, "b": 0},
-        height=350,
-        paper_bgcolor=plot_theme["paper"],
-        plot_bgcolor=plot_theme["plot"],
-        mapbox_style=mapbox_bg_style,
-        mapbox_layers=layer_config,
-        font=dict(color=plot_theme.get("text", "#F8FAFC")),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(color=plot_theme.get("text", "#F8FAFC")))
-    )
+    update_kwargs = {
+        "autosize": True,
+        "margin": {"r": 0, "t": 0, "l": 0, "b": 0},
+        "height": 350,
+        "paper_bgcolor": plot_theme["paper"],
+        "plot_bgcolor": plot_theme["plot"],
+        "font": dict(color=plot_theme.get("text", "#F8FAFC")),
+        "legend": dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(color=plot_theme.get("text", "#F8FAFC")))
+    }
+    
+    if hasattr(px, "scatter_map"):
+        update_kwargs["map_style"] = mapbox_bg_style
+        update_kwargs["map_layers"] = layer_config
+    else:
+        update_kwargs["mapbox_style"] = mapbox_bg_style
+        update_kwargs["mapbox_layers"] = layer_config
+        
+    fig_map.update_layout(**update_kwargs)
     st.plotly_chart(fig_map, theme=None, use_container_width=True, config={"responsive": True})
 
     # Historical Baseline vs. Current Privatized Health Radar Table
