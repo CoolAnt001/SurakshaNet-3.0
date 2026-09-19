@@ -73,6 +73,81 @@ if st.session_state.get("play_alert_sound"):
     
     st.session_state.play_alert_sound = False
 
+# --- 3D Animation Injection ---
+components.html("""
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: transparent; }
+        canvas { display: block; position: absolute; top: 0; left: 0; z-index: -1; pointer-events: none; }
+        .hero-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-family: sans-serif; text-align: center; text-shadow: 0 0 20px rgba(88, 166, 255, 0.8); z-index: 10; pointer-events: none;}
+        .hero-text h1 { font-size: 3rem; margin: 0; font-weight: 800; background: linear-gradient(135deg, #58a6ff 0%, #ffffff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+        .hero-text p { font-size: 1.2rem; opacity: 0.8; letter-spacing: 2px;}
+    </style>
+</head>
+<body>
+    <div class="hero-text">
+        <h1>SURAKSHANET 3.0</h1>
+        <p>GLOBAL HEALTH SYNDROMIC GRID</p>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, 400);
+        document.body.appendChild(renderer.domElement);
+        
+        const geometry = new THREE.SphereGeometry(15, 64, 64);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0x58a6ff, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.15
+        });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+        
+        // Add particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 3000;
+        const posArray = new Float32Array(particlesCount * 3);
+        
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 100;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.1,
+            color: 0x58a6ff,
+            transparent: true,
+            opacity: 0.8
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+        
+        camera.position.z = 30;
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            sphere.rotation.y += 0.002;
+            sphere.rotation.x += 0.001;
+            particlesMesh.rotation.y -= 0.0005;
+            renderer.render(scene, camera);
+        }
+        animate();
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / 400;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, 400);
+        });
+    </script>
+</body>
+</html>
+""", height=400, scrolling=False)
+
 # --- Global Database Configuration ---
 # Set your Google Apps Script Web App URL here for universal cross-device persistence
 DEFAULT_GSHEET_URL = "https://script.google.com/macros/s/AKfycbzt_VXGXKrFKQltXEeXvqPjV0zHjSih0AMjQOcBwc-YwvhvmTJYe8om0NiFMbPPccZU/exec"
@@ -89,22 +164,11 @@ def get_base64_of_bin_file(bin_file):
 bg_dark_b64 = get_base64_of_bin_file("assets/bg_dark.jpg")
 bg_light_b64 = get_base64_of_bin_file("assets/bg_light.jpg")
 
-# --- Custom CSS Styling (Adaptive Dual-Theme: Dark & Light Mode Glassmorphism) ---
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
+st.sidebar.markdown("### 🎨 Appearance")
+is_dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True, key="dark_mode_toggle")
 
-    /* Global Typography & Theme Tokens */
-    :root, .stApp {
-        --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-        --font-mono: 'JetBrains Mono', monospace;
-        --neon-cyan: #FF9933;
-        --neon-blue: #138808;
-        --neon-emerald: #10B981;
-        --neon-amber: #F59E0B;
-        --neon-crimson: #EF4444;
-        --neon-purple: #A855F7;
-
+if is_dark_mode:
+    theme_tokens = """
         /* Core Unified Theme Tokens */
         --card-bg: #292524;
         --inner-card-bg: #1C1917;
@@ -139,7 +203,63 @@ st.markdown("""
         --grassroots-badge-bg: #1C1917;
         --grassroots-badge-border: #FF9933;
         --grassroots-badge-text: #FF9933;
-    }
+    """
+else:
+    theme_tokens = """
+        /* Light Mode Theme Tokens */
+        --card-bg: #FFFFFF;
+        --inner-card-bg: #F1F5F9;
+        --card-border: rgba(19, 136, 8, 0.25);
+        --card-border-hover: rgba(255, 153, 51, 0.6);
+        --text-primary: #0F172A;
+        --text-secondary: #334155;
+        --text-muted: #64748B;
+        --heading-color: var(--text-primary);
+        --nav-bar-bg: #F1F5F9;
+        --nav-border: #CBD5E1;
+        --nav-text: #475569;
+        --nav-active-bg: linear-gradient(135deg, rgba(255, 153, 51, 0.15) 0%, rgba(19, 136, 8, 0.1) 100%);
+        --nav-active-text: #D97706;
+        --nav-active-border: rgba(255, 153, 51, 0.55);
+        --nav-active-shadow: 0 4px 18px rgba(255, 153, 51, 0.15);
+        --hero-bg: linear-gradient(135deg, #F1F5F9 0%, #FFFFFF 100%);
+        --hero-border: rgba(255, 153, 51, 0.35);
+        --hero-title-grad: linear-gradient(135deg, #D97706 0%, #138808 60%, #0F172A 100%);
+        --hero-sub: #334155;
+        --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        --input-bg: #FFFFFF;
+        --input-border: #CBD5E1;
+        --input-text: #0F172A;
+        --btn-bg: linear-gradient(135deg, #FF9933 0%, #D97706 100%);
+        --btn-hover-bg: linear-gradient(135deg, #138808 0%, #FF9933 100%);
+        --btn-text: #FFFFFF;
+        --auth-clinic-bg: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F1F5F9 75%);
+        --auth-officer-bg: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F1F5F9 75%);
+        --auth-border-clinic: #FF9933;
+        --auth-border-officer: #EF4444;
+        --grassroots-badge-bg: #F1F5F9;
+        --grassroots-badge-border: #FF9933;
+        --grassroots-badge-text: #D97706;
+    """
+
+# --- Custom CSS Styling (Adaptive Dual-Theme: Dark & Light Mode Glassmorphism) ---
+st.markdown(f"""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+    /* Global Typography & Theme Tokens */
+    :root, .stApp {{
+        --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-mono: 'JetBrains Mono', monospace;
+        --neon-cyan: #FF9933;
+        --neon-blue: #138808;
+        --neon-emerald: #10B981;
+        --neon-amber: #F59E0B;
+        --neon-crimson: #EF4444;
+        --neon-purple: #A855F7;
+        
+        {theme_tokens}
+    }}
 
     html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select {
         font-family: var(--font-sans) !important;
