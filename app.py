@@ -99,12 +99,22 @@ components.html("""
         const parentDoc = window.parent.document;
         const parentWindow = window.parent;
         
+        // --- CLEANUP PREVIOUS INSTANCES ---
+        if (parentWindow.threejsBgAnimationId) {
+            cancelAnimationFrame(parentWindow.threejsBgAnimationId);
+        }
+        const oldCanvas = parentDoc.getElementById("threejs-bg-canvas");
+        if (oldCanvas) {
+            oldCanvas.remove();
+        }
+        
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, parentWindow.innerWidth / parentWindow.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(parentWindow.innerWidth, parentWindow.innerHeight);
         
         // Move canvas to parent body
+        renderer.domElement.id = "threejs-bg-canvas";
         renderer.domElement.style.position = 'fixed';
         renderer.domElement.style.top = '0';
         renderer.domElement.style.left = '0';
@@ -216,15 +226,22 @@ components.html("""
         
         const scrollContainer = parentDoc.querySelector('[data-testid="stAppViewContainer"]') || parentWindow;
         
-        scrollContainer.addEventListener('scroll', () => {
+        // Clean up old scroll listener
+        if (parentWindow.threejsScrollHandler) {
+            scrollContainer.removeEventListener('scroll', parentWindow.threejsScrollHandler);
+        }
+        
+        parentWindow.threejsScrollHandler = () => {
             const currentScrollY = scrollContainer.scrollTop || parentWindow.scrollY;
             const deltaY = currentScrollY - lastScrollY;
             lastScrollY = currentScrollY;
             targetVelocity = deltaY * 0.003; // Sensitivity
-        }, { passive: true });
+        };
+        
+        scrollContainer.addEventListener('scroll', parentWindow.threejsScrollHandler, { passive: true });
         
         function animate() {
-            requestAnimationFrame(animate);
+            parentWindow.threejsBgAnimationId = requestAnimationFrame(animate);
             
             // Smoothly interpolate current velocity towards target velocity
             scrollVelocity += (targetVelocity - scrollVelocity) * 0.05; 
