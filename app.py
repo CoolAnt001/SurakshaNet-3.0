@@ -77,8 +77,16 @@ st.sidebar.markdown("### 🎨 Appearance")
 is_dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True, key="dark_mode_toggle")
 
 if is_dark_mode:
+    # threejs_text_color = "white"
+    # threejs_shadow = "rgba(30, 58, 138, 0.2)"
+    # threejs_h1_grad = "linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)"
+    # threejs_particle_color = "0x58a6ff"
     pass
 else:
+    # threejs_text_color = "#1E3A8A"
+    # threejs_shadow = "rgba(30, 58, 138, 0.2)"
+    # threejs_h1_grad = "linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)"
+    # threejs_particle_color = "0x58a6ff"
     pass
 
 # --- 3D Animation Injection ---
@@ -151,6 +159,7 @@ components.html("""
             spoke.rotation.z = (i * Math.PI * 2) / 24;
             chakraGroup.add(spoke);
         }
+        chakraGroup.scale.set(0.6, 0.6, 0.6); // Scale down to 60%
         scene.add(chakraGroup);
         
         // --- Floating Particles ---
