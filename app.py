@@ -77,15 +77,9 @@ st.sidebar.markdown("### 🎨 Appearance")
 is_dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True, key="dark_mode_toggle")
 
 if is_dark_mode:
-    threejs_text_color = "white"
-    threejs_shadow = "rgba(30, 58, 138, 0.2)"
-    threejs_h1_grad = "linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)"
-    threejs_particle_color = "0x58a6ff"
+    pass
 else:
-    threejs_text_color = "#1E3A8A"
-    threejs_shadow = "rgba(30, 58, 138, 0.2)"
-    threejs_h1_grad = "linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)"
-    threejs_particle_color = "0x58a6ff"
+    pass
 
 # --- 3D Animation Injection ---
 components.html("""
@@ -95,16 +89,9 @@ components.html("""
     <style>
         body { margin: 0; overflow: hidden; background-color: transparent; }
         canvas { display: block; position: absolute; top: 0; left: 0; z-index: -1; pointer-events: none; }
-        .hero-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: """ + threejs_text_color + """; font-family: sans-serif; text-align: center; text-shadow: 0 0 20px """ + threejs_shadow + """; z-index: 10; pointer-events: none;}
-        .hero-text h1 { font-size: 3rem; margin: 0; font-weight: 800; background: """ + threejs_h1_grad + """; -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
-        .hero-text p { font-size: 1.2rem; opacity: 0.8; letter-spacing: 2px;}
     </style>
 </head>
 <body>
-    <div class="hero-text">
-        <h1>SURAKSHANET 3.0</h1>
-        <p>GLOBAL HEALTH SYNDROMIC GRID</p>
-    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         const scene = new THREE.Scene();
@@ -113,6 +100,7 @@ components.html("""
         renderer.setSize(window.innerWidth, 400);
         document.body.appendChild(renderer.domElement);
         
+        // --- Saffron/White/Green Globe ---
         const geometry = new THREE.SphereGeometry(15, 64, 64);
         const count = geometry.attributes.position.count;
         const colors = new Float32Array(count * 3);
@@ -143,7 +131,29 @@ components.html("""
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
         
-        // Add particles
+        // --- Ashoka Chakra ---
+        const chakraGroup = new THREE.Group();
+        const chakraMaterial = new THREE.MeshBasicMaterial({ color: 0x000080 }); // Navy Blue
+        
+        const rimGeo = new THREE.TorusGeometry(8, 0.4, 16, 64);
+        const rim = new THREE.Mesh(rimGeo, chakraMaterial);
+        chakraGroup.add(rim);
+        
+        const hubGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.6, 32);
+        const hub = new THREE.Mesh(hubGeo, chakraMaterial);
+        hub.rotation.x = Math.PI / 2;
+        chakraGroup.add(hub);
+        
+        const spokeGeo = new THREE.CylinderGeometry(0.15, 0.3, 8, 8);
+        spokeGeo.translate(0, 4, 0); // Pivot at base
+        for(let i = 0; i < 24; i++) {
+            const spoke = new THREE.Mesh(spokeGeo, chakraMaterial);
+            spoke.rotation.z = (i * Math.PI * 2) / 24;
+            chakraGroup.add(spoke);
+        }
+        scene.add(chakraGroup);
+        
+        // --- Floating Particles ---
         const particlesGeometry = new THREE.BufferGeometry();
         const particlesCount = 3000;
         const posArray = new Float32Array(particlesCount * 3);
@@ -182,6 +192,7 @@ components.html("""
             requestAnimationFrame(animate);
             sphere.rotation.y += 0.002;
             particlesMesh.rotation.y -= 0.0005;
+            chakraGroup.rotation.z -= 0.005;
             renderer.render(scene, camera);
         }
         animate();
