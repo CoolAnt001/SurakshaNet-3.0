@@ -46,7 +46,7 @@ IST = timezone(timedelta(hours=5, minutes=30))
 
 # --- Page Setup ---
 st.set_page_config(
-    page_title="SurakshaNet 3.0: Community Health Grid",
+    page_title="SurakshaNet : Community Health Grid",
     page_icon="🛡️",
     layout="wide"
 )
@@ -102,7 +102,7 @@ components.html("""
 </head>
 <body>
     <div class="hero-text">
-        <h1>SURAKSHANET 3.0</h1>
+        <h1>SURAKSHANET </h1>
         <p>GLOBAL HEALTH SYNDROMIC GRID</p>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
