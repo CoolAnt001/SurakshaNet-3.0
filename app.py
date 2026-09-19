@@ -114,11 +114,31 @@ components.html("""
         document.body.appendChild(renderer.domElement);
         
         const geometry = new THREE.SphereGeometry(15, 64, 64);
+        const count = geometry.attributes.position.count;
+        const colors = new Float32Array(count * 3);
+        const color = new THREE.Color();
+        
+        for (let i = 0; i < count; i++) {
+            const y = geometry.attributes.position.getY(i);
+            const normalizedY = (y + 15) / 30; // 0 to 1
+            if (normalizedY > 0.6) {
+                color.setHex(0xFF9933); // Saffron
+            } else if (normalizedY < 0.4) {
+                color.setHex(0x138808); // Green
+            } else {
+                color.setHex(0xFFFFFF); // White
+            }
+            colors[i * 3] = color.r;
+            colors[i * 3 + 1] = color.g;
+            colors[i * 3 + 2] = color.b;
+        }
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
         const material = new THREE.MeshBasicMaterial({ 
-            color: """ + threejs_particle_color + """, 
+            vertexColors: true, 
             wireframe: true,
             transparent: true,
-            opacity: 0.25
+            opacity: 0.35
         });
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
@@ -127,14 +147,29 @@ components.html("""
         const particlesGeometry = new THREE.BufferGeometry();
         const particlesCount = 3000;
         const posArray = new Float32Array(particlesCount * 3);
+        const particleColors = new Float32Array(particlesCount * 3);
         
-        for(let i = 0; i < particlesCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 100;
+        for(let i = 0; i < particlesCount; i++) {
+            const py = (Math.random() - 0.5) * 100;
+            posArray[i * 3] = (Math.random() - 0.5) * 100;
+            posArray[i * 3 + 1] = py;
+            posArray[i * 3 + 2] = (Math.random() - 0.5) * 100;
+            
+            const normalizedY = (py + 50) / 100;
+            if (normalizedY > 0.6) { color.setHex(0xFF9933); }
+            else if (normalizedY < 0.4) { color.setHex(0x138808); }
+            else { color.setHex(0xFFFFFF); }
+            
+            particleColors[i * 3] = color.r;
+            particleColors[i * 3 + 1] = color.g;
+            particleColors[i * 3 + 2] = color.b;
         }
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+        
         const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.1,
-            color: """ + threejs_particle_color + """,
+            size: 0.15,
+            vertexColors: true,
             transparent: true,
             opacity: 0.8
         });
@@ -2283,7 +2318,7 @@ if "active_officer_alert" not in st.session_state:
 hero_logo_b64 = ""
 import os, base64
 
-logo_filename = "LOGO.png"
+logo_filename = "LOGO.png" if is_dark_mode else "LOGO_light.png"
 logo_path = f"assets/{logo_filename}"
 fallback_path = "assets/LOGO.png"
 
