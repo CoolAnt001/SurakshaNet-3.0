@@ -73,6 +73,20 @@ if st.session_state.get("play_alert_sound"):
     
     st.session_state.play_alert_sound = False
 
+st.sidebar.markdown("### 🎨 Appearance")
+is_dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True, key="dark_mode_toggle")
+
+if is_dark_mode:
+    threejs_text_color = "white"
+    threejs_shadow = "rgba(88, 166, 255, 0.8)"
+    threejs_h1_grad = "linear-gradient(135deg, #58a6ff 0%, #ffffff 100%)"
+    threejs_particle_color = "0x58a6ff"
+else:
+    threejs_text_color = "#0F172A"
+    threejs_shadow = "rgba(15, 23, 42, 0.2)"
+    threejs_h1_grad = "linear-gradient(135deg, #d97706 0%, #0F172A 100%)"
+    threejs_particle_color = "0x138808"
+
 # --- 3D Animation Injection ---
 components.html("""
 <!DOCTYPE html>
@@ -81,8 +95,8 @@ components.html("""
     <style>
         body { margin: 0; overflow: hidden; background-color: transparent; }
         canvas { display: block; position: absolute; top: 0; left: 0; z-index: -1; pointer-events: none; }
-        .hero-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-family: sans-serif; text-align: center; text-shadow: 0 0 20px rgba(88, 166, 255, 0.8); z-index: 10; pointer-events: none;}
-        .hero-text h1 { font-size: 3rem; margin: 0; font-weight: 800; background: linear-gradient(135deg, #58a6ff 0%, #ffffff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+        .hero-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: """ + threejs_text_color + """; font-family: sans-serif; text-align: center; text-shadow: 0 0 20px """ + threejs_shadow + """; z-index: 10; pointer-events: none;}
+        .hero-text h1 { font-size: 3rem; margin: 0; font-weight: 800; background: """ + threejs_h1_grad + """; -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
         .hero-text p { font-size: 1.2rem; opacity: 0.8; letter-spacing: 2px;}
     </style>
 </head>
@@ -101,10 +115,10 @@ components.html("""
         
         const geometry = new THREE.SphereGeometry(15, 64, 64);
         const material = new THREE.MeshBasicMaterial({ 
-            color: 0x58a6ff, 
+            color: """ + threejs_particle_color + """, 
             wireframe: true,
             transparent: true,
-            opacity: 0.15
+            opacity: 0.25
         });
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
@@ -120,7 +134,7 @@ components.html("""
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         const particlesMaterial = new THREE.PointsMaterial({
             size: 0.1,
-            color: 0x58a6ff,
+            color: """ + threejs_particle_color + """,
             transparent: true,
             opacity: 0.8
         });
@@ -163,9 +177,6 @@ def get_base64_of_bin_file(bin_file):
 
 bg_dark_b64 = get_base64_of_bin_file("assets/bg_dark.jpg")
 bg_light_b64 = get_base64_of_bin_file("assets/bg_light.jpg")
-
-st.sidebar.markdown("### 🎨 Appearance")
-is_dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True, key="dark_mode_toggle")
 
 if is_dark_mode:
     theme_tokens = f"""
@@ -282,6 +293,19 @@ st.markdown("""
     html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select, label {
         font-family: var(--font-sans) !important;
         color: var(--text-primary) !important;
+        text-shadow: none !important;
+        -webkit-font-smoothing: antialiased !important;
+    }
+
+    /* Force Toggle Switch / Checkbox to respect our theme */
+    div[data-testid="stCheckbox"] div[data-baseweb="checkbox"] > div:first-of-type {
+        background-color: var(--nav-border) !important;
+    }
+    div[data-testid="stCheckbox"] div[data-baseweb="checkbox"] > div:first-of-type > div {
+        background-color: var(--card-bg) !important;
+    }
+    div[data-testid="stCheckbox"] input:checked + div {
+        background-color: var(--nav-active-text) !important;
     }
 
     code, kbd, samp, pre {
