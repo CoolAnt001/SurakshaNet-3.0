@@ -82,10 +82,10 @@ if is_dark_mode:
     threejs_h1_grad = "linear-gradient(135deg, #58a6ff 0%, #ffffff 100%)"
     threejs_particle_color = "0x58a6ff"
 else:
-    threejs_text_color = "#0F172A"
-    threejs_shadow = "rgba(15, 23, 42, 0.2)"
-    threejs_h1_grad = "linear-gradient(135deg, #d97706 0%, #0F172A 100%)"
-    threejs_particle_color = "0x1e3a8a"
+    threejs_text_color = "#1E3A8A"
+    threejs_shadow = "rgba(30, 58, 138, 0.2)"
+    threejs_h1_grad = "linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)"
+    threejs_particle_color = "0x58a6ff"
 
 # --- 3D Animation Injection ---
 components.html("""
@@ -363,16 +363,16 @@ st.markdown("""
         box-shadow: none !important;
     }
     div[data-baseweb="select"] > div {
-        background-color: var(--card-bg) !important;
-        border: 1px solid var(--nav-border) !important;
-        color: var(--text-primary) !important;
+        background-color: #292524 !important;
+        border: 1px solid #44403C !important;
+        color: #F8FAFC !important;
         border-radius: 10px !important;
         cursor: pointer !important;
     }
     div[data-baseweb="popover"] > div, div[data-baseweb="menu"] {
-        background-color: var(--card-bg) !important;
-        border: 1px solid var(--nav-border) !important;
-        color: var(--text-primary) !important;
+        background-color: #292524 !important;
+        border: 1px solid #44403C !important;
+        color: #F8FAFC !important;
     }
     div[data-baseweb="popover"] ul, 
     div[data-baseweb="popover"] ul div, 
