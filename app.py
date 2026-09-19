@@ -168,8 +168,9 @@ st.sidebar.markdown("### 🎨 Appearance")
 is_dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True, key="dark_mode_toggle")
 
 if is_dark_mode:
-    theme_tokens = """
+    theme_tokens = f"""
         /* Core Unified Theme Tokens */
+        --page-bg-img: url("data:image/jpeg;base64,{bg_dark_b64}");
         --card-bg: #292524;
         --inner-card-bg: #1C1917;
         --card-border: rgba(19, 136, 8, 0.25);
@@ -177,7 +178,7 @@ if is_dark_mode:
         --text-primary: #F8FAFC;
         --text-secondary: #CBD5E1;
         --text-muted: #94A3B8;
-        --heading-color: var(--text-primary);
+        --heading-color: #F8FAFC;
         --nav-bar-bg: #292524;
         --nav-border: #44403C;
         --nav-text: #94A3B8;
@@ -205,8 +206,9 @@ if is_dark_mode:
         --grassroots-badge-text: #FF9933;
     """
 else:
-    theme_tokens = """
+    theme_tokens = f"""
         /* Light Mode Theme Tokens */
+        --page-bg-img: url("data:image/jpeg;base64,{bg_light_b64}");
         --card-bg: #FFFFFF;
         --inner-card-bg: #F1F5F9;
         --card-border: rgba(19, 136, 8, 0.25);
@@ -214,7 +216,7 @@ else:
         --text-primary: #0F172A;
         --text-secondary: #334155;
         --text-muted: #64748B;
-        --heading-color: var(--text-primary);
+        --heading-color: #0F172A;
         --nav-bar-bg: #F1F5F9;
         --nav-border: #CBD5E1;
         --nav-text: #475569;
@@ -261,8 +263,25 @@ st.markdown("""
 """ + theme_tokens + """
     }
 
-    html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select {
+    .stApp, [data-testid="stAppViewContainer"] {
+        background-image: var(--page-bg-img) !important;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+    
+    [data-testid="stSidebar"] {
+        background-color: var(--nav-bar-bg) !important;
+    }
+    
+    [data-testid="stHeader"] {
+        background-color: var(--card-bg) !important;
+    }
+
+    html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select, label {
         font-family: var(--font-sans) !important;
+        color: var(--text-primary) !important;
     }
 
     code, kbd, samp, pre {
@@ -2091,77 +2110,6 @@ else:
     t["complaint_options"] = ["स्वच्छता/पानी", "वेक्टर/मच्छर", "संदिग्ध क्लस्टर", "अन्य"]
     t["complaint_textarea"] = "विस्तृत विवरण (स्थान, देखे गए लक्षण, आदि)"
     t["complaint_submit_btn"] = "🚀 एन्क्रिप्टेड रिपोर्ट सबमिट करें"
-
-
-is_dark_mode = st.session_state.get("dark_mode_toggle", True)
-
-if not is_dark_mode:
-    st.markdown("""
-    <style>
-    :root, .stApp {
-        /* Force Streamlit Native Components (like st.dataframe) to Light Mode */
-        --primary-color: #FF9933;
-        --background-color: #FFFFFF;
-        --secondary-background-color: #F8FAFC;
-        --text-color: #0F172A;
-        
-        --card-bg: #FFFFFF;
-        --inner-card-bg: #F8FAFC;
-        --card-border: rgba(19, 136, 8, 0.25);
-        --text-primary: #0F172A;
-        --text-secondary: #334155;
-        --text-muted: #64748B;
-        --heading-color: #0F172A;
-        --nav-bar-bg: #FFFFFF;
-        --nav-border: #E2E8F0;
-        --hero-bg: linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 100%);
-        --input-bg: #FFFFFF;
-        --input-border: #CBD5E1;
-        --input-text: #0F172A;
-        --btn-text: #FFFFFF;
-        --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
-        --auth-clinic-bg: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F8FAFC 75%);
-        --auth-officer-bg: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F8FAFC 75%);
-        --grassroots-badge-bg: #F8FAFC;
-    }
-    .stApp, [data-testid="stHeader"] {
-        background-color: #F1F5F9 !important;
-        color: #0F172A !important;
-    }
-    [data-testid="stSidebar"] {
-        background-color: #FFFFFF !important;
-    }
-    .stMarkdown, .stText, p, span, div, h1, h2, h3, h4, h5, h6 {
-        color: var(--text-primary);
-    }
-
-    </style>
-    """, unsafe_allow_html=True)
-    
-    st.markdown(f"""
-    <style>
-    .stApp, [data-testid="stAppViewContainer"] {{
-        background-image: url("data:image/jpeg;base64,{bg_light_b64}") !important;
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-    }}
-    </style>
-    """, unsafe_allow_html=True)
-
-else:
-    st.markdown(f"""
-    <style>
-    .stApp, [data-testid="stAppViewContainer"] {{
-        background-image: url("data:image/jpeg;base64,{bg_dark_b64}") !important;
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-    }}
-    </style>
-    """, unsafe_allow_html=True)
 
 
 # --- Timestamp Formatting Helpers ---
