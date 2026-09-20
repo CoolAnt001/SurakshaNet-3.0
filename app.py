@@ -74,7 +74,10 @@ if st.session_state.get("play_alert_sound"):
     st.session_state.play_alert_sound = False
 
 st.sidebar.markdown("### 🎨 Appearance")
-is_dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True, key="dark_mode_toggle")
+if "dark_mode_toggle" not in st.session_state:
+    st.session_state.dark_mode_toggle = True
+toggle_label = "🌙 Dark Mode" if st.session_state.dark_mode_toggle else "☀️ Light Mode"
+is_dark_mode = st.sidebar.toggle(toggle_label, key="dark_mode_toggle")
 
 if is_dark_mode:
     # threejs_text_color = "white"
