@@ -77,11 +77,17 @@ st.sidebar.markdown("### 🎨 Appearance")
 is_dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True, key="dark_mode_toggle")
 
 if is_dark_mode:
-    chakra_color = "0x000080"
-    chakra_glow = "false"
+    # threejs_text_color = "white"
+    # threejs_shadow = "rgba(30, 58, 138, 0.2)"
+    # threejs_h1_grad = "linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)"
+    # threejs_particle_color = "0x58a6ff"
+    pass
 else:
-    chakra_color = "0x000080"
-    chakra_glow = "false"
+    # threejs_text_color = "#1E3A8A"
+    # threejs_shadow = "rgba(30, 58, 138, 0.2)"
+    # threejs_h1_grad = "linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)"
+    # threejs_particle_color = "0x58a6ff"
+    pass
 
 # --- 3D Animation Injection ---
 components.html("""
@@ -96,33 +102,11 @@ components.html("""
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        const parentDoc = window.parent.document;
-        const parentWindow = window.parent;
-        
-        // --- CLEANUP PREVIOUS INSTANCES ---
-        if (parentWindow.threejsBgAnimationId) {
-            cancelAnimationFrame(parentWindow.threejsBgAnimationId);
-        }
-        const oldCanvas = parentDoc.getElementById("threejs-bg-canvas");
-        if (oldCanvas) {
-            oldCanvas.remove();
-        }
-        
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, parentWindow.innerWidth / parentWindow.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(parentWindow.innerWidth, parentWindow.innerHeight);
-        
-        // Move canvas to parent body
-        renderer.domElement.id = "threejs-bg-canvas";
-        renderer.domElement.style.position = 'fixed';
-        renderer.domElement.style.top = '0';
-        renderer.domElement.style.left = '0';
-        renderer.domElement.style.width = '100vw';
-        renderer.domElement.style.height = '100vh';
-        renderer.domElement.style.zIndex = '-100';
-        renderer.domElement.style.pointerEvents = 'none';
-        parentDoc.body.appendChild(renderer.domElement);
+        renderer.setSize(window.innerWidth, 400);
+        document.body.appendChild(renderer.domElement);
         
         // --- Saffron/White/Green Globe ---
         const geometry = new THREE.SphereGeometry(15, 64, 64);
@@ -157,17 +141,11 @@ components.html("""
         
         // --- Ashoka Chakra ---
         const chakraGroup = new THREE.Group();
-        const chakraMaterial = new THREE.MeshBasicMaterial({ color: """ + chakra_color + """ });
+        const chakraMaterial = new THREE.MeshBasicMaterial({ color: 0x000080 }); // Navy Blue
         
         const rimGeo = new THREE.TorusGeometry(8, 0.4, 16, 64);
         const rim = new THREE.Mesh(rimGeo, chakraMaterial);
         chakraGroup.add(rim);
-        
-        if (""" + chakra_glow + """ === true) {
-            const rimGlowGeo = new THREE.TorusGeometry(8, 0.8, 16, 64);
-            const rimGlow = new THREE.Mesh(rimGlowGeo, new THREE.MeshBasicMaterial({ color: """ + chakra_color + """, transparent: true, opacity: 0.25 }));
-            chakraGroup.add(rimGlow);
-        }
         
         const hubGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.6, 32);
         const hub = new THREE.Mesh(hubGeo, chakraMaterial);
@@ -219,50 +197,20 @@ components.html("""
         
         camera.position.z = 30;
         
-        // --- Scroll Physics Engine ---
-        let lastScrollY = 0;
-        let scrollVelocity = 0;
-        let targetVelocity = 0;
-        
-        const scrollContainer = parentDoc.querySelector('[data-testid="stAppViewContainer"]') || parentWindow;
-        
-        // Clean up old scroll listener
-        if (parentWindow.threejsScrollHandler) {
-            scrollContainer.removeEventListener('scroll', parentWindow.threejsScrollHandler);
-        }
-        
-        parentWindow.threejsScrollHandler = () => {
-            const currentScrollY = scrollContainer.scrollTop || parentWindow.scrollY;
-            const deltaY = currentScrollY - lastScrollY;
-            lastScrollY = currentScrollY;
-            targetVelocity = deltaY * 0.003; // Sensitivity
-        };
-        
-        scrollContainer.addEventListener('scroll', parentWindow.threejsScrollHandler, { passive: true });
-        
         function animate() {
-            parentWindow.threejsBgAnimationId = requestAnimationFrame(animate);
-            
-            // Smoothly interpolate current velocity towards target velocity
-            scrollVelocity += (targetVelocity - scrollVelocity) * 0.05; 
-            
-            sphere.rotation.y += (0.002 + scrollVelocity);
-            particlesMesh.rotation.y -= (0.0005 + scrollVelocity * 0.5);
-            chakraGroup.rotation.z -= (0.005 + scrollVelocity * 1.5);
-            
-            // Decay target velocity when scrolling stops
-            targetVelocity *= 0.9;
-            
+            requestAnimationFrame(animate);
+            sphere.rotation.y += 0.002;
+            particlesMesh.rotation.y -= 0.0005;
+            chakraGroup.rotation.z -= 0.005;
             renderer.render(scene, camera);
         }
         animate();
         
-        function updateSize() {
-            camera.aspect = parentWindow.innerWidth / parentWindow.innerHeight;
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / 400;
             camera.updateProjectionMatrix();
-            renderer.setSize(parentWindow.innerWidth, parentWindow.innerHeight);
-        }
-        parentWindow.addEventListener('resize', updateSize);
+            renderer.setSize(window.innerWidth, 400);
+        });
     </script>
 </body>
 </html>
@@ -284,24 +232,12 @@ def get_base64_of_bin_file(bin_file):
 bg_dark_b64 = get_base64_of_bin_file("assets/bg_dark.jpg")
 bg_light_b64 = get_base64_of_bin_file("assets/bg_light.jpg")
 
-@st.cache_data
-def load_india_geojson():
-    import json
-    import os
-    file_path = "assets/india_boundary.geojson"
-    if os.path.exists(file_path):
-        with open(file_path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return None
-
-india_geojson = load_india_geojson()
-
 if is_dark_mode:
     theme_tokens = f"""
         /* Core Unified Theme Tokens */
         --page-bg-img: url("data:image/jpeg;base64,{bg_dark_b64}");
-        --card-bg: rgba(41, 37, 36, 0.85); /* #292524 with opacity */
-        --inner-card-bg: rgba(28, 25, 23, 0.85); /* #1C1917 with opacity */
+        --card-bg: #292524;
+        --inner-card-bg: #1C1917;
         --card-border: rgba(19, 136, 8, 0.25);
         --card-border-hover: rgba(255, 153, 51, 0.6);
         --text-primary: #F8FAFC;
@@ -338,8 +274,8 @@ else:
     theme_tokens = f"""
         /* Light Mode Theme Tokens */
         --page-bg-img: url("data:image/jpeg;base64,{bg_light_b64}");
-        --card-bg: rgba(255, 255, 255, 0.85); /* #FFFFFF with opacity */
-        --inner-card-bg: rgba(241, 245, 249, 0.85); /* #F1F5F9 with opacity */
+        --card-bg: #FFFFFF;
+        --inner-card-bg: #F1F5F9;
         --card-border: rgba(19, 136, 8, 0.25);
         --card-border-hover: rgba(255, 153, 51, 0.6);
         --text-primary: #0F172A;
@@ -392,23 +328,20 @@ st.markdown("""
 """ + theme_tokens + """
     }
 
-    .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
-        background-color: transparent !important;
-        background-image: none !important;
+    .stApp, [data-testid="stAppViewContainer"] {
+        background-image: var(--page-bg-img) !important;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
     }
     
     [data-testid="stSidebar"] {
         background-color: var(--nav-bar-bg) !important;
-        backdrop-filter: blur(12px) !important;
     }
     
     [data-testid="stHeader"] {
         background-color: var(--card-bg) !important;
-        backdrop-filter: blur(12px) !important;
-    }
-
-    div[data-testid="stVerticalBlock"] > div[style*="border"], div[style*="--card-bg"] {
-        backdrop-filter: blur(12px) !important;
     }
 
     html, body, [class*="css"], .stText, .stMarkdown, .stButton, div, p, h1, h2, h3, h4, input, select, label {
@@ -3769,6 +3702,7 @@ if active_nav_idx == 0:
                 zoom=map_zoom,
                 center={"lat": center_lat, "lon": center_lon}
             )
+            fig_map.update_layout(map_style="open-street-map")
         else:
             fig_map = px.scatter_mapbox(
                 df_map,
@@ -3784,7 +3718,8 @@ if active_nav_idx == 0:
                 hover_name="Short_Name",
                 hover_data={"lat": False, "lon": False, "Zone": True, "Status": True, "Primary Indicator": True, "Max Z-Score": True, "Size": False},
                 zoom=map_zoom,
-                center={"lat": center_lat, "lon": center_lon}
+                center={"lat": center_lat, "lon": center_lon},
+                mapbox_style="open-street-map"
             )
     except Exception:
         fig_map = px.scatter_mapbox(
@@ -3801,39 +3736,20 @@ if active_nav_idx == 0:
             hover_name="Short_Name",
             hover_data={"lat": False, "lon": False, "Zone": True, "Status": True, "Primary Indicator": True, "Max Z-Score": True, "Size": False},
             zoom=map_zoom,
-            center={"lat": center_lat, "lon": center_lon}
+            center={"lat": center_lat, "lon": center_lon},
+            mapbox_style="open-street-map"
         )
 
     plot_theme = PLOTLY_DARK if is_dark_mode else PLOTLY_LIGHT
-    mapbox_bg_style = "carto-darkmatter" if is_dark_mode else "carto-positron"
-    
-    layer_config = []
-    if india_geojson:
-        layer_config.append({
-            "source": india_geojson,
-            "type": "line",
-            "color": "#10B981" if is_dark_mode else "#059669", # Highlight border with official SurakshaNet Green
-            "line": {"width": 2.5}
-        })
-        
-    update_kwargs = {
-        "autosize": True,
-        "margin": {"r": 0, "t": 0, "l": 0, "b": 0},
-        "height": 350,
-        "paper_bgcolor": plot_theme["paper"],
-        "plot_bgcolor": plot_theme["plot"],
-        "font": dict(color=plot_theme.get("text", "#F8FAFC")),
-        "legend": dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(color=plot_theme.get("text", "#F8FAFC")))
-    }
-    
-    if hasattr(px, "scatter_map"):
-        update_kwargs["map_style"] = mapbox_bg_style
-        update_kwargs["map_layers"] = layer_config
-    else:
-        update_kwargs["mapbox_style"] = mapbox_bg_style
-        update_kwargs["mapbox_layers"] = layer_config
-        
-    fig_map.update_layout(**update_kwargs)
+    fig_map.update_layout(
+        autosize=True,
+        margin={"r": 0, "t": 0, "l": 0, "b": 0},
+        height=350,
+        paper_bgcolor=plot_theme["paper"],
+        plot_bgcolor=plot_theme["plot"],
+        font=dict(color=plot_theme.get("text", "#F8FAFC")),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(color=plot_theme.get("text", "#F8FAFC")))
+    )
     st.plotly_chart(fig_map, theme=None, use_container_width=True, config={"responsive": True})
 
     # Historical Baseline vs. Current Privatized Health Radar Table
