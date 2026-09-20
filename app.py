@@ -248,8 +248,11 @@ components.html("""
             
             // Apply friction/damping to return to default spin
             if (!isDragging) {
-                rotationVelocity.x += (0 - rotationVelocity.x) * 0.05;
-                rotationVelocity.y += (0.002 - rotationVelocity.y) * 0.05;
+                rotationVelocity.x *= 0.9; // Quickly dampen vertical throw velocity
+                rotationVelocity.y += (0.002 - rotationVelocity.y) * 0.05; // Return to default horizontal spin
+                
+                // Gradually restore original vertical orientation (tilt)
+                sphere.rotation.x += (0 - sphere.rotation.x) * 0.05;
             }
             
             particlesMesh.rotation.y -= 0.0005;
