@@ -197,9 +197,61 @@ components.html("""
         
         camera.position.z = 30;
         
+        // --- Drag/Swipe Interaction ---
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let rotationVelocity = { x: 0, y: 0.002 };
+        
+        const onDown = (x, y) => {
+            isDragging = true;
+            previousMousePosition = { x, y };
+        };
+        
+        const onMove = (x, y) => {
+            if (isDragging) {
+                const deltaMove = {
+                    x: x - previousMousePosition.x,
+                    y: y - previousMousePosition.y
+                };
+                
+                rotationVelocity.x = deltaMove.y * 0.005;
+                rotationVelocity.y = deltaMove.x * 0.005;
+                
+                previousMousePosition = { x, y };
+            }
+        };
+        
+        const onUp = () => {
+            isDragging = false;
+        };
+        
+        // Mouse Events
+        document.addEventListener('mousedown', (e) => onDown(e.clientX, e.clientY));
+        document.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
+        document.addEventListener('mouseup', onUp);
+        
+        // Touch Events
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 0) onDown(e.touches[0].clientX, e.touches[0].clientY);
+        });
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) onMove(e.touches[0].clientX, e.touches[0].clientY);
+        });
+        document.addEventListener('touchend', onUp);
+
         function animate() {
             requestAnimationFrame(animate);
-            sphere.rotation.y += 0.002;
+            
+            // Apply velocity
+            sphere.rotation.x += rotationVelocity.x;
+            sphere.rotation.y += rotationVelocity.y;
+            
+            // Apply friction/damping to return to default spin
+            if (!isDragging) {
+                rotationVelocity.x += (0 - rotationVelocity.x) * 0.05;
+                rotationVelocity.y += (0.002 - rotationVelocity.y) * 0.05;
+            }
+            
             particlesMesh.rotation.y -= 0.0005;
             chakraGroup.rotation.z -= 0.005;
             renderer.render(scene, camera);
