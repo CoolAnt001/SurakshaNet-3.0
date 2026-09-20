@@ -106,10 +106,32 @@ components.html("""
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+        const pWin = window.parent;
+        const initWidth = pWin ? pWin.innerWidth : window.innerWidth;
+        const camera = new THREE.PerspectiveCamera(75, initWidth / 400, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, 400);
-        document.body.appendChild(renderer.domElement);
+        renderer.setSize(initWidth, 400);
+        
+        try {
+            if (pWin && pWin.document.body) {
+                const existing = pWin.document.getElementById('suraksha-earth-canvas');
+                if (existing) existing.remove();
+                renderer.domElement.id = 'suraksha-earth-canvas';
+                pWin.document.body.appendChild(renderer.domElement);
+                renderer.domElement.style.position = 'fixed';
+                renderer.domElement.style.top = '0px';
+                renderer.domElement.style.left = '0px';
+                renderer.domElement.style.zIndex = '1000';
+                renderer.domElement.style.pointerEvents = 'none';
+            } else {
+                document.body.appendChild(renderer.domElement);
+            }
+        } catch(e) {
+            document.body.appendChild(renderer.domElement);
+        }
+
+        const earthGroup = new THREE.Group();
+        scene.add(earthGroup);
         
         // --- Saffron/White/Green Globe ---
         const geometry = new THREE.SphereGeometry(15, 64, 64);
@@ -140,7 +162,7 @@ components.html("""
             opacity: 0.35
         });
         const sphere = new THREE.Mesh(geometry, material);
-        scene.add(sphere);
+        earthGroup.add(sphere);
         
         // --- Ashoka Chakra ---
         const chakraGroup = new THREE.Group();
@@ -163,7 +185,7 @@ components.html("""
             chakraGroup.add(spoke);
         }
         chakraGroup.scale.set(0.6, 0.6, 0.6); // Scale down to 60%
-        scene.add(chakraGroup);
+        earthGroup.add(chakraGroup);
         
         // --- Floating Particles ---
         const particlesGeometry = new THREE.BufferGeometry();
@@ -196,10 +218,39 @@ components.html("""
             opacity: 0.8
         });
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particlesMesh);
+        earthGroup.add(particlesMesh);
         
         camera.position.z = 30;
         
+        let scrollY = 0;
+        let targetScale = 1;
+        let targetPosX = 0;
+        let targetPosY = 0;
+
+        try {
+            if (pWin) {
+                pWin.addEventListener('scroll', (e) => {
+                    if (e.target && e.target.scrollTop !== undefined) {
+                        scrollY = e.target.scrollTop;
+                    } else {
+                        scrollY = pWin.scrollY || 0;
+                    }
+                    const progress = Math.min(scrollY / 250, 1.0);
+                    const smooth = progress * progress * (3 - 2 * progress);
+                    
+                    targetScale = 1 - (0.85 * smooth); // Shrinks down
+                    
+                    const aspect = pWin.innerWidth / 400;
+                    const h = 46;
+                    const w = h * aspect;
+                    
+                    // Move to top right
+                    targetPosX = (w / 2 - 6) * smooth;
+                    targetPosY = (h / 2 - 6) * smooth;
+                }, true);
+            }
+        } catch(e) {}
+
         // --- Drag/Swipe Interaction ---
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
@@ -228,19 +279,28 @@ components.html("""
             isDragging = false;
         };
         
-        // Mouse Events
-        document.addEventListener('mousedown', (e) => onDown(e.clientX, e.clientY));
-        document.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
-        document.addEventListener('mouseup', onUp);
-        
-        // Touch Events
-        document.addEventListener('touchstart', (e) => {
-            if (e.touches.length > 0) onDown(e.touches[0].clientX, e.touches[0].clientY);
-        });
-        document.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 0) onMove(e.touches[0].clientX, e.touches[0].clientY);
-        });
-        document.addEventListener('touchend', onUp);
+        const attachEvents = (doc) => {
+            doc.addEventListener('mousedown', (e) => {
+                if (scrollY < 50 && e.clientY < 400) onDown(e.clientX, e.clientY);
+            });
+            doc.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
+            doc.addEventListener('mouseup', onUp);
+            
+            doc.addEventListener('touchstart', (e) => {
+                if (scrollY < 50 && e.touches.length > 0 && e.touches[0].clientY < 400) onDown(e.touches[0].clientX, e.touches[0].clientY);
+            });
+            doc.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) onMove(e.touches[0].clientX, e.touches[0].clientY);
+            });
+            doc.addEventListener('touchend', onUp);
+        };
+
+        try {
+            if (pWin && pWin.document) attachEvents(pWin.document);
+            else attachEvents(document);
+        } catch(e) {
+            attachEvents(document);
+        }
 
         function animate() {
             requestAnimationFrame(animate);
@@ -249,12 +309,13 @@ components.html("""
             sphere.rotation.x += rotationVelocity.x;
             sphere.rotation.y += rotationVelocity.y;
             
+            earthGroup.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+            earthGroup.position.lerp(new THREE.Vector3(targetPosX, targetPosY, 0), 0.1);
+            
             // Apply friction/damping to return to default spin
             if (!isDragging) {
-                rotationVelocity.x *= 0.9; // Quickly dampen vertical throw velocity
-                rotationVelocity.y += (0.002 - rotationVelocity.y) * 0.05; // Return to default horizontal spin
-                
-                // Gradually restore original vertical orientation (tilt)
+                rotationVelocity.x *= 0.9; 
+                rotationVelocity.y += (0.002 - rotationVelocity.y) * 0.05; 
                 sphere.rotation.x += (0 - sphere.rotation.x) * 0.05;
             }
             
@@ -264,11 +325,24 @@ components.html("""
         }
         animate();
         
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / 400;
+        const onResize = () => {
+            const w = (pWin && pWin.innerWidth) ? pWin.innerWidth : window.innerWidth;
+            camera.aspect = w / 400;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, 400);
-        });
+            renderer.setSize(w, 400);
+            
+            if (scrollY > 0) {
+                const aspect = w / 400;
+                const h = 46;
+                const w_units = h * aspect;
+                const progress = Math.min(scrollY / 250, 1.0);
+                const smooth = progress * progress * (3 - 2 * progress);
+                targetPosX = (w_units / 2 - 6) * smooth;
+                targetPosY = (h / 2 - 6) * smooth;
+            }
+        };
+        window.addEventListener('resize', onResize);
+        try { if (pWin) pWin.addEventListener('resize', onResize); } catch(e) {}
     </script>
 </body>
 </html>
@@ -2502,48 +2576,27 @@ def render_global_alert():
         clean_msg = alert.get("message", alert.get("status", "")).strip().replace("\n", " • ")
         status_line = alert.get("status", "Emergency Advisory")
         
-        col_alert, col_close = st.columns([15, 1])
-        with col_alert:
-            st.markdown(
-                f"""
-                <div class='sidebar-glow-box' style='margin: 0; padding: 10px 20px; box-shadow: 0 8px 30px rgba(239, 68, 68, 0.25); display: flex; align-items: center;'>
-                    <marquee behavior="scroll" direction="left" scrollamount="10" style="color: white; font-size: 1.1rem;">
-                        <span style="color: #FCA5A5; font-weight: 800; letter-spacing: 0.5px;">🚨 STATE OFFICER ADVISORY: {status_line.upper()}</span> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 
-                        <span style="font-weight: 500;">{clean_msg}</span> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; 
-                        <span style='color: var(--neon-cyan); font-family: monospace; font-size: 0.95rem;'>[Auth Hash: {alert.get('hash', '')[:24]}]</span>
-                    </marquee>
+        st.sidebar.markdown(
+            f"""
+            <div class='sidebar-glow-box' style='margin: 0 0 10px 0; padding: 10px 14px; box-shadow: 0 8px 30px rgba(239, 68, 68, 0.25);'>
+                <div style='display: flex; align-items: center; gap: 6px; margin-bottom: 6px;'>
+                    <span style="color: #FCA5A5; font-weight: 800; font-size: 0.78rem; letter-spacing: 0.5px;">🚨 OFFICER ADVISORY</span>
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
-        with col_close:
-            st.markdown(
-                """
-                <style>
-                div[data-testid="stButton"]:has(button[key="dismiss_global_glow_btn"]) {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    height: 100%;
-                    margin-top: 2px;
-                }
-                button[key="dismiss_global_glow_btn"] {
-                    font-size: 1.5rem !important;
-                    padding: 0 !important;
-                    color: rgba(255, 255, 255, 0.6) !important;
-                }
-                button[key="dismiss_global_glow_btn"]:hover {
-                    color: #EF4444 !important;
-                    transform: scale(1.1) !important;
-                }
-                </style>
-                """, unsafe_allow_html=True)
-            if st.button("✖", key="dismiss_global_glow_btn", type="tertiary", use_container_width=True):
-                st.session_state.dismissed_alerts.add(alert.get("hash"))
-                st.rerun()
-        st.markdown("<div style='margin-bottom: 15px;'></div>", unsafe_allow_html=True)
+                <marquee behavior="scroll" direction="left" scrollamount="4" style="color: white; font-size: 0.88rem;">
+                    <span style="font-weight: 700; color: #FCA5A5;">{status_line.upper()}</span> &nbsp;|&nbsp; 
+                    <span style="font-weight: 500;">{clean_msg}</span> &nbsp;|&nbsp; 
+                    <span style='color: var(--neon-cyan); font-family: monospace; font-size: 0.8rem;'>[{alert.get('hash', '')[:16]}]</span>
+                </marquee>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        if st.sidebar.button("✖ Dismiss Alert", key="dismiss_global_glow_btn", type="tertiary", use_container_width=True):
+            st.session_state.dismissed_alerts.add(alert.get("hash"))
+            st.rerun()
 
 render_global_alert()
+
 
 col_head1, col_head_space, col_popover = st.columns([6, 0.4, 0.4])
 with col_head1:
@@ -4365,11 +4418,11 @@ elif active_nav_idx == 2:
                     </style>
                     <div class="ivr-btn-marker"></div>
                     """, unsafe_allow_html=True)
-                    if st.button("🟢 Start Toll-Free IVR Call Simulation", use_container_width=True):
+                    if st.button("🟢 Start Toll-Free IVR Call Simulation", use_container_width=True, type="secondary"):
                         st.session_state.ivr_call_active = True
                         st.rerun()
                 else:
-                    if st.button("🔴 Hang Up", use_container_width=True):
+                    if st.button("🔴 Hang Up", use_container_width=True, type="secondary"):
                         st.session_state.ivr_call_active = False
                         st.rerun()
                     
@@ -4552,7 +4605,7 @@ elif active_nav_idx == 2:
                 with col_l3:
                     st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
                     btn_unique_key = f"del_btn_{selected_node_id}_{idx}_{log.get('row_id', idx)}"
-                    if st.button("🗑️", key=btn_unique_key, use_container_width=True, help="Delete this entry"):
+                    if st.button("🗑️", key=btn_unique_key, use_container_width=True, help="Delete this entry", type="secondary"):
                         if active_gsheet_url:
                             delete_gsheet_log(active_gsheet_url, log["row_id"])
                         else:
@@ -4561,7 +4614,7 @@ elif active_nav_idx == 2:
                         st.success("Entry deleted!")
                         st.rerun()
             if not active_gsheet_url:
-                if st.button(t["clear_btn"]):
+                if st.button(t["clear_btn"], type="secondary"):
                     st.session_state.local_logs[selected_node_id] = []
                     st.success("Cleared.")
                     st.rerun()
@@ -4673,13 +4726,13 @@ elif active_nav_idx == 3:
         col_gs1, col_gs2 = st.columns(2)
         with col_gs1:
             st.markdown('<div class="green-btn-marker"></div>', unsafe_allow_html=True)
-            if st.button("✅ Save & Enable Shared DB", use_container_width=True):
+            if st.button("✅ Save & Enable Shared DB", use_container_width=True, type="secondary"):
                 st.session_state.gsheet_url = gsheet_url_officer
                 st.success("✅ Google Sheet connected! All case reports will now sync to the shared database.")
                 st.rerun()
         with col_gs2:
             st.markdown('<div class="red-btn-marker"></div>', unsafe_allow_html=True)
-            if st.button("🚫 Disconnect Google Sheet", use_container_width=True):
+            if st.button("🚫 Disconnect Google Sheet", use_container_width=True, type="secondary"):
                 st.session_state.gsheet_url = ""
                 st.success("Disconnected. App is now using local session memory.")
                 st.rerun()
@@ -4687,13 +4740,13 @@ elif active_nav_idx == 3:
             st.markdown(f"<p style='color:#10B981; font-size:0.85rem;'>🟢 <strong>Connected:</strong> {st.session_state.gsheet_url[:60]}...</p>", unsafe_allow_html=True)
             col_seed1, col_seed2 = st.columns(2)
             with col_seed1:
-                if st.button("✨ Seed Diverse Simulated Dataset", help="Populates varied, realistic test logs across all 6 nodes"):
+                if st.button("✨ Seed Diverse Simulated Dataset", help="Populates varied, realistic test logs across all 6 nodes", type="secondary"):
                     seed_gsheet_preset(st.session_state.gsheet_url)
                     st.session_state.seed_popup_active = True
                     st.toast("🌱 Multi-Facility Seeding Initiated! 39 records transmitting to database...", icon="🚀")
                     st.rerun()
             with col_seed2:
-                if st.button("🧹 Clear All Spreadsheet Data", help="Clears all rows from the Google Sheet"):
+                if st.button("🧹 Clear All Spreadsheet Data", help="Clears all rows from the Google Sheet", type="secondary"):
                     def _clear_all():
                         try:
                             rows = requests.get(st.session_state.gsheet_url, timeout=10).json()
@@ -4728,7 +4781,7 @@ elif active_nav_idx == 3:
                     """,
                     unsafe_allow_html=True
                 )
-                if st.button("✕ Dismiss Confirmation", key="dismiss_seed_popup"):
+                if st.button("✕ Dismiss Confirmation", key="dismiss_seed_popup", type="secondary"):
                     st.session_state.seed_popup_active = False
                     st.rerun()
         else:
@@ -4884,7 +4937,7 @@ elif active_nav_idx == 3:
                 """,
                 unsafe_allow_html=True
             )
-            if st.button("✕ Acknowledge & Dismiss Alert Confirmation", key="dismiss_alert_dispatch"):
+            if st.button("✕ Acknowledge & Dismiss Alert Confirmation", key="dismiss_alert_dispatch", type="secondary"):
                 st.session_state.alert_dispatched_popup = None
                 st.rerun()
             
