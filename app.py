@@ -83,6 +83,190 @@ else:
     chakra_color = "0x000080"
     chakra_glow = "false"
 
+# --- 3D Animation Injection ---
+components.html("""
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: transparent; }
+        canvas { display: block; position: absolute; top: 0; left: 0; z-index: -1; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const parentDoc = window.parent.document;
+        const parentWindow = window.parent;
+        
+        // --- CLEANUP PREVIOUS INSTANCES ---
+        if (parentWindow.threejsBgAnimationId) {
+            cancelAnimationFrame(parentWindow.threejsBgAnimationId);
+        }
+        const oldCanvas = parentDoc.getElementById("threejs-bg-canvas");
+        if (oldCanvas) {
+            oldCanvas.remove();
+        }
+        
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, parentWindow.innerWidth / parentWindow.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(parentWindow.innerWidth, parentWindow.innerHeight);
+        
+        // Move canvas to parent body
+        renderer.domElement.id = "threejs-bg-canvas";
+        renderer.domElement.style.position = 'fixed';
+        renderer.domElement.style.top = '0';
+        renderer.domElement.style.left = '0';
+        renderer.domElement.style.width = '100vw';
+        renderer.domElement.style.height = '100vh';
+        renderer.domElement.style.zIndex = '-100';
+        renderer.domElement.style.pointerEvents = 'none';
+        parentDoc.body.appendChild(renderer.domElement);
+        
+        // --- Saffron/White/Green Globe ---
+        const geometry = new THREE.SphereGeometry(15, 64, 64);
+        const count = geometry.attributes.position.count;
+        const colors = new Float32Array(count * 3);
+        const color = new THREE.Color();
+        
+        for (let i = 0; i < count; i++) {
+            const y = geometry.attributes.position.getY(i);
+            const normalizedY = (y + 15) / 30; // 0 to 1
+            if (normalizedY > 0.6) {
+                color.setHex(0xFF9933); // Saffron
+            } else if (normalizedY < 0.4) {
+                color.setHex(0x138808); // Green
+            } else {
+                color.setHex(0xFFFFFF); // White
+            }
+            colors[i * 3] = color.r;
+            colors[i * 3 + 1] = color.g;
+            colors[i * 3 + 2] = color.b;
+        }
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.MeshBasicMaterial({ 
+            vertexColors: true, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.35
+        });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+        
+        // --- Ashoka Chakra ---
+        const chakraGroup = new THREE.Group();
+        const chakraMaterial = new THREE.MeshBasicMaterial({ color: """ + chakra_color + """ });
+        
+        const rimGeo = new THREE.TorusGeometry(8, 0.4, 16, 64);
+        const rim = new THREE.Mesh(rimGeo, chakraMaterial);
+        chakraGroup.add(rim);
+        
+        if (""" + chakra_glow + """ === true) {
+            const rimGlowGeo = new THREE.TorusGeometry(8, 0.8, 16, 64);
+            const rimGlow = new THREE.Mesh(rimGlowGeo, new THREE.MeshBasicMaterial({ color: """ + chakra_color + """, transparent: true, opacity: 0.25 }));
+            chakraGroup.add(rimGlow);
+        }
+        
+        const hubGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.6, 32);
+        const hub = new THREE.Mesh(hubGeo, chakraMaterial);
+        hub.rotation.x = Math.PI / 2;
+        chakraGroup.add(hub);
+        
+        const spokeGeo = new THREE.CylinderGeometry(0.15, 0.3, 8, 8);
+        spokeGeo.translate(0, 4, 0); // Pivot at base
+        for(let i = 0; i < 24; i++) {
+            const spoke = new THREE.Mesh(spokeGeo, chakraMaterial);
+            spoke.rotation.z = (i * Math.PI * 2) / 24;
+            chakraGroup.add(spoke);
+        }
+        chakraGroup.scale.set(0.6, 0.6, 0.6); // Scale down to 60%
+        scene.add(chakraGroup);
+        
+        // --- Floating Particles ---
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 3000;
+        const posArray = new Float32Array(particlesCount * 3);
+        const particleColors = new Float32Array(particlesCount * 3);
+        
+        for(let i = 0; i < particlesCount; i++) {
+            const py = (Math.random() - 0.5) * 100;
+            posArray[i * 3] = (Math.random() - 0.5) * 100;
+            posArray[i * 3 + 1] = py;
+            posArray[i * 3 + 2] = (Math.random() - 0.5) * 100;
+            
+            const normalizedY = (py + 50) / 100;
+            if (normalizedY > 0.6) { color.setHex(0xFF9933); }
+            else if (normalizedY < 0.4) { color.setHex(0x138808); }
+            else { color.setHex(0xFFFFFF); }
+            
+            particleColors[i * 3] = color.r;
+            particleColors[i * 3 + 1] = color.g;
+            particleColors[i * 3 + 2] = color.b;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+        
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.15,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+        
+        camera.position.z = 30;
+        
+        // --- Scroll Physics Engine ---
+        let lastScrollY = 0;
+        let scrollVelocity = 0;
+        let targetVelocity = 0;
+        
+        const scrollContainer = parentDoc.querySelector('[data-testid="stAppViewContainer"]') || parentWindow;
+        
+        // Clean up old scroll listener
+        if (parentWindow.threejsScrollHandler) {
+            scrollContainer.removeEventListener('scroll', parentWindow.threejsScrollHandler);
+        }
+        
+        parentWindow.threejsScrollHandler = () => {
+            const currentScrollY = scrollContainer.scrollTop || parentWindow.scrollY;
+            const deltaY = currentScrollY - lastScrollY;
+            lastScrollY = currentScrollY;
+            targetVelocity = deltaY * 0.003; // Sensitivity
+        };
+        
+        scrollContainer.addEventListener('scroll', parentWindow.threejsScrollHandler, { passive: true });
+        
+        function animate() {
+            parentWindow.threejsBgAnimationId = requestAnimationFrame(animate);
+            
+            // Smoothly interpolate current velocity towards target velocity
+            scrollVelocity += (targetVelocity - scrollVelocity) * 0.05; 
+            
+            sphere.rotation.y += (0.002 + scrollVelocity);
+            particlesMesh.rotation.y -= (0.0005 + scrollVelocity * 0.5);
+            chakraGroup.rotation.z -= (0.005 + scrollVelocity * 1.5);
+            
+            // Decay target velocity when scrolling stops
+            targetVelocity *= 0.9;
+            
+            renderer.render(scene, camera);
+        }
+        animate();
+        
+        function updateSize() {
+            camera.aspect = parentWindow.innerWidth / parentWindow.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(parentWindow.innerWidth, parentWindow.innerHeight);
+        }
+        parentWindow.addEventListener('resize', updateSize);
+    </script>
+</body>
+</html>
+""", height=400, scrolling=False)
 
 # --- Global Database Configuration ---
 # Set your Google Apps Script Web App URL here for universal cross-device persistence
