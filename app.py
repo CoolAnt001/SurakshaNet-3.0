@@ -117,9 +117,9 @@ components.html("""
         for (let i = 0; i < count; i++) {
             const y = geometry.attributes.position.getY(i);
             const normalizedY = (y + 15) / 30; // 0 to 1
-            if (normalizedY > 0.7) {
+            if (normalizedY > 0.666) {
                 color.setHex(0xFF9933); // Saffron
-            } else if (normalizedY < 0.3) {
+            } else if (normalizedY < 0.333) {
                 color.setHex(0x138808); // Green
             } else {
                 color.setHex(0xFFFFFF); // White
@@ -175,8 +175,8 @@ components.html("""
             posArray[i * 3 + 2] = (Math.random() - 0.5) * 100;
             
             const normalizedY = (py + 50) / 100;
-            if (normalizedY > 0.7) { color.setHex(0xFF9933); }
-            else if (normalizedY < 0.3) { color.setHex(0x138808); }
+            if (normalizedY > 0.666) { color.setHex(0xFF9933); }
+            else if (normalizedY < 0.333) { color.setHex(0x138808); }
             else { color.setHex(0xFFFFFF); }
             
             particleColors[i * 3] = color.r;
