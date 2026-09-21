@@ -1,7 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
-import numpy as np 
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import math
@@ -107,9 +107,9 @@ components.html("""
         const scene = new THREE.Scene();
         const pWin = window.parent;
         const initWidth = pWin ? pWin.innerWidth : window.innerWidth;
-        const camera = new THREE.PerspectiveCamera(30, initWidth / 400, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(30, initWidth / 650, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(initWidth, 400);
+        renderer.setSize(initWidth, 650);
         
         try {
             if (pWin && pWin.document.body) {
@@ -219,12 +219,12 @@ components.html("""
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         earthGroup.add(particlesMesh);
         
-        camera.position.z = 72;
+        camera.position.z = 90;
         
         let scrollY = 0;
         let targetScale = 1;
         let targetPosX = 0;
-        let targetPosY = - 4;
+        let targetPosY = -5;
 
         try {
             if (pWin) {
@@ -247,13 +247,13 @@ components.html("""
                     
                     targetScale = 1 - (0.85 * smooth); // Shrinks down
                     
-                    const aspect = pWin.innerWidth / 400;
-                    const h = 38.58;
+                    const aspect = pWin.innerWidth / 650;
+                    const h = 62.7;
                     const w = h * aspect;
                     
                     // Move to top right
                     targetPosX = (w / 2 - 5) * smooth;
-                    targetPosY = (h / 2 - 5) * smooth - 4 * (1 - smooth);
+                    targetPosY = (h / 2 - 5) * smooth - 5 * (1 - smooth);
                 }, true);
             }
         } catch(e) {}
@@ -288,13 +288,13 @@ components.html("""
         
         const attachEvents = (doc) => {
             doc.addEventListener('mousedown', (e) => {
-                if (scrollY < 50 && e.clientY < 500) onDown(e.clientX, e.clientY);
+                if (scrollY < 50 && e.clientY < 600) onDown(e.clientX, e.clientY);
             }, true);
             doc.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY), true);
             doc.addEventListener('mouseup', onUp, true);
             
             doc.addEventListener('touchstart', (e) => {
-                if (scrollY < 50 && e.touches.length > 0 && e.touches[0].clientY < 500) onDown(e.touches[0].clientX, e.touches[0].clientY);
+                if (scrollY < 50 && e.touches.length > 0 && e.touches[0].clientY < 600) onDown(e.touches[0].clientX, e.touches[0].clientY);
             }, {passive: true, capture: true});
             doc.addEventListener('touchmove', (e) => {
                 if (e.touches.length > 0) onMove(e.touches[0].clientX, e.touches[0].clientY);
@@ -336,13 +336,13 @@ components.html("""
         
         const onResize = () => {
             const w = (pWin && pWin.innerWidth) ? pWin.innerWidth : window.innerWidth;
-            camera.aspect = w / 400;
+            camera.aspect = w / 650;
             camera.updateProjectionMatrix();
-            renderer.setSize(w, 400);
+            renderer.setSize(w, 650);
             
             if (scrollY > 0) {
-                const aspect = w / 400;
-                const h = 38.58;
+                const aspect = w / 650;
+                const h = 62.7;
                 const w_units = h * aspect;
                 const progress = Math.min(scrollY / 250, 1.0);
                 const smooth = progress * progress * (3 - 2 * progress);
@@ -355,7 +355,7 @@ components.html("""
     </script>
 </body>
 </html>
-""", height=400, scrolling=False)
+""", height=650, scrolling=False)
 
 # --- Global Database Configuration ---
 # Set your Google Apps Script Web App URL here for universal cross-device persistence
