@@ -349,14 +349,14 @@ components.html("""
 </html>
 """, height=550, scrolling=False)
 
-# Pull the page content up by 5px to compensate for the globe canvas space
+# Pull the page content up — the globe canvas is fixed-position so the iframe
+# is just an invisible 550px spacer. Collapse it so content starts near the top.
 st.markdown("""
 <style>
-    /* Negative margin on the globe iframe container to reclaim vertical space */
-    [data-testid="stCustomComponentV1"],
-    iframe[title="components.v1.html"],
-    div.element-container:has(iframe) {
-        margin-bottom: -5px !important;
+    /* Collapse the globe iframe spacer — canvas is fixed so content can overlap */
+    [data-testid="stCustomComponentV1"] {
+        margin-bottom: -530px !important;
+        display: block !important;
     }
 </style>
 """, unsafe_allow_html=True)
