@@ -229,12 +229,18 @@ components.html("""
         try {
             if (pWin) {
                 pWin.addEventListener('scroll', (e) => {
-                    const appContainer = pWin.document.querySelector('.stApp, [data-testid="stAppViewContainer"], .main');
-                    if (appContainer) {
-                        scrollY = appContainer.scrollTop;
-                    } else {
-                        scrollY = pWin.scrollY || 0;
+                    let target = e.target;
+                    
+                    if (target === pWin.document) {
+                        target = pWin.document.documentElement || pWin.document.body;
                     }
+                    
+                    // Filter out scrolls from small child elements like tables
+                    if (target && target.clientHeight && target.clientHeight < pWin.innerHeight * 0.5) {
+                        return;
+                    }
+                    
+                    scrollY = target.scrollTop !== undefined ? target.scrollTop : (pWin.scrollY || 0);
                     
                     const progress = Math.min(scrollY / 250, 1.0);
                     const smooth = progress * progress * (3 - 2 * progress);
