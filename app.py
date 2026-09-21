@@ -347,7 +347,7 @@ components.html("""
     </script>
 </body>
 </html>
-""", height=450, scrolling=False)
+""", height=350, scrolling=False)
 
 # Pull the page content up — the globe canvas is fixed-position so the iframe
 # is just an invisible 550px spacer. Collapse it so content starts near the top.
