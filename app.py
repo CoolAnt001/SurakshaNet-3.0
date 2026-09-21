@@ -226,37 +226,39 @@ components.html("""
         let targetPosX = 0;
         let targetPosY = -5;
 
-        try {
-            if (pWin) {
-                pWin.addEventListener('scroll', (e) => {
-                    let target = e.target;
-                    
-                    if (target === pWin.document) {
-                        target = pWin.document.documentElement || pWin.document.body;
+        // Poll scroll position directly from Streamlit's scrollable container
+        // (scroll events from cross-origin iframes are unreliable)
+        function updateScrollTarget() {
+            let sy = 0;
+            try {
+                // Streamlit renders a scrollable div — find the tallest scrollable element
+                const scrollers = pWin ? Array.from(pWin.document.querySelectorAll('*')) : [];
+                for (const el of scrollers) {
+                    if (el.scrollTop > 0 && el.scrollHeight > el.clientHeight) {
+                        sy = Math.max(sy, el.scrollTop);
                     }
-                    
-                    // Filter out scrolls from small child elements like tables
-                    if (target && target.clientHeight && target.clientHeight < pWin.innerHeight * 0.5) {
-                        return;
-                    }
-                    
-                    scrollY = target.scrollTop !== undefined ? target.scrollTop : (pWin.scrollY || 0);
-                    
-                    const progress = Math.min(scrollY / 250, 1.0);
-                    const smooth = progress * progress * (3 - 2 * progress);
-                    
-                    targetScale = 1 - (0.85 * smooth); // Shrinks down
-                    
-                    const aspect = pWin.innerWidth / 550;
-                    const h = 62.7;
-                    const w = h * aspect;
-                    
-                    // Move to top right
-                    targetPosX = (w / 2 - 5) * smooth;
-                    targetPosY = (h / 2 - 5) * smooth - 5 * (1 - smooth);
-                }, true);
-            }
-        } catch(e) {}
+                }
+                scrollY = sy;
+            } catch(e) {}
+
+            const progress = Math.min(scrollY / 300, 1.0);
+            const smooth = progress * progress * (3 - 2 * progress);
+
+            targetScale = 1 - (0.82 * smooth);
+
+            // Correct frustum height: 2 * Z * tan(FOV/2) = 2 * 95 * tan(15°) ≈ 50.9
+            const camZ = 95;
+            const fovRad = 30 * Math.PI / 180;
+            const frustumH = 2 * camZ * Math.tan(fovRad / 2);
+            const aspect = (pWin ? pWin.innerWidth : window.innerWidth) / 550;
+            const frustumW = frustumH * aspect;
+
+            // Park in top-right corner (leave a small margin so the shrunken globe stays visible)
+            const margin = 3;
+            targetPosX = (frustumW / 2 - margin) * smooth;
+            targetPosY = (frustumH / 2 - margin) * smooth - 5 * (1 - smooth);
+        }
+        setInterval(updateScrollTarget, 100);
 
         // --- Drag/Swipe Interaction ---
         let isDragging = false;
@@ -339,16 +341,6 @@ components.html("""
             camera.aspect = w / 550;
             camera.updateProjectionMatrix();
             renderer.setSize(w, 550);
-            
-            if (scrollY > 0) {
-                const aspect = w / 550;
-                const h = 62.7;
-                const w_units = h * aspect;
-                const progress = Math.min(scrollY / 250, 1.0);
-                const smooth = progress * progress * (3 - 2 * progress);
-                targetPosX = (w_units / 2 - 5) * smooth;
-                targetPosY = (h / 2 - 5) * smooth - 5 * (1 - smooth);
-            }
         };
         window.addEventListener('resize', onResize);
         try { if (pWin) pWin.addEventListener('resize', onResize); } catch(e) {}
