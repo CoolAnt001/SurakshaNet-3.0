@@ -253,8 +253,8 @@ components.html("""
             const aspect = (pWin ? pWin.innerWidth : window.innerWidth) / 550;
             const frustumW = frustumH * aspect;
 
-            // Park in top-right corner (leave a small margin so the shrunken globe stays visible)
-            const margin = 3;
+            // Park in top-right corner with enough margin to clear the Streamlit header (~58px ≈ 5.4 units)
+            const margin = 9;
             targetPosX = (frustumW / 2 - margin) * smooth;
             targetPosY = (frustumH / 2 - margin) * smooth - 5 * (1 - smooth);
         }
@@ -348,6 +348,18 @@ components.html("""
 </body>
 </html>
 """, height=550, scrolling=False)
+
+# Pull the page content up by 5px to compensate for the globe canvas space
+st.markdown("""
+<style>
+    /* Negative margin on the globe iframe container to reclaim vertical space */
+    [data-testid="stCustomComponentV1"],
+    iframe[title="components.v1.html"],
+    div.element-container:has(iframe) {
+        margin-bottom: -5px !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # --- Global Database Configuration ---
 # Set your Google Apps Script Web App URL here for universal cross-device persistence
