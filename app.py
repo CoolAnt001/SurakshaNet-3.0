@@ -107,9 +107,9 @@ components.html("""
         const scene = new THREE.Scene();
         const pWin = window.parent;
         const initWidth = pWin ? pWin.innerWidth : window.innerWidth;
-        const camera = new THREE.PerspectiveCamera(30, initWidth / 650, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(30, initWidth / 550, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(initWidth, 650);
+        renderer.setSize(initWidth, 550);
         
         try {
             if (pWin && pWin.document.body) {
@@ -219,7 +219,7 @@ components.html("""
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         earthGroup.add(particlesMesh);
         
-        camera.position.z = 90;
+        camera.position.z = 95;
         
         let scrollY = 0;
         let targetScale = 1;
@@ -247,7 +247,7 @@ components.html("""
                     
                     targetScale = 1 - (0.85 * smooth); // Shrinks down
                     
-                    const aspect = pWin.innerWidth / 650;
+                    const aspect = pWin.innerWidth / 550;
                     const h = 62.7;
                     const w = h * aspect;
                     
@@ -336,12 +336,12 @@ components.html("""
         
         const onResize = () => {
             const w = (pWin && pWin.innerWidth) ? pWin.innerWidth : window.innerWidth;
-            camera.aspect = w / 650;
+            camera.aspect = w / 550;
             camera.updateProjectionMatrix();
-            renderer.setSize(w, 650);
+            renderer.setSize(w, 550);
             
             if (scrollY > 0) {
-                const aspect = w / 650;
+                const aspect = w / 550;
                 const h = 62.7;
                 const w_units = h * aspect;
                 const progress = Math.min(scrollY / 250, 1.0);
@@ -355,7 +355,7 @@ components.html("""
     </script>
 </body>
 </html>
-""", height=650, scrolling=False)
+""", height=550, scrolling=False)
 
 # --- Global Database Configuration ---
 # Set your Google Apps Script Web App URL here for universal cross-device persistence
