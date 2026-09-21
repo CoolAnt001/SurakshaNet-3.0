@@ -73,11 +73,10 @@ if st.session_state.get("play_alert_sound"):
     
     st.session_state.play_alert_sound = False
 
-st.sidebar.markdown("### 🎨 Appearance")
 if "dark_mode_toggle" not in st.session_state:
     st.session_state.dark_mode_toggle = True
-toggle_label = "🌙 Dark Mode" if st.session_state.dark_mode_toggle else "☀️ Light Mode"
-is_dark_mode = st.sidebar.toggle(toggle_label, key="dark_mode_toggle")
+
+is_dark_mode = st.session_state.dark_mode_toggle
 
 if is_dark_mode:
     # threejs_text_color = "white"
@@ -108,7 +107,7 @@ components.html("""
         const scene = new THREE.Scene();
         const pWin = window.parent;
         const initWidth = pWin ? pWin.innerWidth : window.innerWidth;
-        const camera = new THREE.PerspectiveCamera(75, initWidth / 400, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(30, initWidth / 400, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(initWidth, 400);
         
@@ -220,7 +219,7 @@ components.html("""
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         earthGroup.add(particlesMesh);
         
-        camera.position.z = 30;
+        camera.position.z = 72;
         
         let scrollY = 0;
         let targetScale = 1;
@@ -230,23 +229,26 @@ components.html("""
         try {
             if (pWin) {
                 pWin.addEventListener('scroll', (e) => {
-                    if (e.target && e.target.scrollTop !== undefined) {
-                        scrollY = e.target.scrollTop;
-                    } else {
-                        scrollY = pWin.scrollY || 0;
+                    let target = e.target;
+                    if (target === pWin.document) {
+                        target = pWin.document.documentElement || pWin.document.body;
                     }
+                    if (target.clientHeight && target.clientHeight < pWin.innerHeight * 0.8) return;
+                    
+                    scrollY = target.scrollTop !== undefined ? target.scrollTop : (pWin.scrollY || 0);
+                    
                     const progress = Math.min(scrollY / 250, 1.0);
                     const smooth = progress * progress * (3 - 2 * progress);
                     
                     targetScale = 1 - (0.85 * smooth); // Shrinks down
                     
                     const aspect = pWin.innerWidth / 400;
-                    const h = 46;
+                    const h = 38.58;
                     const w = h * aspect;
                     
                     // Move to top right
-                    targetPosX = (w / 2 - 6) * smooth;
-                    targetPosY = (h / 2 - 6) * smooth;
+                    targetPosX = (w / 2 - 5) * smooth;
+                    targetPosY = (h / 2 - 5) * smooth;
                 }, true);
             }
         } catch(e) {}
@@ -333,12 +335,12 @@ components.html("""
             
             if (scrollY > 0) {
                 const aspect = w / 400;
-                const h = 46;
+                const h = 38.58;
                 const w_units = h * aspect;
                 const progress = Math.min(scrollY / 250, 1.0);
                 const smooth = progress * progress * (3 - 2 * progress);
-                targetPosX = (w_units / 2 - 6) * smooth;
-                targetPosY = (h / 2 - 6) * smooth;
+                targetPosX = (w_units / 2 - 5) * smooth;
+                targetPosY = (h / 2 - 5) * smooth;
             }
         };
         window.addEventListener('resize', onResize);
