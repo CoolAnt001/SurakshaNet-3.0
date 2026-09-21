@@ -229,13 +229,12 @@ components.html("""
         try {
             if (pWin) {
                 pWin.addEventListener('scroll', (e) => {
-                    let target = e.target;
-                    if (target === pWin.document) {
-                        target = pWin.document.documentElement || pWin.document.body;
+                    const appContainer = pWin.document.querySelector('.stApp, [data-testid="stAppViewContainer"], .main');
+                    if (appContainer) {
+                        scrollY = appContainer.scrollTop;
+                    } else {
+                        scrollY = pWin.scrollY || 0;
                     }
-                    if (target.clientHeight && target.clientHeight < pWin.innerHeight * 0.8) return;
-                    
-                    scrollY = target.scrollTop !== undefined ? target.scrollTop : (pWin.scrollY || 0);
                     
                     const progress = Math.min(scrollY / 250, 1.0);
                     const smooth = progress * progress * (3 - 2 * progress);
@@ -283,23 +282,25 @@ components.html("""
         
         const attachEvents = (doc) => {
             doc.addEventListener('mousedown', (e) => {
-                if (scrollY < 50 && e.clientY < 400) onDown(e.clientX, e.clientY);
-            });
-            doc.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
-            doc.addEventListener('mouseup', onUp);
+                if (scrollY < 50 && e.clientY < 500) onDown(e.clientX, e.clientY);
+            }, true);
+            doc.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY), true);
+            doc.addEventListener('mouseup', onUp, true);
             
             doc.addEventListener('touchstart', (e) => {
-                if (scrollY < 50 && e.touches.length > 0 && e.touches[0].clientY < 400) onDown(e.touches[0].clientX, e.touches[0].clientY);
-            });
+                if (scrollY < 50 && e.touches.length > 0 && e.touches[0].clientY < 500) onDown(e.touches[0].clientX, e.touches[0].clientY);
+            }, {passive: true, capture: true});
             doc.addEventListener('touchmove', (e) => {
                 if (e.touches.length > 0) onMove(e.touches[0].clientX, e.touches[0].clientY);
-            });
-            doc.addEventListener('touchend', onUp);
+            }, {passive: true, capture: true});
+            doc.addEventListener('touchend', onUp, true);
         };
 
         try {
-            if (pWin && pWin.document) attachEvents(pWin.document);
-            else attachEvents(document);
+            attachEvents(document);
+            if (pWin && pWin.document) {
+                attachEvents(pWin.document);
+            }
         } catch(e) {
             attachEvents(document);
         }
