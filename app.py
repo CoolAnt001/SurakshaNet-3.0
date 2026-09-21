@@ -224,7 +224,7 @@ components.html("""
         let scrollY = 0;
         let targetScale = 1;
         let targetPosX = 0;
-        let targetPosY = -3;
+        let targetPosY = -10;
 
         try {
             if (pWin) {
@@ -253,7 +253,7 @@ components.html("""
                     
                     // Move to top right
                     targetPosX = (w / 2 - 5) * smooth;
-                    targetPosY = (h / 2 - 5) * smooth - 3 * (1 - smooth);
+                    targetPosY = (h / 2 - 5) * smooth - 10 * (1 - smooth);
                 }, true);
             }
         } catch(e) {}
@@ -347,7 +347,7 @@ components.html("""
                 const progress = Math.min(scrollY / 250, 1.0);
                 const smooth = progress * progress * (3 - 2 * progress);
                 targetPosX = (w_units / 2 - 5) * smooth;
-                targetPosY = (h / 2 - 5) * smooth - 3 * (1 - smooth);
+                targetPosY = (h / 2 - 5) * smooth - 10 * (1 - smooth);
             }
         };
         window.addEventListener('resize', onResize);
