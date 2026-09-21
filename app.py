@@ -224,7 +224,7 @@ components.html("""
         let scrollY = 0;
         let targetScale = 1;
         let targetPosX = 0;
-        let targetPosY = 0;
+        let targetPosY = -3;
 
         try {
             if (pWin) {
@@ -248,7 +248,7 @@ components.html("""
                     
                     // Move to top right
                     targetPosX = (w / 2 - 5) * smooth;
-                    targetPosY = (h / 2 - 5) * smooth;
+                    targetPosY = (h / 2 - 5) * smooth - 3 * (1 - smooth);
                 }, true);
             }
         } catch(e) {}
@@ -340,7 +340,7 @@ components.html("""
                 const progress = Math.min(scrollY / 250, 1.0);
                 const smooth = progress * progress * (3 - 2 * progress);
                 targetPosX = (w_units / 2 - 5) * smooth;
-                targetPosY = (h / 2 - 5) * smooth;
+                targetPosY = (h / 2 - 5) * smooth - 3 * (1 - smooth);
             }
         };
         window.addEventListener('resize', onResize);
@@ -928,8 +928,13 @@ st.markdown("""
 
     /* High-Impact Action Buttons (Primary and Secondary only) */
     div.stButton > button[kind="primary"],
-    div.stButton > button[kind="secondary"] {
+    div.stButton > button[kind="secondary"],
+    div[data-testid="stButton"] > button[data-testid="baseButton-primary"],
+    div[data-testid="stButton"] > button[data-testid="baseButton-secondary"],
+    .stButton > button[data-testid="baseButton-primary"],
+    .stButton > button[data-testid="baseButton-secondary"] {
         background: var(--btn-bg) !important;
+        background-color: transparent !important;
         color: var(--btn-text) !important;
         font-weight: 800 !important;
         font-size: 0.9rem !important;
@@ -943,23 +948,34 @@ st.markdown("""
     div.stButton > button[kind="primary"] p,
     div.stButton > button[kind="primary"] div,
     div.stButton > button[kind="secondary"] p,
-    div.stButton > button[kind="secondary"] div {
+    div.stButton > button[kind="secondary"] div,
+    div[data-testid="stButton"] > button[data-testid="baseButton-primary"] p,
+    div[data-testid="stButton"] > button[data-testid="baseButton-primary"] div,
+    div[data-testid="stButton"] > button[data-testid="baseButton-secondary"] p,
+    div[data-testid="stButton"] > button[data-testid="baseButton-secondary"] div {
         color: var(--btn-text) !important;
     }
     div.stButton > button[kind="primary"]:hover,
-    div.stButton > button[kind="secondary"]:hover {
+    div.stButton > button[kind="secondary"]:hover,
+    div[data-testid="stButton"] > button[data-testid="baseButton-primary"]:hover,
+    div[data-testid="stButton"] > button[data-testid="baseButton-secondary"]:hover {
         transform: translateY(-2px) scale(1.02) !important;
         box-shadow: 0 8px 25px rgba(19, 136, 8, 0.5) !important;
         background: var(--btn-hover-bg) !important;
     }
     div.stButton > button[kind="primary"]:active,
-    div.stButton > button[kind="secondary"]:active {
+    div.stButton > button[kind="secondary"]:active,
+    div[data-testid="stButton"] > button[data-testid="baseButton-primary"]:active,
+    div[data-testid="stButton"] > button[data-testid="baseButton-secondary"]:active {
         transform: translateY(0) scale(0.98) !important;
     }
 
     /* Tertiary Button overrides (for theme toggle and close button) */
-    div.stButton > button[kind="tertiary"] {
+    div.stButton > button[kind="tertiary"],
+    div[data-testid="stButton"] > button[data-testid="baseButton-tertiary"],
+    .stButton > button[data-testid="baseButton-tertiary"] {
         background: transparent !important;
+        background-color: transparent !important;
         border: 1px solid transparent !important;
         box-shadow: none !important;
         padding: 6px 12px !important;
@@ -2453,7 +2469,11 @@ def get_default_presentation_notifications():
 
 @st.cache_resource
 def get_global_alerts_state():
-    return {"active_officer_alert": None}
+    return {"active_officer_alert": {
+        "status": "🔴 EPIDEMIC OUTBREAK",
+        "message": "Waterborne pathogen detected at Kalinga Institute (Zone A). Dispatched 2 response units.",
+        "hash": "SHA256:8f2a9c1b3d..."
+    }}
 
 # --- Initialize Notifications & Active Officer Alert ---
 if "notifications" not in st.session_state:
