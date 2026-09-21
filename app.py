@@ -338,16 +338,16 @@ components.html("""
         
         const onResize = () => {
             const w = (pWin && pWin.innerWidth) ? pWin.innerWidth : window.innerWidth;
-            camera.aspect = w / 550;
+            camera.aspect = w / 400;
             camera.updateProjectionMatrix();
-            renderer.setSize(w, 550);
+            renderer.setSize(w, 400);
         };
         window.addEventListener('resize', onResize);
         try { if (pWin) pWin.addEventListener('resize', onResize); } catch(e) {}
     </script>
 </body>
 </html>
-""", height=350, scrolling=False)
+""", height=400, scrolling=False)
 
 # Pull the page content up — the globe canvas is fixed-position so the iframe
 # is just an invisible 550px spacer. Collapse it so content starts near the top.
