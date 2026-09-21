@@ -224,7 +224,7 @@ components.html("""
         let scrollY = 0;
         let targetScale = 1;
         let targetPosX = 0;
-        let targetPosY = - 5;
+        let targetPosY = - 4;
 
         try {
             if (pWin) {
@@ -253,7 +253,7 @@ components.html("""
                     
                     // Move to top right
                     targetPosX = (w / 2 - 5) * smooth;
-                    targetPosY = (h / 2 - 5) * smooth - 5 * (1 - smooth);
+                    targetPosY = (h / 2 - 5) * smooth - 4 * (1 - smooth);
                 }, true);
             }
         } catch(e) {}
