@@ -246,8 +246,8 @@ components.html("""
 
             targetScale = 1 - (0.82 * smooth);
 
-            // Correct frustum height: 2 * Z * tan(FOV/2) = 2 * 95 * tan(15°) ≈ 50.9
-            const camZ = 95;
+            // Correct frustum height: 2 * Z * tan(FOV/2) = 2 * {80} * tan(15°) ≈ 50.9
+            const camZ = 80;
             const fovRad = 30 * Math.PI / 180;
             const frustumH = 2 * camZ * Math.tan(fovRad / 2);
             const aspect = (pWin ? pWin.innerWidth : window.innerWidth) / 550;
