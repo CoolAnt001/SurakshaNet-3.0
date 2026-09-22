@@ -219,7 +219,7 @@ components.html("""
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         earthGroup.add(particlesMesh);
         
-        camera.position.z = 90;
+        camera.position.z = 95;
         
         let scrollY = 0;
         let targetScale = 1;
@@ -338,9 +338,9 @@ components.html("""
         
         const onResize = () => {
             const w = (pWin && pWin.innerWidth) ? pWin.innerWidth : window.innerWidth;
-            camera.aspect = w / 400;
+            camera.aspect = w / 550;
             camera.updateProjectionMatrix();
-            renderer.setSize(w, 400);
+            renderer.setSize(w, 550);
         };
         window.addEventListener('resize', onResize);
         try { if (pWin) pWin.addEventListener('resize', onResize); } catch(e) {}
