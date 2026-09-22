@@ -219,7 +219,7 @@ components.html("""
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         earthGroup.add(particlesMesh);
         
-        camera.position.z = 80;
+        camera.position.z = 85;
         
         let scrollY = 0;
         let targetScale = 1;
@@ -246,11 +246,11 @@ components.html("""
 
             targetScale = 1 - (0.82 * smooth);
 
-            // Correct frustum height: 2 * Z * tan(FOV/2) = 2 * {80} * tan(15°) ≈ 50.9
-            const camZ = 80;
+            // Correct frustum height: 2 * Z * tan(FOV/2) = 2 * {85} * tan(15°) ≈ 50.9
+            const camZ = 85;
             const fovRad = 30 * Math.PI / 180;
             const frustumH = 2 * camZ * Math.tan(fovRad / 2);
-            const aspect = (pWin ? pWin.innerWidth : window.innerWidth) / 550;
+            const aspect = (pWin ? pWin.innerWidth : window.innerWidth) / 400;
             const frustumW = frustumH * aspect;
 
             // Park in top-right corner with enough margin to clear the Streamlit header (~58px ≈ 5.4 units)
