@@ -219,7 +219,7 @@ components.html("""
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         earthGroup.add(particlesMesh);
         
-        camera.position.z = 95;
+        camera.position.z = 80;
         
         let scrollY = 0;
         let targetScale = 1;
