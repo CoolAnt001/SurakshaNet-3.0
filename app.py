@@ -250,7 +250,7 @@ components.html("""
             const camZ = 85;
             const fovRad = 30 * Math.PI / 180;
             const frustumH = 2 * camZ * Math.tan(fovRad / 2);
-            const aspect = (pWin ? pWin.innerWidth : window.innerWidth) / 400;
+            const aspect = (pWin ? pWin.innerWidth : window.innerWidth) / 500;
             const frustumW = frustumH * aspect;
 
             // Park in top-right corner with enough margin to clear the Streamlit header (~58px ≈ 5.4 units)
